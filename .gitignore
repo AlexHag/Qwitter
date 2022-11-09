@@ -1,3 +1,4 @@
 server/bin
 server/obj
 frontend/node_modules
+client/node_modules
