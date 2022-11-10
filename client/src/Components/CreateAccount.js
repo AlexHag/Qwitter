@@ -9,8 +9,28 @@ function CreateAccount() {
     const [password, setPassword] = useState("");
     const [wrong, setWrong] = useState("");
 
-    const handleCreateAccount = () => {
+    const handleCreateAccount = async () => {
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Accept': 'application/json',
+                      'Content-Type': 'application/json' },
+            body: JSON.stringify({username: username, password: password})
+          };
+        
+        const response = await fetch(`http://localhost:5295/CreateAccount`, requestOptions);
+        console.log(response);
+        if(response.status === 409)
+        {
+            console.log("Username Already exist");
+            console.log(response);
+            setWrong("Username already exist");
+        }
 
+
+        if(response.status === 201)
+        {
+            navigate("/Login");
+        } 
     }
 
     return (
@@ -18,6 +38,7 @@ function CreateAccount() {
             <h1>Create Account</h1>
                 <input
                 type="text"
+                className="input-type-text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Username"
@@ -26,6 +47,7 @@ function CreateAccount() {
                 
                 <input
                 type="text"
+                className="input-type-text"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"

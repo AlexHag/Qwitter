@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 function Profile(props) {
     const handleLogOut = () => {
         props.setIsLoggedIn(false);
+        props.setUserInfo([]);
     };
 
     return (

@@ -44,6 +44,7 @@ function Login(props) {
             <h1>Login</h1>
                 <input
                 type="text"
+                className="input-type-text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Username"
@@ -52,6 +53,7 @@ function Login(props) {
                 
                 <input
                 type="text"
+                className="input-type-text"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"

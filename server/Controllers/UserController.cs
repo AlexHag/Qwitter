@@ -22,11 +22,11 @@ public class UserController : ControllerBase
         return users;
     }
 
-    [Route("CreateAccount")]
+    [Route("/CreateAccount")]
     [HttpPost]
     public IActionResult CreateAccount(ClientUserModel user)
     {
-        var serverUser = new User{ Id = Guid.NewGuid(), Username = user.Username, Password = user.Password};
+        var serverUser = new User{ Id = Guid.NewGuid(), Username = user.Username, Password = user.Password, PublicId = Guid.NewGuid()};
         try {
             _context.Users.Add(serverUser);
             _context.SaveChanges();

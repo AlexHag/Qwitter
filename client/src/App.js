@@ -9,6 +9,8 @@ import Login from './Components/Login';
 import CreateAccount from './Components/CreateAccount';
 import Profile from './Components/Profile';
 import Feed from './Components/Feed';
+import Testing from './Components/Testing';
+import OnePost from './Components/OnePost';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => 
@@ -17,7 +19,7 @@ function App() {
 
   const [userInfo, setUserInfo] = useState(() => 
   {
-    const temp = localStorage.getItem("userinfo");
+    const temp = localStorage.getItem("userInfo");
     if(temp === null || temp === "")
     {
       return [];
@@ -35,7 +37,7 @@ function App() {
   }, [isLoggedIn])
   
   useEffect(() => {
-    localStorage.setItem("userInfo", userInfo);
+    localStorage.setItem("userInfo", JSON.stringify(userInfo));
   }, [userInfo])
 
   return (
@@ -43,13 +45,16 @@ function App() {
       <BrowserRouter> 
         <div className="top-header">
             <h1><Link to="/">SRC</Link></h1>
+            <h1><Link to="/Testing">Testing</Link></h1>
             {loginHeader()}
         </div>
         <Routes> 
-          <Route path="/" element={<Feed />}></Route>
+          <Route path="/" element={<Feed userInfo={userInfo}/>}></Route>
+          <Route path="/Testing" element={<Testing />}></Route>
           <Route path="/Login" element={<Login setIsLoggedIn={setIsLoggedIn} setUserInfo={setUserInfo}/>}></Route>
-          <Route path="/Profile" element={<Profile isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} userInfo={userInfo} />}></Route>
+          <Route path="/Profile" element={<Profile isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} userInfo={userInfo} setUserInfo={setUserInfo}/>}></Route>
           <Route path="/CreateAccount" element={<CreateAccount />}></Route>
+          <Route path="Post/:id" element={<OnePost />}></Route>
         </Routes>  
       </BrowserRouter>
     </div>

@@ -11,7 +11,13 @@
     font-size: 1rem;
   }
   
-  input[type="text"] {
+  /* input[type="text"] {
+    height: 40px;
+    padding: 0.5rem 1rem;
+    border: 1px solid #999;
+  } */
+
+.input-type-text {
     height: 40px;
     padding: 0.5rem 1rem;
     border: 1px solid #999;
@@ -38,4 +44,29 @@
     display: inline-block;
     width: auto;
   }
-  
+
+  .reply-box {
+    width:60%;
+    height: 50px;
+    border-bottom: 1px solid lightgray;
+    margin: auto;
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+  }
+
+  .reply-box textarea {
+    width: 100%;
+    font-size: 20px;
+    height:50%;
+    align-items: center;
+    overflow: auto;
+    border: none;
+    outline: none;
+    resize:none;
+  }
+/* 
+  .reply-box textarea:focus~.reply-box {
+    border-bottom: 1px solid blue;
+  }
+   */
