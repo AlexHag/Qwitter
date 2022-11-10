@@ -11,6 +11,10 @@ import Profile from './Components/Profile';
 import Feed from './Components/Feed';
 import Testing from './Components/Testing';
 import OnePost from './Components/OnePost';
+import SearchBar from './Components/SearchBar';
+import SearchFeed from './Components/SearchFeed';
+import UserProfile from './Components/UserProfile';
+import SearchFeedAll from './Components/SearchFeedAll';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => 
@@ -45,7 +49,7 @@ function App() {
       <BrowserRouter> 
         <div className="top-header">
             <h1><Link to="/">Qwitter</Link></h1>
-            <h1><Link to="/Testing">Testing</Link></h1>
+            <SearchBar />
             {loginHeader()}
         </div>
         <Routes> 
@@ -55,6 +59,9 @@ function App() {
           <Route path="/Profile" element={<Profile isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} userInfo={userInfo} setUserInfo={setUserInfo}/>}></Route>
           <Route path="/CreateAccount" element={<CreateAccount />}></Route>
           <Route path="Post/:id" element={<OnePost userInfo={userInfo} />}></Route>
+          <Route path="Search/:username" element={<SearchFeed />}></Route>
+          <Route path="Search" element={<SearchFeedAll />}></Route>
+          <Route path="Profile/:username" element={<UserProfile />}></Route>
         </Routes>  
       </BrowserRouter>
     </div>

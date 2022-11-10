@@ -1,0 +1,15 @@
+.search-container {
+    width: 60%;
+    margin:auto;
+}
+
+.search-result {
+    display: flex;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid black;
+}
+
+.search-result:hover {
+    background-color: lightgray;
+}
