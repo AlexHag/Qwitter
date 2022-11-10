@@ -1,10 +1,12 @@
 import PostCard from "./PostCard";
 import '../css/feed.css';
 import { useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 function Feed(props) {
     const [posts, setPosts] = useState([]);
     const [content, setContent] = useState("");
+    let navigate = useNavigate();
 
     useEffect(() => {
         fetch('http://localhost:5295/GetAllPosts')
@@ -13,7 +15,10 @@ function Feed(props) {
     }, [])
 
     const handlePost = async () => {
-        console.log(props.userInfo.Id);
+        //console.log(props.userInfo.Id);
+
+        if(props.userInfo.Id === undefined) {navigate("/Login"); return;}
+
         const requestOptions = {
             method: 'POST',
             headers: { 'Accept': 'application/json',

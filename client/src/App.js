@@ -44,7 +44,7 @@ function App() {
     <div className="App">
       <BrowserRouter> 
         <div className="top-header">
-            <h1><Link to="/">SRC</Link></h1>
+            <h1><Link to="/">Qwitter</Link></h1>
             <h1><Link to="/Testing">Testing</Link></h1>
             {loginHeader()}
         </div>
@@ -54,7 +54,7 @@ function App() {
           <Route path="/Login" element={<Login setIsLoggedIn={setIsLoggedIn} setUserInfo={setUserInfo}/>}></Route>
           <Route path="/Profile" element={<Profile isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} userInfo={userInfo} setUserInfo={setUserInfo}/>}></Route>
           <Route path="/CreateAccount" element={<CreateAccount />}></Route>
-          <Route path="Post/:id" element={<OnePost />}></Route>
+          <Route path="Post/:id" element={<OnePost userInfo={userInfo} />}></Route>
         </Routes>  
       </BrowserRouter>
     </div>

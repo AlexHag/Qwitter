@@ -1,0 +1,17 @@
+.comment-container {
+  margin: auto;
+  margin-top: 20px;
+  max-width: 60%;
+  border: 0.1px solid gray;
+}
+
+.comment-card {
+    padding:20px;
+    border-bottom: 0.1px solid gray;
+}
+
+.no-comments-h1 {
+    margin: auto;
+    margin-top: 20px;
+    max-width: 60%;
+}
