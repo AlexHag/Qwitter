@@ -14,6 +14,7 @@ public class Posts
     public long TimePosted { get; set; }
     public int Likes { get; set; }
     public int Dislikes { get; set; }
+    public bool IsPremium { get; set; }
 }
 
 public class PostsAndUser
@@ -27,6 +28,7 @@ public class PostsAndUser
     public long TimePosted { get; set; }
     public int Likes { get; set; }
     public int Dislikes { get; set; }
+    public bool IsPremium { get; set; }
 
     public Guid Id { get; set; }
     public string Username { get; set; }
@@ -49,5 +51,6 @@ public class ClientSendPostModel
     public long TimePosted { get; set; }
     public int Likes { get; set; }
     public int Dislikes { get; set; }
+    public bool IsPremium { get; set; }
 
 }

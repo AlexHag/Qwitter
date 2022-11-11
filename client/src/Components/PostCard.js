@@ -18,6 +18,7 @@ function PostCard(props) {
     }
     const dislike = async (e) => {
         e.stopPropagation();
+        console.log(props.premium);
         await fetch(`http://localhost:5295/DislikePost/${props.postId}`, {method: 'PUT'});
         setDislikes(dislikes + 1);
     }
@@ -28,7 +29,7 @@ function PostCard(props) {
     }
 
     return (
-        <div className="post-card" onClick={gotoPost}>
+        <div className={`post-card premium-${props.premium}`} onClick={gotoPost}>
             <PersonIcon />
             <b className="author">{props.author}</b>
             <p className="content">{props.content}</p>

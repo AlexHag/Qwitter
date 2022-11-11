@@ -14,6 +14,7 @@ public class Comment
     public long TimePosted { get; set; }
     public int Likes { get; set; }
     public int Dislikes { get; set; }
+    public bool isPremium { get; set; }
 }
 
 public class ClientMakeCommentModel
@@ -39,4 +40,5 @@ public class ClientSendCommentModel
     public long TimePosted { get; set; }
     public int Likes { get; set; }
     public int Dislikes { get; set; }
+    public bool isPremium { get; set; }
 }

@@ -20,12 +20,24 @@ public class ProfileController : ControllerBase
     {
         var pubId = from u in _context.Users where u.Username == username select u.PublicId;
         if(pubId.FirstOrDefault() == Guid.Empty) return NotFound();
+        var isPremium = from u in _context.Users where u.Username == username select u.IsPremium;
 
         var posts = from p in _context.Posts where p.PublicUserId == pubId.FirstOrDefault() select p;
+        if(posts.FirstOrDefault() is null)
+        {
+            var profileToSendWithoutPost = new Profile{
+                PublicId = pubId.FirstOrDefault(),
+                Username = username,
+                IsPremium = isPremium.FirstOrDefault(),
+                Posts = null
+            };
+            return profileToSendWithoutPost;
+        }
 
         var profileToSend = new Profile{
             PublicId = pubId.FirstOrDefault(),
             Username = username,
+            IsPremium = posts.FirstOrDefault().IsPremium,
             Posts = posts.ToList()
         };
         return profileToSend;
@@ -35,17 +47,9 @@ public class ProfileController : ControllerBase
     [HttpGet]
     public ActionResult<IEnumerable<SearchProfileModel>> SearchProfiles(string username)
     {
-        if(username == "")
-        {
-            var allProfiles = from u in _context.Users select new SearchProfileModel{
-                PublicId = u.PublicId,
-                Username = u.Username
-            };
-            return allProfiles.ToList();
-        }
-
         var profiles = from u in _context.Users where u.Username.Contains(username) select new SearchProfileModel{
             PublicId = u.PublicId,
+            IsPremium = u.IsPremium,
             Username = u.Username
         };
         if(profiles.FirstOrDefault() is null) return NotFound();
@@ -59,6 +63,7 @@ public class ProfileController : ControllerBase
 
         var allProfiles = from u in _context.Users select new SearchProfileModel{
             PublicId = u.PublicId,
+            IsPremium = u.IsPremium,
             Username = u.Username
         };
         return allProfiles.ToList();

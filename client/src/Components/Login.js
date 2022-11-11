@@ -34,7 +34,7 @@ function Login(props) {
             console.log(data)
             console.log(data[0].id);
             props.setIsLoggedIn(true);
-            props.setUserInfo({Id: data[0].id, Username: username})
+            props.setUserInfo({Id: data[0].id, Username: username, isPremium: data[0].isPremium});
             navigate("/");
         }       
     }
@@ -52,7 +52,7 @@ function Login(props) {
                 />
                 
                 <input
-                type="text"
+                type="password"
                 className="input-type-text"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -60,7 +60,7 @@ function Login(props) {
                 required
                 />
 
-                <button className="form-button" onClick={handleLogin} id="btnAddTodo">Add</button>
+                <button className="form-button" onClick={handleLogin} id="btnAddTodo">Login</button>
                 <p style={{color: "red"}}>{wrong}</p>
                 <p><Link to="/CreateAccount">No account? Create one</Link></p>
         </div>

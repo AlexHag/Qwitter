@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using server.Context;
 
@@ -11,9 +12,11 @@ using server.Context;
 namespace server.Migrations
 {
     [DbContext(typeof(dataContext))]
-    partial class dataContextModelSnapshot : ModelSnapshot
+    [Migration("20221110205011_Algorand")]
+    partial class Algorand
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,9 +57,6 @@ namespace server.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("isPremium")
-                        .HasColumnType("bit");
-
                     b.HasKey("CommentId");
 
                     b.HasIndex("RelatedPostId");
@@ -80,9 +80,6 @@ namespace server.Migrations
 
                     b.Property<int>("Dislikes")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsPremium")
-                        .HasColumnType("bit");
 
                     b.Property<int>("Likes")
                         .HasColumnType("int");

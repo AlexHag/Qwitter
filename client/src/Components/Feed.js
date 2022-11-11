@@ -38,7 +38,7 @@ function Feed(props) {
             onChange={(e) => setContent(e.target.value)}></textarea>
             <button className="post-button" type="submit" onClick={handlePost}>Post</button>
             <div className="post-container">
-                {posts.map(p => <PostCard key={p.postId} postId={p.postId} author={p.author} content={p.content} likes={p.likes} dislikes={p.dislikes}/>)}
+                {posts.map(p => <PostCard key={p.postId} postId={p.postId} author={p.author} content={p.content} likes={p.likes} dislikes={p.dislikes} premium={p.isPremium}/>)}
             </div>
         </div>
     )

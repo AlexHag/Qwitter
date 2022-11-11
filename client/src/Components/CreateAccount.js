@@ -46,7 +46,7 @@ function CreateAccount() {
                 />
                 
                 <input
-                type="text"
+                type="password"
                 className="input-type-text"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -54,7 +54,7 @@ function CreateAccount() {
                 required
                 />
 
-                <button className="form-button" onClick={handleCreateAccount} id="btnAddTodo">Add</button>
+                <button className="form-button" onClick={handleCreateAccount} id="btnAddTodo">Crete Account</button>
                 <p style={{color: "red"}}>{wrong}</p>
                 <p><Link to="/Login">Already have an account? Log in</Link></p>
         </div>

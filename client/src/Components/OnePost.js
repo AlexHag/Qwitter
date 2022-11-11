@@ -53,7 +53,7 @@ function OnePost(props) {
             return (
                 <div className="comment-container">
                     {comments.map(p => 
-                        <div className="comment-card">
+                        <div className={`comment-card premium-${p.isPremium}`}>
                             <h2>{p.author}</h2>
                             <p>{p.content}</p>
                         </div>
@@ -78,7 +78,7 @@ function OnePost(props) {
 
     return (
         <>
-            <div className="one-post">
+            <div className={`one-post premium-${post.isPremium}`}>
                 <PersonIcon />
                 <b className="author">{post.author}</b>
                 <p className="content">{post.content}</p>

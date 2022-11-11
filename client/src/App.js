@@ -15,6 +15,9 @@ import SearchBar from './Components/SearchBar';
 import SearchFeed from './Components/SearchFeed';
 import UserProfile from './Components/UserProfile';
 import SearchFeedAll from './Components/SearchFeedAll';
+import BuyPremium from './Components/BuyPremium';
+import PaymentSuccess from './Components/PaymentSuccess';
+import ErrorOccured from './Components/ErrorOccured';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(() => 
@@ -62,6 +65,9 @@ function App() {
           <Route path="Search/:username" element={<SearchFeed />}></Route>
           <Route path="Search" element={<SearchFeedAll />}></Route>
           <Route path="Profile/:username" element={<UserProfile />}></Route>
+          <Route path="BuyPremium" element={<BuyPremium userInfo={userInfo} setUserInfo={setUserInfo} />}></Route>
+          <Route path="PaymentSuccess" element={<PaymentSuccess />}></Route>
+          <Route path="ErrorOccured" element={<ErrorOccured />}></Route>
         </Routes>  
       </BrowserRouter>
     </div>

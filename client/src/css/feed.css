@@ -17,6 +17,12 @@
     /* box-shadow: 0 3px 20px rgb(0 0 0 / 0.2); */
 }
 
+.premium-true {
+    background: linear-gradient(-45deg, #ff3d00 0%, #0400ff 100% );
+    opacity: var(0.2);
+    color: white;
+}
+
 .post-card:hover {
     background-color: rgb(233, 233, 233);
 }

@@ -19,13 +19,12 @@ function UserProfile(props) {
     const renderProfile = () => {
         if(profileData.status === 404) return (<h1>Profile Not Found</h1>);
         if(profileData.posts === undefined ) return (<h1>Loading...</h1>);
-
         const renderPost = () => {
-            if(profileData.posts.length === 0) return (<h1>No posts...</h1>);
+            if(profileData.posts === null || profileData.posts.length === 0) return (<h1>No posts...</h1>);
             return (
                 <div className="post-container">
                     {profileData.posts.map(p => 
-                    <PostCard key={p.postId} postId={p.postId} author={p.author} content={p.content} likes={p.likes} dislikes={p.dislikes}/>
+                    <PostCard key={p.postId} postId={p.postId} author={p.author} content={p.content} likes={p.likes} dislikes={p.dislikes} premium={p.isPremium}/>
                     )}
                 </div>
             )

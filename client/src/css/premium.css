@@ -1,0 +1,12 @@
+/* style={{width: "50%", margin: "auto", backgroundColor: "gray"}} */
+
+.qr-div{
+    width:50%;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+}
+
+.address-p {
+    text-align: center;
+}

@@ -18,7 +18,7 @@ public class PostsController : ControllerBase
     [HttpGet]
     public IEnumerable<ClientSendPostModel> Get()
     {
-        var posts = from p in _context.Posts select new ClientSendPostModel{PostId = p.PostId, Author=p.Author, Content=p.Content, PublicUserId = p.PublicUserId, TimePosted = p.TimePosted, Likes = p.Likes, Dislikes = p.Dislikes};
+        var posts = from p in _context.Posts select new ClientSendPostModel{PostId = p.PostId, Author=p.Author, Content=p.Content, PublicUserId = p.PublicUserId, TimePosted = p.TimePosted, Likes = p.Likes, Dislikes = p.Dislikes, IsPremium = p.IsPremium};
         return posts.OrderByDescending(p => p.TimePosted);
     }
 
@@ -26,7 +26,7 @@ public class PostsController : ControllerBase
     [HttpGet]
     public ActionResult<ClientSendPostModel> GetOnePost(Guid id)
     {
-        var post = from p in _context.Posts where p.PostId == id select new ClientSendPostModel{PostId = p.PostId, Author=p.Author, Content=p.Content, PublicUserId = p.PublicUserId, TimePosted = p.TimePosted, Likes = p.Likes, Dislikes = p.Dislikes};
+        var post = from p in _context.Posts where p.PostId == id select new ClientSendPostModel{PostId = p.PostId, Author=p.Author, Content=p.Content, PublicUserId = p.PublicUserId, TimePosted = p.TimePosted, Likes = p.Likes, Dislikes = p.Dislikes, IsPremium = p.IsPremium};
         if(post.FirstOrDefault() is null) return NotFound();
         return post.FirstOrDefault();
     }
@@ -69,6 +69,7 @@ public class PostsController : ControllerBase
                         TimePosted = p.TimePosted,
                         Likes = p.Likes,
                         Dislikes = p.Dislikes,
+                        IsPremium = p.IsPremium,
                         Id = u.Id,
                         Username = u.Username,
                         Password = u.Password,
@@ -87,7 +88,7 @@ public class PostsController : ControllerBase
 
         var pubUserId = from u in _context.Users where u.Id == postInput.UserId select u.PublicId;
         //if (pubUserId.FirstOrDefault() is null) return StatusCode(500);
-
+        var isPremium = from u in _context.Users where u.Id == postInput.UserId select u.IsPremium;
         var newPost = new Posts{PostId = Guid.NewGuid(), 
                                 Author = username.FirstOrDefault(), 
                                 Content = postInput.Content, 
@@ -95,7 +96,8 @@ public class PostsController : ControllerBase
                                 PublicUserId = pubUserId.FirstOrDefault(),
                                 TimePosted = DateTimeOffset.Now.ToUnixTimeSeconds(),
                                 Likes = 0,
-                                Dislikes = 0};
+                                Dislikes = 0,
+                                IsPremium = isPremium.FirstOrDefault()};
         
         _context.Posts.Add(newPost);
         _context.SaveChanges();

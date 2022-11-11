@@ -29,7 +29,7 @@ function SearchFeedAll(props) {
             <div className="search-container">
                 <h1>Found {searchResult.length} users</h1>
                 {searchResult.map(p => 
-                    <div className="search-result" onClick={() => goToProfile(p.username)}>
+                    <div className={`search-result premium-${p.isPremium}`} onClick={() => goToProfile(p.username)}>
                         <AccountCircleIcon />
                         <h2 style={{marginLeft: "10px"}}>{p.username}</h2>
                     </div>
