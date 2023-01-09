@@ -10,7 +10,7 @@ function Login(props) {
     const [wrong, setWrong] = useState("");
   
     const handleLogin = async () => {
-        
+        setWrong("Loading...")
         const requestOptions = {
             method: 'POST',
             headers: { 'Accept': 'application/json',

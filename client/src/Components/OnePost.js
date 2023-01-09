@@ -52,7 +52,7 @@ function OnePost(props) {
         {
             return (
                 <div className="comment-container">
-                    {comments.map(p => 
+                    {comments.reverse().map(p => 
                         <div className={`comment-card premium-${p.isPremium}`}>
                             <h2>{p.author}</h2>
                             <p>{p.content}</p>
