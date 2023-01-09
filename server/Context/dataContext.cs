@@ -5,7 +5,7 @@ namespace server.Context;
 
 public class dataContext : DbContext
 {
-    private string connectionString = "Server=localhost, 1433;Database=hackday;User Id=SA;Password=hackday_password_xyz;TrustServerCertificate=true";
+    private string connectionString = "Server=host.docker.internal,1433;Database=hackday;User Id=SA;Password=hackday_password_xyz@secure123;TrustServerCertificate=true";
 
     public DbSet<User> Users { get; set; }
     public DbSet<Posts> Posts { get; set; }

@@ -6,5 +6,5 @@ services:
     ports:
       - '1433:1433'
     environment:
-      SA_PASSWORD: 'hackday_password_xyz'
+      SA_PASSWORD: 'hackday_password_xyz@secure123'
       ACCEPT_EULA: 'Y'
