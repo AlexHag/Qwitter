@@ -1,5 +1,6 @@
-server/bin
-server/obj
-frontend/node_modules
-client/node_modules
-unitTesting
+bin
+obj
+node_modules
+.vscode
+Migrations
+.config
