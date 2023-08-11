@@ -6,7 +6,7 @@ namespace Qwitter.Service.Database;
 public class DatabaseContext : DbContext
 {
     public DbSet<User> Users { get; set; }
-    // public DbSet<Post> Posts { get; set; }
+    public DbSet<Post> Posts { get; set; }
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
     { }
 
@@ -16,9 +16,9 @@ public class DatabaseContext : DbContext
             .HasIndex(p => p.Username)
             .IsUnique(true);
 
-        // modelBuilder.Entity<Post>()
-        //     .HasOne<User>()
-        //     .WithMany()
-        //     .OnDelete(DeleteBehavior.NoAction);
+        modelBuilder.Entity<Post>()
+            .HasOne<User>()
+            .WithMany()
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
