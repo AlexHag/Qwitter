@@ -5,7 +5,7 @@ namespace Qwitter.Service.Database.Repositories;
 
 public interface IUserRepository
 {
-    Task<User> CreateUser(string username, string password);
+    Task<User?> CreateUser(string username, string password);
     Task<User?> LoginUser(string username, string password);
     Task<User?> GetUserById(Guid id);
 }
@@ -19,7 +19,7 @@ public class UserRepository : IUserRepository
         _dbContext = dbContext;
     }
 
-    public async Task<User> CreateUser(string username, string password)
+    public async Task<User?> CreateUser(string username, string password)
     {
         var salt = Helper.RandomString(16);
         var passwordHash = Helper.HashString(password + salt);

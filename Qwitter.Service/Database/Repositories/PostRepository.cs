@@ -6,7 +6,7 @@ namespace Qwitter.Service.Database.Repositories;
 
 public interface IPostRepository
 {
-    Task<PostResponse> UploadPost(Guid userId, string content);
+    Task<PostResponse> CreatePost(Guid userId, string content);
     Task<PostResponse?> GetPostById(Guid postId);
     Task<List<PostResponse>> GetUsersPosts(Guid userId);
 }
@@ -20,7 +20,7 @@ public class PostRepository : IPostRepository
         _dbContext = dbContext;
     }
 
-    public async Task<PostResponse> UploadPost(Guid userId, string content)
+    public async Task<PostResponse> CreatePost(Guid userId, string content)
     {
         var user = await _dbContext.Users.FindAsync(userId) ?? throw new Exception($"Could not find user with id: {userId}");
         

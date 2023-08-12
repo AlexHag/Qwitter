@@ -16,13 +16,13 @@ public class PostController : ControllerBase
     }
 
     [HttpPost]
-    [Route("UploadPost")]
+    [Route("CreatePost")]
     [Authorize]
-    public async Task<IActionResult> UploadPost(UploadPostRequest request)
+    public async Task<IActionResult> CreatePost(UploadPostRequest request)
     {
         var identity = HttpContext.User.Identity as ClaimsIdentity;
         var userId = Guid.Parse(identity!.FindFirst("Id")!.Value);
-        var newPost = await _postRepository.UploadPost(userId, request.Content);
+        var newPost = await _postRepository.CreatePost(userId, request.Content);
         
         return Ok(newPost);
     }
