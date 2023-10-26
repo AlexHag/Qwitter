@@ -1,7 +1,9 @@
-namespace Qwitter.Users.Responses;
+namespace Qwitter.Models.DTO;
 
 public class UserDTO
 {
+    public Guid Id { get; set; }
     public required string Username { get; set; }
+    public string? Bio { get; set; }
     public bool IsPremium { get; set; }
 }

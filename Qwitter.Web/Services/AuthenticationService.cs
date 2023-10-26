@@ -5,7 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Qwitter.Users.Services;
+namespace Qwitter.Web.Services;
 
 public class AuthenticationService
 {

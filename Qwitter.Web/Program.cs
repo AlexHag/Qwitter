@@ -1,13 +1,23 @@
-using Qwitter.Users;
-using Qwitter.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Cryptography;
 using Microsoft.IdentityModel.Tokens;
+using Qwitter.Web.Api;
+using Qwitter.Web.Services;
+using System.Security.Cryptography.X509Certificates;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddUserService();
-builder.Services.AddDatabase();
+builder.Services.AddSingleton<IUserClient, UserClient>();
+
+builder.Services.AddSingleton<AuthenticationService>
+(
+    new AuthenticationService
+    (
+        X509Certificate2.CreateFromPemFile(builder.Configuration["Jwt:CertificatePath"]!),
+        builder.Configuration["Jwt:Issuer"]!,
+        builder.Configuration["Jwt:Audience"]!
+    )
+);
 
 builder.Services.AddAuthentication(options => 
 {
