@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Service", "Qwitter.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Models", "Qwitter.Models\Qwitter.Models.csproj", "{E58C1846-92FA-44E8-A1CE-7C5D6E0476F1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Data", "Qwitter.Data\Qwitter.Data.csproj", "{205E771B-38FD-4312-8C91-3A8336BA9BBC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Users", "Qwitter.Users\Qwitter.Users.csproj", "{9A4C5378-5C79-4592-9422-C04F8B0CAE8E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Web", "Qwitter.Web\Qwitter.Web.csproj", "{4C7AF096-69BC-440F-9EBA-CD206119997B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +30,17 @@ Global
 		{E58C1846-92FA-44E8-A1CE-7C5D6E0476F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E58C1846-92FA-44E8-A1CE-7C5D6E0476F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E58C1846-92FA-44E8-A1CE-7C5D6E0476F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{205E771B-38FD-4312-8C91-3A8336BA9BBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{205E771B-38FD-4312-8C91-3A8336BA9BBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{205E771B-38FD-4312-8C91-3A8336BA9BBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{205E771B-38FD-4312-8C91-3A8336BA9BBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A4C5378-5C79-4592-9422-C04F8B0CAE8E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A4C5378-5C79-4592-9422-C04F8B0CAE8E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A4C5378-5C79-4592-9422-C04F8B0CAE8E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A4C5378-5C79-4592-9422-C04F8B0CAE8E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C7AF096-69BC-440F-9EBA-CD206119997B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C7AF096-69BC-440F-9EBA-CD206119997B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C7AF096-69BC-440F-9EBA-CD206119997B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C7AF096-69BC-440F-9EBA-CD206119997B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
