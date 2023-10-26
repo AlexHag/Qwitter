@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Qwitter.Users.Models;
+using Qwitter.Users.Entities;
 
 namespace Qwitter.Users.Database;
 

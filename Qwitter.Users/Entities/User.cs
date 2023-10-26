@@ -1,4 +1,4 @@
-namespace Qwitter.Users.Models;
+namespace Qwitter.Users.Entities;
 
 public class User
 {

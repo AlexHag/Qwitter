@@ -3,7 +3,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Qwitter.Users.Database;
-using Qwitter.Users.Models;
+using Qwitter.Users.Entities;
 using Qwitter.Models.DTO;
 
 namespace Qwitter.Users.Controllers;
