@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Qwitter.Payment.Database;
-using Qwitter.Payment.Service;
+using Qwitter.Payments.Database;
+using Qwitter.Payments.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 

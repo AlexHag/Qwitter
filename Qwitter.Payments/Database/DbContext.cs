@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Qwitter.Payment.Entities;
+using Qwitter.Payments.Entities;
 
-namespace Qwitter.Payment.Database;
+namespace Qwitter.Payments.Database;
 
 public class AppDbContext : DbContext
 {

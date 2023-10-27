@@ -2,14 +2,14 @@ using NBitcoin;
 using Nethereum.HdWallet;
 using Nethereum.Web3;
 
-namespace Qwitter.Payment.Service;
+namespace Qwitter.Payments.Service;
 
 public interface INethereumService
 {
     string GeneratePrivateMnemonic();
     string GetAddressFromPrivateMnemonic(string privateMnemonic);
     Task<decimal> CheckBalance(string address);
-    Task SendTransaction(string privateMnemonic, string toAddress);
+    Task SendTransaction(string privateMnemonic, string toAddress, decimal amount);
 }
 
 public class NethereumService : INethereumService
@@ -39,12 +39,12 @@ public class NethereumService : INethereumService
         return Web3.Convert.FromWei(balance.Value);
     }
 
-    public async Task SendTransaction(string privateMnemonic, string toAddress)
+    public async Task SendTransaction(string privateMnemonic, string toAddress, decimal amount)
     {
         var account = new Wallet(privateMnemonic, "").GetAccount(0);
         var web3 = new Web3(account, _url);
 
         var transaction = await web3.Eth.GetEtherTransferService()
-            .TransferEtherAndWaitForReceiptAsync(toAddress, 0.01m);
+            .TransferEtherAndWaitForReceiptAsync(toAddress, amount);
     }
 }

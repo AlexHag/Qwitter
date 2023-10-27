@@ -1,4 +1,4 @@
-namespace Qwitter.Payment.Entities;
+namespace Qwitter.Payments.Entities;
 
 public class UserWallet
 {

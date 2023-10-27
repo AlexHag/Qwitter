@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Qwitter.Payment.Database;
-using Qwitter.Payment.Service;
+using Qwitter.Payments.Database;
+using Qwitter.Payments.Service;
 using Qwitter.Domain.DTO;
-using Qwitter.Payment.Entities;
+using Qwitter.Payments.Entities;
 
-namespace Qwitter.Payment.Controllers;
+namespace Qwitter.Payments.Controllers;
 
 [ApiController]
 [Route("wallet")]
