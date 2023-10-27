@@ -8,7 +8,7 @@ using Qwitter.Web.Services;
 namespace Qwitter.Web.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("comments")]
 public class CommentsController : ControllerBase
 {
     private readonly IContentClient _contentClient;

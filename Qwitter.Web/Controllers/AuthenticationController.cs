@@ -9,6 +9,7 @@ using Qwitter.Web.Services;
 namespace Qwitter.Web.Controllers;
 
 [ApiController]
+[Route("auth")]
 public class AuthenticationController : ControllerBase
 {
     private readonly IUserClient _userClient;

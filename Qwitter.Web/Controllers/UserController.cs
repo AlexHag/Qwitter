@@ -8,7 +8,7 @@ using Qwitter.Web.Services;
 namespace Qwitter.Web.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("user")]
 public class UserController : ControllerBase
 {
     private readonly IUserClient _userClient;
@@ -47,6 +47,27 @@ public class UserController : ControllerBase
             {
                 UserId = userId,
                 Bio = bio
+            });
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPatch]
+    [Route("username")]
+    [Authorize]
+    public async Task<IActionResult> UpdateUsername([FromBody] string newUsername)
+    {
+        try
+        {
+            var userId = AuthenticationService.GetUserIdFromContext(HttpContext);
+            await _userClient.UpdateUsername(new UpdateUsernameDTO
+            {
+                UserId = userId,
+                NewUsername = newUsername
             });
             return Ok();
         }

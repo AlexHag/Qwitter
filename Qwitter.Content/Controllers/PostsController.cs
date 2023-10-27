@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Qwitter.Content.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("posts")]
 public class PostsController : ControllerBase
 {
     private readonly ILogger<PostsController> _logger;

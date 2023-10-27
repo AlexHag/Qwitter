@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Qwitter.Content.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("comments")]
 public class CommentsController : ControllerBase
 {
     private readonly AppDbContext _dbContext;
