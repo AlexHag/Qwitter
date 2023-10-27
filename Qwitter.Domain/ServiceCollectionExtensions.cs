@@ -19,4 +19,11 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IContentClient, ContentClient>(p => new ContentClient(restClient));
         return services;
     }
+
+    public static IServiceCollection AddPaymentClient(this IServiceCollection services, string apiBaseAddress)
+    {
+        var restClient = new RestClient(apiBaseAddress);
+        services.AddSingleton<IPaymentClient, PaymentClient>(p => new PaymentClient(restClient));
+        return services;
+    }
 }

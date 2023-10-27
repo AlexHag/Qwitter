@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddUserClient(builder.Configuration["Services:UsersBaseAddress"]!);
 builder.Services.AddContentClient(builder.Configuration["Services:ContentBaseAddress"]!);
+builder.Services.AddPaymentClient(builder.Configuration["Services:PaymentsBaseAddress"]!);
 
 builder.Services.AddSingleton<AuthenticationService>
 (
@@ -48,7 +49,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(option =>
 {
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Qwitter API", Version = "v1" });
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
