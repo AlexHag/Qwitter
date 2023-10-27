@@ -10,6 +10,7 @@ public interface IUserClient
     Task<UserDTO> Register(UsernamePasswordDTO request);
     Task<UserDTO> UpdateBio(UpdateBioDTO request);
     Task<UserDTO> GetUser(Guid userId);
+    Task UpdateUsername(UpdateUsernameDTO request);
 }
 
 public class UserClient : IUserClient
@@ -62,5 +63,16 @@ public class UserClient : IUserClient
         if (response.IsSuccessful) return response.Data!;
         
         throw new Exception(response.Content);
+    }
+
+    public async Task UpdateUsername(UpdateUsernameDTO request)
+    {
+        var restRequest = new RestRequest("user/username", Method.Patch)
+            .AddBody(request);
+        
+        var response = await _client.ExecuteAsync(restRequest);
+
+        if (response.IsSuccessful)
+            throw new Exception(response.Content);
     }
 }

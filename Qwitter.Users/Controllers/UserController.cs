@@ -1,3 +1,4 @@
+using MassTransit;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
@@ -15,13 +16,16 @@ public class UserController : ControllerBase
     private static Random random = new Random();
     private readonly ILogger<UserController> _logger;
     private readonly AppDbContext _dbContext;
+    private readonly ITopicProducer<UpdateUsernameDTO> _updateUsernameEventProducer;
 
     public UserController(
         ILogger<UserController> logger,
-        AppDbContext dbContext)
+        AppDbContext dbContext,
+        ITopicProducer<UpdateUsernameDTO> updateUsernameEventProducer)
     {
         _logger = logger;
         _dbContext = dbContext;
+        _updateUsernameEventProducer = updateUsernameEventProducer;
     }
 
     [HttpPost]
@@ -109,6 +113,31 @@ public class UserController : ControllerBase
         return Ok(userDTO);
     }
 
+    [HttpPatch]
+    [Route("username")]
+    public async Task<IActionResult> UpdateUsername(UpdateUsernameDTO request)
+    {
+        var user = await _dbContext.Users.FindAsync(request.UserId);
+        if (user is null)
+        {
+            return NotFound("Username not found");
+        }
+
+        var existingUser = await _dbContext.Users.Where(p => p.Username == request.NewUsername).FirstOrDefaultAsync();
+        if (existingUser is not null)
+        {
+            return BadRequest("Username already exist");
+        }
+
+        user.Username = request.NewUsername;
+        user.UpdatedAt = DateTime.UtcNow;
+
+        await _dbContext.SaveChangesAsync();
+        await _updateUsernameEventProducer.Produce(request, HttpContext.RequestAborted);
+
+        return Ok();
+    }
+
     [HttpGet("{userId}")]
     public async Task<IActionResult> Get(Guid userId)
     {
@@ -127,7 +156,6 @@ public class UserController : ControllerBase
         };
         return Ok(userDTO);
     }
-
 
     private string HashString(string input)
     {
