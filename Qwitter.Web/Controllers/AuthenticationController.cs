@@ -1,8 +1,8 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Qwitter.Models.DTO;
-using Qwitter.Web.Api;
+using Qwitter.Domain.DTO;
+using Qwitter.Domain.Api;
 using Qwitter.Web.Services;
 
 
@@ -52,30 +52,5 @@ public class AuthenticationController : ControllerBase
         {
             return BadRequest(e.Message);
         }
-    }
-
-    [HttpGet]
-    [Route("me")]
-    [Authorize]
-    public async Task<IActionResult> Me()
-    {
-        try
-        {
-            var userId = GetUserIdFromContext(HttpContext);
-            var user = await _userClient.GetUser(userId);
-            return Ok(user);
-        }
-        catch (Exception e)
-        {
-            return BadRequest(e.Message);
-        }
-    }
-
-    private Guid GetUserIdFromContext(HttpContext context)
-    {
-        var identity = context.User.Identity as ClaimsIdentity;
-        IEnumerable<Claim> claims = identity!.Claims; 
-        var claimId = identity.FindFirst("Id")?.Value;
-        return Guid.Parse(claimId!);
     }
 }

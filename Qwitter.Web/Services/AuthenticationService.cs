@@ -67,4 +67,12 @@ public class AuthenticationService
         return new string(Enumerable.Repeat(chars, length)
             .Select(s => s[random.Next(s.Length)]).ToArray());
     }
+
+    public static Guid GetUserIdFromContext(HttpContext context)
+    {
+        var identity = context.User.Identity as ClaimsIdentity;
+        IEnumerable<Claim> claims = identity!.Claims; 
+        var claimId = identity.FindFirst("Id")?.Value;
+        return Guid.Parse(claimId!);
+    }
 }

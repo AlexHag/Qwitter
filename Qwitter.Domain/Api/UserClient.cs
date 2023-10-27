@@ -1,8 +1,8 @@
-using Qwitter.Models.DTO;
+using Qwitter.Domain.DTO;
 
 using RestSharp;
 
-namespace Qwitter.Web.Api;
+namespace Qwitter.Domain.Api;
 
 public interface IUserClient
 {
@@ -16,9 +16,9 @@ public class UserClient : IUserClient
 {
     private readonly RestClient _client;
 
-    public UserClient(IConfiguration configuration)
+    public UserClient(RestClient client)
     {
-        _client = new RestClient(configuration["Services:UsersBaseAddress"]!);
+        _client = client;
     }
 
     public async Task<UserDTO> GetUser(Guid userId)

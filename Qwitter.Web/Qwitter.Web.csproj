@@ -14,11 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Qwitter.Models\Qwitter.Models.csproj" />
+    <ProjectReference Include="..\Qwitter.Domain\Qwitter.Domain.csproj" />
   </ItemGroup>
-<!-- 
-  <ItemGroup>
-    <ProjectReference Include="..\Qwitter.Data\Qwitter.Data.csproj" />
-  </ItemGroup> -->
 
 </Project>

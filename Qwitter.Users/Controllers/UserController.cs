@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Qwitter.Users.Database;
 using Qwitter.Users.Entities;
-using Qwitter.Models.DTO;
+using Qwitter.Domain.DTO;
 
 namespace Qwitter.Users.Controllers;
 
