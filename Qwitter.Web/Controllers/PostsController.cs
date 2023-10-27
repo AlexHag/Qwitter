@@ -68,4 +68,32 @@ public class PostsController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+
+    [HttpPost("{postId}/like")]
+    public async Task<IActionResult> LikePost(Guid postId)
+    {
+        try
+        {
+            await _contentClient.LikePost(postId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
+
+    [HttpPost("{postId}/dislike")]
+    public async Task<IActionResult> DislikePost(Guid postId)
+    {
+        try
+        {
+            await _contentClient.DislikePost(postId);
+            return Ok();
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 }

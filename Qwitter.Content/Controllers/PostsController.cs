@@ -86,8 +86,8 @@ public class PostsController : ControllerBase
             UserId = post.Id,
             Username = post.Username,
             Content = post.Content,
-            Likes = 0,
-            Dislikes = 0,
+            Likes = post.Likes,
+            Dislikes = post.Dislikes,
             Comments = post.Comments.Select(comment => new CommentDTO
             {
                 Id = comment.Id,
@@ -123,13 +123,41 @@ public class PostsController : ControllerBase
             UserId = p.Id,
             Username = p.Username,
             Content = p.Content,
-            Likes = 0,
-            Dislikes = 0,
+            Likes = p.Likes,
+            Dislikes = p.Dislikes,
             Comments = null,
             IsPremium = p.IsPremium,
             Edited = false,
             CreatedAt = p.CreatedAt
         });
         return Ok(postsDTO);
+    }
+
+    [HttpPost("{postId}/like")]
+    public async Task<IActionResult> LikePost(Guid postId)
+    {
+        var post = await _dbContext.Posts.FindAsync(postId);
+        if (post is null)
+        {
+            return NotFound("Post not found");
+        }
+
+        post.Likes += 1;
+        await _dbContext.SaveChangesAsync();
+        return Ok();
+    }
+
+    [HttpPost("{postId}/dislike")]
+    public async Task<IActionResult> DislikePost(Guid postId)
+        {
+        var post = await _dbContext.Posts.FindAsync(postId);
+        if (post is null)
+        {
+            return NotFound("Post not found");
+        }
+
+        post.Dislikes += 1;
+        await _dbContext.SaveChangesAsync();
+        return Ok();
     }
 }

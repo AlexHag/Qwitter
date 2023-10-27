@@ -9,6 +9,8 @@ public interface IContentClient
     Task<PostDTO> GetPostById(Guid postId);
     Task<List<PostDTO>> GetUserPosts(string username);
     Task<CommentDTO> CreateComment(CreateCommentDTO request);
+    Task LikePost(Guid postId);
+    Task DislikePost(Guid postId);
 }
 
 public class ContentClient : IContentClient
@@ -59,5 +61,25 @@ public class ContentClient : IContentClient
         if (response.IsSuccessful) return response.Data!;
         
         throw new Exception(response.Content);
+    }
+
+    public async Task LikePost(Guid postId)
+    {
+        var restRequest = new RestRequest($"posts/{postId}/like", Method.Post);
+        
+        var response = await _client.ExecuteAsync(restRequest);
+        
+        if (!response.IsSuccessful)
+            throw new Exception(response.Content);
+    }
+
+    public async Task DislikePost(Guid postId)
+    {
+        var restRequest = new RestRequest($"posts/{postId}/dislike", Method.Post);
+        
+        var response = await _client.ExecuteAsync(restRequest);
+        
+        if (!response.IsSuccessful)
+            throw new Exception(response.Content);
     }
 }
