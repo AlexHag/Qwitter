@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Service", "Qwitter.Service\Qwitter.Service.csproj", "{AB2253F4-267C-4516-9903-BA284F410039}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Models", "Qwitter.Models\Qwitter.Models.csproj", "{E58C1846-92FA-44E8-A1CE-7C5D6E0476F1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Data", "Qwitter.Data\Qwitter.Data.csproj", "{205E771B-38FD-4312-8C91-3A8336BA9BBC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Web", "Qwitter.Web\Qwitter.Web.csproj", "{4C7AF096-69BC-440F-9EBA-CD206119997B}"
@@ -26,14 +22,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{AB2253F4-267C-4516-9903-BA284F410039}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB2253F4-267C-4516-9903-BA284F410039}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB2253F4-267C-4516-9903-BA284F410039}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB2253F4-267C-4516-9903-BA284F410039}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E58C1846-92FA-44E8-A1CE-7C5D6E0476F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E58C1846-92FA-44E8-A1CE-7C5D6E0476F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E58C1846-92FA-44E8-A1CE-7C5D6E0476F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E58C1846-92FA-44E8-A1CE-7C5D6E0476F1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{205E771B-38FD-4312-8C91-3A8336BA9BBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{205E771B-38FD-4312-8C91-3A8336BA9BBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{205E771B-38FD-4312-8C91-3A8336BA9BBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
