@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Qwitter.Domain.Api;
 using Qwitter.Domain.DTO;
@@ -21,6 +22,7 @@ public class WalletController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> GetWallet()
     {
         try

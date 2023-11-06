@@ -6,6 +6,7 @@ namespace Qwitter.Domain.Api;
 public interface IPaymentClient
 {
     Task<UserWalletDTO> GetUserWallet(Guid userId);
+    Task BuyPremium(Guid userId);
 }
 
 public class PaymentClient : IPaymentClient
@@ -25,5 +26,14 @@ public class PaymentClient : IPaymentClient
         if (response.IsSuccessful) return response.Data!;
         
         throw new Exception(response.Content);
+    }
+
+    public async Task BuyPremium(Guid userId)
+    {
+        var restRequest = new RestRequest($"payment/premium/{userId}", Method.Post);
+
+        var response = await _client.ExecuteAsync(restRequest);
+        if (!response.IsSuccessful)
+            throw new Exception(response.Content);
     }
 }

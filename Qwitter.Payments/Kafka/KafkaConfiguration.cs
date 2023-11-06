@@ -2,16 +2,13 @@ using Microsoft.Extensions.DependencyInjection;
 using MassTransit;
 using Microsoft.Extensions.Options;
 using Confluent.Kafka;
-using Qwitter.Domain.DTO;
 using Qwitter.Domain.Events;
-using Qwitter.Users.Consumers;
-using System.Reflection;
 
-namespace Qwitter.Users.Kafka;
+namespace Qwitter.Payments.Kafka;
 
 public static class KafkaConfiguration
 {
-    public static IServiceCollection AddKafka(this IServiceCollection services, params Assembly[] assemblies)
+    public static IServiceCollection AddKafka(this IServiceCollection services)
     {
         services.ConfigureOptions<KafkaOptionsSetup>();
 
@@ -26,28 +23,17 @@ public static class KafkaConfiguration
             {
                 var options = services.BuildServiceProvider().GetRequiredService<IOptions<KafkaOptions>>().Value;
                 
-                rider.AddConsumers(assemblies);
-
-                rider.AddProducer<UpdateUsernameDTO>(options.UsernameChangedTopicName);
-                
+                rider.AddProducer<PremiumPurchasedEvent>(options.PremiumPurchasedTopicName);
                 rider.UsingKafka((context, configurator) =>
                 {
                     configurator.ConfigureHost(options);
                     configurator.ClientId = "Qwitter";
-                    configurator.AddTopicEndpoints(options, context);
                 });
             });
         });
 
         return services;
     }
-
-    private static void AddTopicEndpoints(this IKafkaFactoryConfigurator configurator, KafkaOptions options, IRiderRegistrationContext context)
-    {
-        configurator.TopicEndpoint<PremiumPurchasedEvent>(options.PremiumPurchasedTopicName, options.UsersConsumerGroupId,
-            endpointConfigurator => endpointConfigurator.ConfigureEndpointSettings<PremiumPurchasedConsumer>(context));
-    }
-
 
     private static void ConfigureEndpointSettings<TConsumer>(
         this IKafkaTopicReceiveEndpointConfigurator configurator, IRiderRegistrationContext context)

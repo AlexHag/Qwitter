@@ -1,14 +1,12 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace Qwitter.Users.Kafka;
+namespace Qwitter.Payments.Kafka;
 
 public class KafkaOptions
 {
-    public string UsernameChangedTopicName { get; set; } = string.Empty;
     public string PremiumPurchasedTopicName { get; set; } = string.Empty;
-
-    public string UsersConsumerGroupId { get; set; } = string.Empty;
+    public string PaymentsConsumerGroupId { get; set; } = string.Empty;
 
     public string BootstrapServers { get; set; } = string.Empty;
     public string Username { get; set; } = string.Empty;
