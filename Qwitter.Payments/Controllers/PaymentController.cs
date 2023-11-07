@@ -82,4 +82,28 @@ public class PaymentController : ControllerBase
 
         return Accepted();
     } 
+
+    [HttpGet]
+    [Route("transactions/{userId}")]
+    public async Task<IActionResult> GetTransactions(Guid userId)
+    {
+        var wallet = await _dbContext.UserWallets.Where(p => p.UserId == userId).FirstOrDefaultAsync();
+        if (wallet is null)
+        {
+            return NotFound("No wallet found for user");
+        }
+
+        var transactions = await _dbContext.QwitterTransactions.Where(p => p.FromAddress == wallet.Address).ToListAsync();
+        var transactionsDTO = transactions.Select(p => new TransactionHistoryDTO
+        {
+            FromAddress = p.FromAddress,
+            ToAddress = p.ToAddress,
+            Amount = p.Amount,
+            Status = p.Status.ToString(),
+            CreatedAt = p.CreatedAt,
+            CompletedAt = p.CompletedAt
+        });
+
+        return Ok(transactionsDTO);
+    }   
 }

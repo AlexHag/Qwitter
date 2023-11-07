@@ -7,6 +7,7 @@ public interface IPaymentClient
 {
     Task<UserWalletDTO> GetUserWallet(Guid userId);
     Task BuyPremium(Guid userId);
+    Task<List<TransactionHistoryDTO>> GetTransactionHistory(Guid userId);
 }
 
 public class PaymentClient : IPaymentClient
@@ -35,5 +36,15 @@ public class PaymentClient : IPaymentClient
         var response = await _client.ExecuteAsync(restRequest);
         if (!response.IsSuccessful)
             throw new Exception(response.Content);
+    }
+
+    public async Task<List<TransactionHistoryDTO>> GetTransactionHistory(Guid userId)
+    {
+        var restRequest = new RestRequest($"payment/transactions/{userId}", Method.Get);
+        
+        var response = await _client.ExecuteAsync<List<TransactionHistoryDTO>>(restRequest);
+        if (response.IsSuccessful) return response.Data!;
+        
+        throw new Exception(response.Content);
     }
 }

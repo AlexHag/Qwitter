@@ -30,4 +30,20 @@ public class PaymentController : ControllerBase
             return BadRequest(e.Message);
         }
     }
+
+    [HttpGet]
+    [Route("transactions")]
+    public async Task<IActionResult> GetTransactionHistory()
+    {
+        try
+        {
+            var userId = AuthenticationService.GetUserIdFromContext(HttpContext);
+            var transactions = await _paymentClient.GetTransactionHistory(userId);
+            return Ok(transactions);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e.Message);
+        }
+    }
 }
