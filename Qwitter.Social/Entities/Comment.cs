@@ -1,4 +1,4 @@
-namespace Qwitter.Content.Entities;
+namespace Qwitter.Social.Entities;
 
 public class Comment
 {

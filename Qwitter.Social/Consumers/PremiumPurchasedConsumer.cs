@@ -1,9 +1,9 @@
 using MassTransit;
 using Qwitter.Domain.Events;
-using Qwitter.Content.Database;
+using Qwitter.Social.Database;
 using Microsoft.EntityFrameworkCore;
 
-namespace Qwitter.Content.Consumers;
+namespace Qwitter.Social.Consumers;
 
 public class PremiumPurchasedConsumer : IConsumer<PremiumPurchasedSuccessfullyEvent>
 {

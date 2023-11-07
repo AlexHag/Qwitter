@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using Qwitter.Content.Database;
-using Qwitter.Content.Kafka;
+using Qwitter.Social.Database;
+using Qwitter.Social.Kafka;
 using Qwitter.Domain;
 
 var builder = WebApplication.CreateBuilder(args);

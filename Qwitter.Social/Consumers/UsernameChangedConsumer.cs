@@ -1,9 +1,9 @@
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using Qwitter.Content.Database;
+using Qwitter.Social.Database;
 using Qwitter.Domain.DTO;
 
-namespace Qwitter.Content.Consumers;
+namespace Qwitter.Social.Consumers;
 
 public class UsernameChangedConsumer : IConsumer<UpdateUsernameDTO>
 {

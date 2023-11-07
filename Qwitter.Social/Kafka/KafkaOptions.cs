@@ -1,13 +1,13 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 
-namespace Qwitter.Content.Kafka;
+namespace Qwitter.Social.Kafka;
 
 public class KafkaOptions
 {
     public string UsernameChangedTopicName { get; set; } = string.Empty;
     public string PremiumPurchasedSuccessfullyTopicName { get; set; } = string.Empty;
-    public string ContentConsumerGroupId { get; set; } = string.Empty;
+    public string SocialConsumerGroupId { get; set; } = string.Empty;
 
     public string BootstrapServers { get; set; } = string.Empty;
     public string Username { get; set; } = string.Empty;

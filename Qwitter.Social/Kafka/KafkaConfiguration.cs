@@ -2,12 +2,12 @@ using Microsoft.Extensions.DependencyInjection;
 using MassTransit;
 using Microsoft.Extensions.Options;
 using Confluent.Kafka;
-using Qwitter.Content.Consumers;
+using Qwitter.Social.Consumers;
 using Qwitter.Domain.DTO;
 using Qwitter.Domain.Events;
 using System.Reflection;
 
-namespace Qwitter.Content.Kafka;
+namespace Qwitter.Social.Kafka;
 
 public static class KafkaConfiguration
 {
@@ -44,10 +44,10 @@ public static class KafkaConfiguration
 
     private static void AddTopicEndpoints(this IKafkaFactoryConfigurator configurator, KafkaOptions options, IRiderRegistrationContext context)
     {
-        configurator.TopicEndpoint<UpdateUsernameDTO>(options.UsernameChangedTopicName, options.ContentConsumerGroupId,
+        configurator.TopicEndpoint<UpdateUsernameDTO>(options.UsernameChangedTopicName, options.SocialConsumerGroupId,
             endpointConfigurator => endpointConfigurator.ConfigureEndpointSettings<UsernameChangedConsumer>(context));
         
-        configurator.TopicEndpoint<PremiumPurchasedSuccessfullyEvent>(options.PremiumPurchasedSuccessfullyTopicName, options.ContentConsumerGroupId,
+        configurator.TopicEndpoint<PremiumPurchasedSuccessfullyEvent>(options.PremiumPurchasedSuccessfullyTopicName, options.SocialConsumerGroupId,
             endpointConfigurator => endpointConfigurator.ConfigureEndpointSettings<PremiumPurchasedConsumer>(context));
     }
 

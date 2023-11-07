@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using Qwitter.Content.Database;
-using Qwitter.Content.Entities;
+using Qwitter.Social.Database;
+using Qwitter.Social.Entities;
 using Qwitter.Domain.DTO;
 using Qwitter.Domain.Api;
 using Microsoft.EntityFrameworkCore;
 
-namespace Qwitter.Content.Controllers;
+namespace Qwitter.Social.Controllers;
 
 [ApiController]
 [Route("comments")]

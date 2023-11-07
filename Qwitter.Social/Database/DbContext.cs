@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Qwitter.Content.Entities;
+using Qwitter.Social.Entities;
 
-namespace Qwitter.Content.Database;
+namespace Qwitter.Social.Database;
 
 public class AppDbContext : DbContext
 {
