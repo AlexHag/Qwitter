@@ -5,7 +5,8 @@ namespace Qwitter.Payments.Kafka;
 
 public class KafkaOptions
 {
-    public string PremiumPurchasedTopicName { get; set; } = string.Empty;
+    public string PremiumPurchaseRequestedTopicName { get; set; } = string.Empty;
+    public string PremiumPurchasedSuccessfullyTopicName { get; set; } = string.Empty;
     public string PaymentsConsumerGroupId { get; set; } = string.Empty;
 
     public string BootstrapServers { get; set; } = string.Empty;

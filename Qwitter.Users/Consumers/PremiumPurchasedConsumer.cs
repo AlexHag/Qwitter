@@ -4,7 +4,7 @@ using Qwitter.Users.Database;
 
 namespace Qwitter.Users.Consumers;
 
-public class PremiumPurchasedConsumer : IConsumer<PremiumPurchasedEvent>
+public class PremiumPurchasedConsumer : IConsumer<PremiumPurchasedSuccessfullyEvent>
 {
     private readonly ILogger<PremiumPurchasedConsumer> _logger;
     private readonly AppDbContext _dbContext;
@@ -16,13 +16,13 @@ public class PremiumPurchasedConsumer : IConsumer<PremiumPurchasedEvent>
         _logger = logger;
     }
 
-    public async Task Consume(ConsumeContext<PremiumPurchasedEvent> context)
+    public async Task Consume(ConsumeContext<PremiumPurchasedSuccessfullyEvent> context)
     {
         _logger.LogInformation($"Consuming Premium Purchase Event for UserId {context.Message.userId}");
         var user = await _dbContext.Users.FindAsync(context.Message.userId);
         if (user is null)
         {
-            _logger.LogCritical($"UserId not found {context.Message.userId} when consuming PremiumPurchasedEvent");
+            _logger.LogCritical($"UserId not found {context.Message.userId} when consuming PremiumPurchasedSuccessfullyEvent");
             return;
         }
         if (user.IsPremium)

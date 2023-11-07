@@ -44,7 +44,7 @@ public static class KafkaConfiguration
 
     private static void AddTopicEndpoints(this IKafkaFactoryConfigurator configurator, KafkaOptions options, IRiderRegistrationContext context)
     {
-        configurator.TopicEndpoint<PremiumPurchasedEvent>(options.PremiumPurchasedTopicName, options.UsersConsumerGroupId,
+        configurator.TopicEndpoint<PremiumPurchasedSuccessfullyEvent>(options.PremiumPurchasedSuccessfullyTopicName, options.UsersConsumerGroupId,
             endpointConfigurator => endpointConfigurator.ConfigureEndpointSettings<PremiumPurchasedConsumer>(context));
     }
 

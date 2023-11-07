@@ -6,6 +6,7 @@ namespace Qwitter.Content.Kafka;
 public class KafkaOptions
 {
     public string UsernameChangedTopicName { get; set; } = string.Empty;
+    public string PremiumPurchasedSuccessfullyTopicName { get; set; } = string.Empty;
     public string ContentConsumerGroupId { get; set; } = string.Empty;
 
     public string BootstrapServers { get; set; } = string.Empty;

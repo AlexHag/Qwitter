@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Confluent.Kafka;
 using Qwitter.Content.Consumers;
 using Qwitter.Domain.DTO;
+using Qwitter.Domain.Events;
 using System.Reflection;
 
 namespace Qwitter.Content.Kafka;
@@ -45,6 +46,9 @@ public static class KafkaConfiguration
     {
         configurator.TopicEndpoint<UpdateUsernameDTO>(options.UsernameChangedTopicName, options.ContentConsumerGroupId,
             endpointConfigurator => endpointConfigurator.ConfigureEndpointSettings<UsernameChangedConsumer>(context));
+        
+        configurator.TopicEndpoint<PremiumPurchasedSuccessfullyEvent>(options.PremiumPurchasedSuccessfullyTopicName, options.ContentConsumerGroupId,
+            endpointConfigurator => endpointConfigurator.ConfigureEndpointSettings<PremiumPurchasedConsumer>(context));
     }
 
     private static void ConfigureEndpointSettings<TConsumer>(

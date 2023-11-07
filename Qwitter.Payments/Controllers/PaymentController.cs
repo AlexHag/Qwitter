@@ -5,6 +5,7 @@ using Qwitter.Payments.Database;
 using Qwitter.Payments.Service;
 using Qwitter.Domain.Events;
 using Qwitter.Domain.Api;
+using Qwitter.Domain.DTO;
 
 namespace Qwitter.Payments.Controllers;
 
@@ -17,7 +18,7 @@ public class PaymentController : ControllerBase
     private readonly AppDbContext _dbContext;
     private readonly IUserClient _userClient;
     private readonly INethereumService _nethereumService;
-    private readonly ITopicProducer<PremiumPurchasedEvent> _premiumPurchasedEventProducer;
+    private readonly ITopicProducer<PremiumPurchaseRequestedEvent> _premiumPurchaseRequestEventProducer;
 
     public PaymentController(
         ILogger<PaymentController> logger,
@@ -25,14 +26,14 @@ public class PaymentController : ControllerBase
         AppDbContext dbContext,
         IUserClient userClient,
         INethereumService nethereumService,
-        ITopicProducer<PremiumPurchasedEvent> premiumPurchasedEventProducer)
+        ITopicProducer<PremiumPurchaseRequestedEvent> premiumPurchaseRequestEventProducer)
     {
         _logger = logger;
         _configuration = configuration;
         _dbContext = dbContext;
         _userClient = userClient;
         _nethereumService = nethereumService;
-        _premiumPurchasedEventProducer = premiumPurchasedEventProducer;
+        _premiumPurchaseRequestEventProducer = premiumPurchaseRequestEventProducer;
     }
 
     [HttpPost]
@@ -60,7 +61,6 @@ public class PaymentController : ControllerBase
         }
 
         var premiumPrice = Decimal.Parse(_configuration["Premium:QwitterPremiumPrice"]!);
-        var qwitterPremiumWalletAddress = _configuration["Premium:QwitterPremiumWalletAddress"]!;
 
         var balance = await _nethereumService.CheckBalance(wallet.Address);
         if (balance < premiumPrice)
@@ -74,22 +74,12 @@ public class PaymentController : ControllerBase
             await _dbContext.SaveChangesAsync();
         }
 
-        try
-        {
-            var transaction = await _nethereumService.SendTransaction(wallet.PrivateMnemonic, qwitterPremiumWalletAddress, premiumPrice);
-            // wallet.Transactions.Add(transaction);
-            await _dbContext.SaveChangesAsync();
-            await _premiumPurchasedEventProducer.Produce(new PremiumPurchasedEvent
-            (
-                userId
-            ));
-        }
-        catch (Exception e)
-        {
-            // TODO: Handle transient exception
-            return StatusCode(500, "Transaction failed");
-        }
+        await _premiumPurchaseRequestEventProducer.Produce(new PremiumPurchaseRequestedEvent
+        (
+            wallet.Id,
+            DateTime.UtcNow
+        ), HttpContext.RequestAborted);
 
-        return Ok();
-    }
+        return Accepted();
+    } 
 }

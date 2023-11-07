@@ -6,7 +6,8 @@ namespace Qwitter.Payments.Database;
 public class AppDbContext : DbContext
 {
     public DbSet<UserWallet> UserWallets { get; set; }
-    
+    public DbSet<QwitterTransaction> QwitterTransactions { get; set; }
+
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
     { }
 
