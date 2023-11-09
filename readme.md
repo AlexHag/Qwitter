@@ -43,3 +43,17 @@ Qwitter requires users to create an account and login to be apart of the communi
 ![Buying premium](/img/buy_premium.PNG?raw=true "Buying premium")
 - ### The search feature for profiles:
 ![Search for profiles](/img/users.PNG?raw=true "Search for profiles")
+
+
+Post:   /login
+Post:   /register
+
+Get:    /user/me
+Patch:  /user/bio
+Patch:  /user/username
+
+Post:   /posts
+Get:    /posts/{username}
+Get:    /posts/id/{postId}
+Post:   /posts/id/{postId}/like
+Post:   /posts/id/{postId}/dislike
