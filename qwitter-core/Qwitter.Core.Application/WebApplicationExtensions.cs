@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -30,7 +29,11 @@ public static class WebApplicationExtensions
         }
 
         app.UseHttpsRedirection();
+        app.UseAuthentication();
+
+        app.UseRouting();
         app.UseAuthorization();
+
         app.MapControllers();
 
         return app;
@@ -39,12 +42,11 @@ public static class WebApplicationExtensions
     public static WebApplicationBuilder AddJwtAuthentication(this WebApplicationBuilder builder)
     {
         var certificate = new X509Certificate2(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "cert.pfx"));
-        var privateKey = certificate.GetRSAPrivateKey();
 
         var authConfigOptions = new AuthConfigOptions
         {
-            Issuer = builder.Configuration["Jwt:Issuer"]!,
-            Audience = builder.Configuration["Jwt:Audience"]!,
+            Issuer = builder.Configuration["Issuer"]!,
+            Audience = builder.Configuration["Audience"]!,
             Certificate = certificate
         };
 
@@ -58,9 +60,9 @@ public static class WebApplicationExtensions
         {
             options.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidIssuer = builder.Configuration["Jwt:Issuer"]!,
-                ValidAudience = builder.Configuration["Jwt:Audience"]!,
-                IssuerSigningKey = new RsaSecurityKey(privateKey),
+                ValidIssuer = builder.Configuration["Issuer"]!,
+                ValidAudience = builder.Configuration["Audience"]!,
+                IssuerSigningKey = new X509SecurityKey(certificate),
                 ValidateIssuer = true,
                 ValidateAudience = true,
                 ValidateLifetime = true,

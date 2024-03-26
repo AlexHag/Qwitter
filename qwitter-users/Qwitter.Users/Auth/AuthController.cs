@@ -31,7 +31,7 @@ public class AuthController : ControllerBase, IAuthController
             return BadRequest("User not found");
         }
 
-        if (!user.VerifyPassword(request.Password))
+        if (!AuthExtensions.VerifyPassword(request.Password, user.Password))
         {
             return BadRequest("Invalid password");
         }
