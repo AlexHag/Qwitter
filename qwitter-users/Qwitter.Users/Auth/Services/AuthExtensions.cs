@@ -16,7 +16,6 @@ public static class AuthExtensions
             Email = request.Email,
             Username = request.Username,
             Password = hashedPassword,
-            Salt = salt
         };
     }
 

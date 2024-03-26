@@ -21,7 +21,6 @@ public class UserRepository : IUserRepository
             Email = userInsert.Email,
             Username = userInsert.Username,
             Password = userInsert.Password,
-            Salt = userInsert.Salt,
             CreatedAt = DateTime.Now,
             UserState = UserState.Created
         };
