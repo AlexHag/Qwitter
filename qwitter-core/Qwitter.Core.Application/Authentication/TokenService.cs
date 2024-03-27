@@ -1,13 +1,15 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography.X509Certificates;
 using Microsoft.IdentityModel.Tokens;
-using Qwitter.Core.Application;
-using Qwitter.Users.User.Models;
 
-namespace Qwitter.Users.Auth.Services;
+namespace Qwitter.Core.Application.Authentication;
 
-public class TokenService
+public interface ITokenService
+{
+    public string GenerateToken(Guid userId, params Claim[] additionalClaims);
+}
+
+public class TokenService : ITokenService
 {
     private AuthConfigOptions _auth;
     private readonly SigningCredentials _credentials;
@@ -19,14 +21,14 @@ public class TokenService
         _credentials = new SigningCredentials(new X509SecurityKey(auth.Certificate), SecurityAlgorithms.RsaSha256);
     }
 
-    public string GenerateToken(UserEntity user)
+    public string GenerateToken(Guid userId, params Claim[] additionalClaims)
     {
-        var claims = new Claim[]
+        var claims = new List<Claim>
         {
-            new("id", user.UserId.ToString()),
-            new(ClaimTypes.Name, user.Username),
-            new(ClaimTypes.Email, user.Email),
+            new("id", userId.ToString())
         };
+
+        claims.AddRange(additionalClaims);
 
         var tokenHandler = new JwtSecurityTokenHandler();
         var tokenDescriptor = new SecurityTokenDescriptor

@@ -6,6 +6,7 @@ using Qwitter.Users.Auth.Services;
 using Qwitter.Core.Application.Kafka;
 using MapsterMapper;
 using Qwitter.Users.Contract.User.Events;
+using Qwitter.Core.Application.Authentication;
 
 namespace Qwitter.Users.Auth;
 
@@ -14,13 +15,13 @@ namespace Qwitter.Users.Auth;
 public class AuthController : ControllerBase, IAuthController
 {
     private readonly IUserRepository _userRepository;
-    private readonly TokenService _tokenService;
+    private readonly ITokenService _tokenService;
     private readonly IEventProducer _eventProducer;
     private readonly IMapper _mapper;
 
     public AuthController(
         IUserRepository userRepository,
-        TokenService tokenService,
+        ITokenService tokenService,
         IEventProducer eventProducer,
         IMapper mapper)
     {
@@ -45,7 +46,7 @@ public class AuthController : ControllerBase, IAuthController
             return BadRequest("Invalid password");
         }
 
-        var token = _tokenService.GenerateToken(user);
+        var token = _tokenService.GenerateToken(user.UserId);
 
         return new AuthResponse
         {
@@ -65,12 +66,12 @@ public class AuthController : ControllerBase, IAuthController
         {
             return BadRequest("Username already exists");
         }
-        
+
         var user = await _userRepository.InsertUser(request.HashPassword());
 
         await _eventProducer.Produce(_mapper.Map<UserCreatedEvent>(user));
 
-        var token = _tokenService.GenerateToken(user);
+        var token = _tokenService.GenerateToken(user.UserId);
 
         return new AuthResponse
         {

@@ -11,7 +11,6 @@ public static class UserModule
 {
     public static WebApplicationBuilder ConfigureUserService(this WebApplicationBuilder builder)
     {
-        builder.Services.AddSingleton<TokenService>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IMapper, Mapper>();
 

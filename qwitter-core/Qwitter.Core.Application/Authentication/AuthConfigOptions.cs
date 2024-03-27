@@ -1,6 +1,6 @@
 using System.Security.Cryptography.X509Certificates;
 
-namespace Qwitter.Core.Application;
+namespace Qwitter.Core.Application.Authentication;
 
 public class AuthConfigOptions
 {
