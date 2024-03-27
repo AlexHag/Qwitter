@@ -1,21 +1,22 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Qwitter.Core.Application.RestApiClient;
 
 public static class ApiRequestMaker
 {
-    public static async Task<object> MakeApiRequest(string httpMethod, string port, string template, Type returnType, params object[] parameters)
+    public static async Task<ActionResult<TReturnType>> MakeApiRequest<TReturnType>(string httpMethod, string port, string template, params object[] parameters)
     {
-        Console.WriteLine($"HttpMethod: {httpMethod}, Port: {port}, Template: {template}, ReturnType: {returnType.Name}, Parameters: {string.Join(", ", parameters)}");
+        Console.WriteLine($"HttpMethod: {httpMethod}, Port: {port}, Template: {template}, ReturnType: {typeof(TReturnType).Name}, Parameters: {string.Join(", ", parameters)}");
 
         if (httpMethod == "GET")
         {
-            return await MakeGetRequest(port, template, returnType, parameters);
+            return await MakeGetRequest<TReturnType>(port, template, parameters);
         }
         else if (httpMethod == "POST")
         {
-            return await MakePostRequest(port, template, returnType, parameters);
+            return await MakePostRequest<TReturnType>(port, template, parameters);
         }
         else
         {
@@ -23,7 +24,7 @@ public static class ApiRequestMaker
         }
     }
 
-    public static async Task<object> MakeGetRequest(string port, string template, Type returnType, params object[] parameters)
+    public static async Task<ActionResult<TReturnType>> MakeGetRequest<TReturnType>(string port, string template, params object[] parameters)
     {
         var httpClient = new HttpClient
         {
@@ -43,9 +44,9 @@ public static class ApiRequestMaker
         {
             var content = await response.Content.ReadAsStringAsync();
             Console.WriteLine(content);
-            var result = JsonSerializer.Deserialize(content, returnType);
+            var result = JsonSerializer.Deserialize<TReturnType>(content);
 
-            return result;
+            return new ActionResult<TReturnType>(result);
         }
         else
         {
@@ -68,7 +69,7 @@ public static class ApiRequestMaker
         return url;
     }
 
-    public static async Task<object> MakePostRequest(string port, string template, Type returnType, params object[] parameters)
+    public static async Task<ActionResult<TReturnType>> MakePostRequest<TReturnType>(string port, string template, params object[] parameters)
     {
         throw new NotImplementedException();
     }

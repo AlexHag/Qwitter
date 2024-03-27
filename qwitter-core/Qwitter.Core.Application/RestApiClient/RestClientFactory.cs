@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Reflection.Emit;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace Qwitter.Core.Application.RestApiClient;
@@ -42,21 +43,35 @@ public static class RestClientFactory
             
             var il = methodBuilder.GetILGenerator();
 
+            if (method.ReturnType.GetGenericTypeDefinition() != typeof(Task<>))
+            {
+                throw new InvalidOperationException($"Return type for method {method.Name} must be Task<>");
+            }
+
+            if (method.ReturnType.GenericTypeArguments[0].GetGenericTypeDefinition() != typeof(ActionResult<>))
+            {
+                throw new InvalidOperationException($"Return type for method {method.Name} must be ActionResult<>");
+            }
+
+            var apiReturnType = method.ReturnType.GenericTypeArguments[0].GenericTypeArguments[0];
+
+            MethodInfo makeApiRequestMethod = typeof(ApiRequestMaker)
+                .GetMethod(nameof(ApiRequestMaker.MakeApiRequest), BindingFlags.Public | BindingFlags.Static)!
+                .MakeGenericMethod(apiReturnType);
+
             il.Emit(OpCodes.Ldstr, httpMethodAttribute.HttpMethods.First());
             il.Emit(OpCodes.Ldstr, port);
             il.Emit(OpCodes.Ldstr, httpMethodAttribute.Template);
-            il.Emit(OpCodes.Ldtoken, method.ReturnType);
-            il.Emit(OpCodes.Call, typeof(Type).GetMethod(nameof(Type.GetTypeFromHandle))!); // investigate what this type token is
 
+            // Create an array of objects to pass as parameters to the MakeApiRequest method
             il.Emit(OpCodes.Ldc_I4, parameters.Length);
             il.Emit(OpCodes.Newarr, typeof(object));
 
-            // Maybe start at 1 to skip the first parameter if it is the instance of the class
             for (int i = 0; i < parameters.Length; i++)
             {
                 il.Emit(OpCodes.Dup);
                 il.Emit(OpCodes.Ldc_I4, i);
-                il.Emit(OpCodes.Ldarg, i + 1);
+                il.Emit(OpCodes.Ldarg, i + 1); // here is where the parameters are actualy places on the stack
                 if (parameters[i].ParameterType.IsValueType)
                 {
                     il.Emit(OpCodes.Box, parameters[i].ParameterType);
@@ -64,7 +79,7 @@ public static class RestClientFactory
                 il.Emit(OpCodes.Stelem_Ref);
             }
 
-            il.Emit(OpCodes.Call, typeof(ApiRequestMaker).GetMethod(nameof(ApiRequestMaker.MakeApiRequest))!);
+            il.Emit(OpCodes.Call, makeApiRequestMethod);
 
             if (method.ReturnType == typeof(void) || method.ReturnType == typeof(Task))
             {
