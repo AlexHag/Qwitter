@@ -3,6 +3,9 @@ using Qwitter.Users.Contract.Auth;
 using Qwitter.Users.Contract.Auth.Models;
 using Qwitter.Users.Repositories.User;
 using Qwitter.Users.Auth.Services;
+using Qwitter.Core.Application.Kafka;
+using MapsterMapper;
+using Qwitter.Users.Contract.User.Events;
 
 namespace Qwitter.Users.Auth;
 
@@ -12,13 +15,19 @@ public class AuthController : ControllerBase, IAuthController
 {
     private readonly IUserRepository _userRepository;
     private readonly TokenService _tokenService;
+    private readonly IEventProducer _eventProducer;
+    private readonly IMapper _mapper;
 
     public AuthController(
         IUserRepository userRepository,
-        TokenService tokenService)
+        TokenService tokenService,
+        IEventProducer eventProducer,
+        IMapper mapper)
     {
         _userRepository = userRepository;
         _tokenService = tokenService;
+        _eventProducer = eventProducer;
+        _mapper = mapper;
     }
 
     [HttpPost("login")]
@@ -58,6 +67,8 @@ public class AuthController : ControllerBase, IAuthController
         }
         
         var user = await _userRepository.InsertUser(request.HashPassword());
+
+        await _eventProducer.Produce(_mapper.Map<UserCreatedEvent>(user));
 
         var token = _tokenService.GenerateToken(user);
 

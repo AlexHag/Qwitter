@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
+    <ProjectReference Include="..\..\qwitter-core\Qwitter.Core.Application\Qwitter.Core.Application.csproj" />
   </ItemGroup>
 
 </Project>

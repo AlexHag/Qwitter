@@ -26,6 +26,6 @@ public static class AuthExtensions
 
     public static Guid GetUserId(this ClaimsPrincipal user)
     {
-        return Guid.Parse(user.FindFirstValue("id"));
+        return Guid.Parse(user.FindFirstValue("id")!);
     }
 }
