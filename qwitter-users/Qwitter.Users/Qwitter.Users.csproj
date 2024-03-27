@@ -9,22 +9,16 @@
   <ItemGroup>
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Mapster" Version="7.4.0" />
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.10" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.1">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.1" />
-    <PackageReference Include="MassTransit" Version="8.0.15" />
-    <PackageReference Include="MassTransit.Kafka" Version="8.0.15" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Qwitter.Domain\Qwitter.Domain.csproj" />
     <ProjectReference Include="..\Qwitter.Users.Contract\Qwitter.Users.Contract.csproj" />
-    <ProjectReference Include="..\..\qwitter-core\Qwitter.Core.Application\Qwitter.Core.Application.csproj" />
   </ItemGroup>
 
   <ItemGroup>
