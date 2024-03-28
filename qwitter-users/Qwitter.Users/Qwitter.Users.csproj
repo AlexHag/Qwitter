@@ -21,10 +21,15 @@
     <ProjectReference Include="..\Qwitter.Users.Contract\Qwitter.Users.Contract.csproj" />
   </ItemGroup>
 
+  <!-- TODO: Move certificate to azure key vaults -->
   <ItemGroup>
-    <None Include="Properties\cert.pfx">
+    <None Include="Properties\user_auth_private_key.pem">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>cert.pfx</Link>
+      <Link>user_auth_private_key.pem</Link>
+    </None>
+    <None Include="Properties\user_auth_cert.pem">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>user_auth_cert.pem</Link>
     </None>
   </ItemGroup>
 

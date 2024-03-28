@@ -6,13 +6,18 @@ namespace Qwitter.Core.Application.RestApiClient;
 
 public static class ApiRequestMaker
 {
+    private static readonly JsonSerializerOptions s_readOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
     public static async Task<TReturnType> MakeApiRequest<TReturnType>(string httpMethod, string port, string prefix, string template, params ParamInfo[] parameters)
     {
         var restRequestInfo = RestRequestInfo.Create(httpMethod, template, parameters);
 
         var httpClient = new HttpClient
         {
-            BaseAddress = new Uri($"http://localhost:{port}")
+            BaseAddress = new Uri($"https://localhost:{port}")
         };
 
         var requestUri = string.IsNullOrEmpty(prefix) ? restRequestInfo.CreateUrl() : $"{prefix}/{restRequestInfo.CreateUrl()}";
@@ -31,7 +36,7 @@ public static class ApiRequestMaker
             try
             {
                 var contentString = await response.Content.ReadAsStringAsync();
-                var result = JsonSerializer.Deserialize<TReturnType>(contentString);
+                var result = JsonSerializer.Deserialize<TReturnType>(contentString, s_readOptions);
 
                 return result!;
             }

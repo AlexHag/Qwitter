@@ -1,10 +1,11 @@
 using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Qwitter.Users.Auth.Services;
 using Qwitter.Users.Contract.User;
 using Qwitter.Users.Contract.User.Models;
 using Qwitter.Users.Repositories.User;
+using Qwitter.Core.Application.Authentication;
+
 
 namespace Qwitter.Users.User;
 
