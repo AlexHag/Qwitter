@@ -4,7 +4,7 @@ using Qwitter.Users.Contract.User.Models;
 
 namespace Qwitter.Users.Contract.User;
 
-[ApiHost(Host.Port)]
+[ApiHost(Host.Port, "user")]
 public interface IUserController
 {
     [HttpGet("me")]

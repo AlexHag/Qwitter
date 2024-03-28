@@ -48,7 +48,7 @@ public class RestClientProxy<TController> : DispatchProxy
             }
         }
 
-        var response = makeApiRequestMethod.Invoke(null, [httpMethodAttribute.HttpMethods.First(), host.Port, httpMethodAttribute.Template, paramArgs]);
+        var response = makeApiRequestMethod.Invoke(null, [httpMethodAttribute.HttpMethods.First(), host.Port, host.Prefix, httpMethodAttribute.Template, paramArgs]);
 
         return response;
     }

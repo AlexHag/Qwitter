@@ -1,14 +1,12 @@
 using System.Text;
 using System.Text.Json;
-using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Mvc;
 using Qwitter.Core.Application.Exceptions;
 
 namespace Qwitter.Core.Application.RestApiClient;
 
 public static class ApiRequestMaker
 {
-    public static async Task<TReturnType> MakeApiRequest<TReturnType>(string httpMethod, string port, string template, params ParamInfo[] parameters)
+    public static async Task<TReturnType> MakeApiRequest<TReturnType>(string httpMethod, string port, string prefix, string template, params ParamInfo[] parameters)
     {
         var restRequestInfo = RestRequestInfo.Create(httpMethod, template, parameters);
 
@@ -17,7 +15,9 @@ public static class ApiRequestMaker
             BaseAddress = new Uri($"http://localhost:{port}")
         };
 
-        var httpRequestMessage = new HttpRequestMessage(restRequestInfo.HttpMethod, restRequestInfo.CreateUrl());
+        var requestUri = string.IsNullOrEmpty(prefix) ? restRequestInfo.CreateUrl() : $"{prefix}/{restRequestInfo.CreateUrl()}";
+
+        var httpRequestMessage = new HttpRequestMessage(restRequestInfo.HttpMethod, requestUri);
         
         if (restRequestInfo.Body is not null)
         {
@@ -44,6 +44,8 @@ public static class ApiRequestMaker
         {
             var contentString = await response.Content.ReadAsStringAsync();
 
+            // TODO: Add more information to exceptions
+            // TOOD: Implement logging
             throw response.StatusCode switch
             {
                 System.Net.HttpStatusCode.NotFound => new NotFoundApiException(contentString),

@@ -27,6 +27,7 @@ public class RestApiExceptionMiddleware
         }
     }
 
+    // TODO: Add more info to response
     private static Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         var code = exception switch
