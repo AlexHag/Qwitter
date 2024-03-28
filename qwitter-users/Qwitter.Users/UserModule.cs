@@ -1,7 +1,6 @@
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Qwitter.Core.Application.Kafka;
-using Qwitter.Users.Auth.Services;
 using Qwitter.Users.Repositories.User;
 using Qwitter.Users.User.Consumers;
 

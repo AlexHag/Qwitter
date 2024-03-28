@@ -5,6 +5,6 @@ namespace Qwitter.Users.Contract.Auth;
 
 public interface IAuthController
 {
-    Task<ActionResult<AuthResponse>> Login(LoginRequest request);
-    Task<ActionResult<AuthResponse>> Register(RegisterRequest request);
+    Task<AuthResponse> Login(LoginRequest request);
+    Task<AuthResponse> Register(RegisterRequest request);
 }

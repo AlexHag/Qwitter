@@ -7,6 +7,7 @@ using Qwitter.Core.Application.Kafka;
 using MapsterMapper;
 using Qwitter.Users.Contract.User.Events;
 using Qwitter.Core.Application.Authentication;
+using Qwitter.Core.Application.Exceptions;
 
 namespace Qwitter.Users.Auth;
 
@@ -32,18 +33,18 @@ public class AuthController : ControllerBase, IAuthController
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<AuthResponse>> Login(LoginRequest request)
+    public async Task<AuthResponse> Login(LoginRequest request)
     {
         var user = await _userRepository.GetUserByUsernameOrEmail(request.UsernameOrEmail);
 
         if (user is null)
         {
-            return BadRequest("User not found");
+            throw new BadRequestApiException("User not found");
         }
 
         if (!AuthExtensions.VerifyPassword(request.Password, user.Password))
         {
-            return BadRequest("Invalid password");
+            throw new BadRequestApiException("Invalid password");
         }
 
         var token = _tokenService.GenerateToken(user.UserId);
@@ -55,16 +56,16 @@ public class AuthController : ControllerBase, IAuthController
     }
 
     [HttpPost("register")]
-    public async Task<ActionResult<AuthResponse>> Register(RegisterRequest request)
+    public async Task<AuthResponse> Register(RegisterRequest request)
     {
         if (await _userRepository.GetUserByEmail(request.Email) is not null)
         {
-            return BadRequest("Email already exists");
+            throw new BadRequestApiException("Email already exists");
         }
 
         if (await _userRepository.GetUserByEmail(request.Email) is not null)
         {
-            return BadRequest("Username already exists");
+            throw new BadRequestApiException("Email already exists");
         }
 
         var user = await _userRepository.InsertUser(request.HashPassword());

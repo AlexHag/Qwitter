@@ -22,12 +22,30 @@ public class UserController : ControllerBase, IUserController
         _mapper = mapper;
         _userRepository = userRepository;
     }
-    
+
+    [HttpGet("get/{foo}/and/{bar}")]
+    public Task<TestResponse> Get(string foo, string bar, string baz, string bom)
+    {
+        return Task.FromResult(new TestResponse
+        {
+            Message = $"Foo: {foo}, Bar: {bar}, Baz: {baz}, Bom: {bom}"
+        });
+    }
+
     [Authorize]
     [HttpGet("me")]
     public async Task<UserProfile> GetUser()
     {
         var user = await _userRepository.GetUserById(User.GetUserId());
         return _mapper.Map<UserProfile>(user!);
+    }
+
+    [HttpPost("posting/{foo}/path")]
+    public Task<TestResponse> Post(string foo, string bar, string baz, TestRequest body)
+    {
+        return Task.FromResult(new TestResponse
+        {
+            Message = $"Foo: {foo}, Bar: {bar}, Baz: {baz}, Message: {body.Message}, Number: {body.Number}"
+        });
     }
 }
