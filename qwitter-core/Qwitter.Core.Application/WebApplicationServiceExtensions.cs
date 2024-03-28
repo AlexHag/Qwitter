@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Qwitter.Core.Application.Authentication;
+using Qwitter.Core.Application.Exceptions;
 
 namespace Qwitter.Core.Application;
 
@@ -19,6 +20,8 @@ public static class WebApplicationServiceExtensions
 
     public static WebApplication ConfigureApp(this WebApplication app)
     {
+        app.UseMiddleware<RestApiExceptionMiddleware>();
+
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
