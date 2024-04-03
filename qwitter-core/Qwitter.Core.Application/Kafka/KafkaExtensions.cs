@@ -22,8 +22,9 @@ public static class KafkaExtensions
             throw new InvalidOperationException($"Consumer {typeof(TConsumer).Name} does not implement IConsumer<T>");
         }
 
-        var eventType = consumerInterface.GetGenericArguments().FirstOrDefault();
+        string topic;
 
+        var eventType = consumerInterface.GetGenericArguments().FirstOrDefault();
         var messageAttribute = eventType?.GetCustomAttribute<MessageAttribute>();
 
         if (messageAttribute is null)
@@ -31,11 +32,22 @@ public static class KafkaExtensions
             throw new InvalidOperationException($"Event {eventType} does not have a MessageAttribute");
         }
 
+        var messageSuffixAttribute = typeof(TConsumer).GetCustomAttribute<MessageSuffixAttribute>();
+
+        if (messageSuffixAttribute is not null)
+        {
+            topic = $"{messageAttribute.TopicName}-{messageSuffixAttribute.Suffix}";
+        }
+        else
+        {
+            topic = $"^{messageAttribute.TopicName}.*$";
+        }
+
         _consumers.Add(new ConsumerRegistration
         {
             ConsumerType = typeof(TConsumer),
             EventType = eventType!,
-            TopicName = messageAttribute.TopicName,
+            TopicName = topic,
             GroupName = groupName
         });
 

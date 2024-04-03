@@ -7,6 +7,7 @@ namespace Qwitter.Core.Application.Kafka;
 public interface IEventProducer
 {
     Task Produce(object @event);
+    Task Produce(object @event, string topicSuffix);
 }
 
 public class EventProducer : IEventProducer
@@ -32,5 +33,21 @@ public class EventProducer : IEventProducer
         };
 
         await _producer.ProduceAsync(messageAttribute.TopicName, message);
+    }
+
+    public async Task Produce(object @event, string topicSuffix)
+    {
+        var messageAttribute = @event.GetType().GetCustomAttribute<MessageAttribute>();
+
+        if (messageAttribute is null || string.IsNullOrEmpty(messageAttribute.TopicName))
+            throw new InvalidOperationException($"Event {@event.GetType()} must have a MessageAttribute with a topic name");
+
+        var message = new Message<string, string>
+        {
+            Key = Guid.NewGuid().ToString(),
+            Value = JsonSerializer.Serialize(@event)
+        };
+
+        await _producer.ProduceAsync($"{messageAttribute.TopicName}-{topicSuffix}", message);
     }
 }
