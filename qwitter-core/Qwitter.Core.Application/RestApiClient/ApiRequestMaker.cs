@@ -11,14 +11,9 @@ public static class ApiRequestMaker
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
 
-    public static async Task<TReturnType> MakeApiRequest<TReturnType>(string httpMethod, string port, string prefix, string template, params ParamInfo[] parameters)
+    public static async Task<TReturnType> MakeApiRequest<TReturnType>(HttpClient httpClient, string httpMethod, string prefix, string template, params ParamInfo[] parameters)
     {
         var restRequestInfo = RestRequestInfo.Create(httpMethod, template, parameters);
-
-        var httpClient = new HttpClient
-        {
-            BaseAddress = new Uri($"https://localhost:{port}")
-        };
 
         var requestUri = string.IsNullOrEmpty(prefix) ? restRequestInfo.CreateUrl() : $"{prefix}/{restRequestInfo.CreateUrl()}";
 

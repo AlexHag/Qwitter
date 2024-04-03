@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -7,7 +8,19 @@ public static class RestApiClientServiceExtensions
 {
     public static WebApplicationBuilder AddRestApiClient<TController>(this WebApplicationBuilder builder)
     {
-        var client = new RestClientProxy<TController>().GetTransparentProxy();
+        var host = typeof(TController).GetCustomAttribute<ApiHostAttribute>();
+        
+        if (host == null)
+        {
+            throw new Exception($"{typeof(ApiHostAttribute).Name} is required for the controller interface {typeof(TController).Name}");
+        }
+
+        var httpClient = new HttpClient
+        {
+            BaseAddress = new Uri($"https://localhost:{host.Port}")
+        };
+
+        var client = new RestClientProxy<TController>(httpClient).GetTransparentProxy();
 
         if (client is null)
         {

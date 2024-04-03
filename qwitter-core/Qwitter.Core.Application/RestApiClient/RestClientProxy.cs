@@ -5,6 +5,13 @@ namespace Qwitter.Core.Application.RestApiClient;
 
 public class RestClientProxy<TController> : DispatchProxy
 {
+    private readonly HttpClient _httpClient;
+
+    public RestClientProxy(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+    }
+
     protected override object? Invoke(MethodInfo? targetMethod, object?[]? args)
     {
         if (targetMethod is null)
@@ -48,7 +55,7 @@ public class RestClientProxy<TController> : DispatchProxy
             }
         }
 
-        var response = makeApiRequestMethod.Invoke(null, [httpMethodAttribute.HttpMethods.First(), host.Port, host.Prefix, httpMethodAttribute.Template, paramArgs]);
+        var response = makeApiRequestMethod.Invoke(null, [_httpClient, httpMethodAttribute.HttpMethods.First(), host.Prefix, httpMethodAttribute.Template, paramArgs]);
 
         return response;
     }
