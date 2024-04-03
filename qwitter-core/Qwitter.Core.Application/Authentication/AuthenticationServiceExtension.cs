@@ -20,9 +20,9 @@ public static class AuthenticationServiceExtension
 
         X509Certificate2 certificate;
 
-        if (File.Exists(AssemblyPath("user_auth_private_key.pem")))
+        if (File.Exists(AssemblyPath("user_auth_key.pem")))
         {
-            certificate = X509Certificate2.CreateFromPemFile(AssemblyPath("user_auth_cert.pem"), AssemblyPath("user_auth_private_key.pem"));
+            certificate = X509Certificate2.CreateFromPemFile(AssemblyPath("user_auth_cert.pem"), AssemblyPath("user_auth_key.pem"));
         }
         else
         {

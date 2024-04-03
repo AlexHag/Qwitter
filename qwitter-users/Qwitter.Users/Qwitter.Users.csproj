@@ -23,11 +23,11 @@
 
   <!-- TODO: Move certificate to azure key vaults -->
   <ItemGroup>
-    <None Include="Properties\user_auth_private_key.pem">
+    <None Include="..\..\certificates\user_auth\user_auth_key.pem">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>user_auth_private_key.pem</Link>
+      <Link>user_auth_key.pem</Link>
     </None>
-    <None Include="Properties\user_auth_cert.pem">
+    <None Include="..\..\certificates\user_auth\user_auth_cert.pem">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>user_auth_cert.pem</Link>
     </None>
