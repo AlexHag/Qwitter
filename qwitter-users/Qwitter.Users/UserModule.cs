@@ -1,6 +1,7 @@
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Qwitter.Core.Application.Kafka;
+using Qwitter.Users.Premium.Consumers;
 using Qwitter.Users.Repositories.User;
 using Qwitter.Users.User.Consumers;
 
@@ -17,6 +18,8 @@ public static class UserModule
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!));
 
         builder.RegisterConsumer<UserCreatedConsumer>("user-group");
+        builder.RegisterConsumer<PremiumPurchasedConsumer>("user-group");
+
         builder.UseKafka();
 
         return builder;

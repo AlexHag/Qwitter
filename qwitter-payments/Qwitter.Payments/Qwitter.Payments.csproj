@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.1">
@@ -15,19 +14,15 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.1" />
+    <PackageReference Include="Nethereum.HdWallet" Version="4.20.0" />
+    <PackageReference Include="Nethereum.Web3" Version="4.20.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Qwitter.Users.Contract\Qwitter.Users.Contract.csproj" />
-    <ProjectReference Include="..\..\qwitter-payments\Qwitter.Payments.Contract\Qwitter.Payments.Contract.csproj" />
+    <ProjectReference Include="..\Qwitter.Payments.Contract\Qwitter.Payments.Contract.csproj" />
   </ItemGroup>
 
-  <!-- TODO: Move certificate to azure key vaults -->
   <ItemGroup>
-    <None Include="..\..\certificates\user_auth\user_auth_key.pem">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>user_auth_key.pem</Link>
-    </None>
     <None Include="..\..\certificates\user_auth\user_auth_cert.pem">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>user_auth_cert.pem</Link>
