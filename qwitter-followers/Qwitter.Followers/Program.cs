@@ -1,13 +1,13 @@
 using Qwitter.Core.Application;
 
-namespace Qwitter.Social;
+namespace Qwitter.Followers;
 
 public class Program
 {
     public static void Main(string[] args)
         => WebApplication.CreateBuilder(args)
             .ConfigureBuilder()
-            .ConfigureSocialService()
+            .ConfigureFollowersService()
             .Build()
             .ConfigureApp()
             .Run();

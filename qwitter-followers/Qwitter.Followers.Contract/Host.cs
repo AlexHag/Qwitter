@@ -1,4 +1,4 @@
-namespace Qwitter.Social.Contract;
+namespace Qwitter.Followers.Contract;
 
 internal static class Host
 {

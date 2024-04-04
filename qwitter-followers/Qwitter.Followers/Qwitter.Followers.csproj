@@ -19,11 +19,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Qwitter.Social.Contract\Qwitter.Social.Contract.csproj" />
+    <ProjectReference Include="..\Qwitter.Followers.Contract\Qwitter.Followers.Contract.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Properties\user_auth_cert.pem">
+    <None Include="..\..\certificates\user_auth\user_auth_cert.pem">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Link>user_auth_cert.pem</Link>
     </None>
