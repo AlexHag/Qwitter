@@ -3,14 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Data", "Qwitter.Data\Qwitter.Data.csproj", "{205E771B-38FD-4312-8C91-3A8336BA9BBC}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Web", "Qwitter.Web\Qwitter.Web.csproj", "{4C7AF096-69BC-440F-9EBA-CD206119997B}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Payments", "Qwitter.Payments\Qwitter.Payments.csproj", "{2E706B10-DC40-4361-8932-A90157CE9512}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Domain", "Qwitter.Domain\Qwitter.Domain.csproj", "{0D9979E0-B779-4FD7-B04F-BE5126C4D95B}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "qwitter-users", "qwitter-users", "{44D40673-6696-42BC-920A-762004268912}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Users", "qwitter-users\Qwitter.Users\Qwitter.Users.csproj", "{0EC76B1A-2875-4304-974C-C9F49C827666}"
@@ -27,6 +19,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Social", "qwitter-s
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Social.Contract", "qwitter-social\Qwitter.Social.Contract\Qwitter.Social.Contract.csproj", "{81835FA4-E159-43BF-84E2-18E7168F1943}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "qwitter-payments", "qwitter-payments", "{C729DD61-150E-4B5A-99C0-CAB6213B496C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Payments", "qwitter-payments\Qwitter.Payments\Qwitter.Payments.csproj", "{B8A8CDBB-7A60-4F22-90FC-6B0AE00DDAF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Payments.Contract", "qwitter-payments\Qwitter.Payments.Contract\Qwitter.Payments.Contract.csproj", "{A355BF37-7A90-4B9A-920B-8B843916946C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qwitter-console", "qwitter-console\qwitter-console.csproj", "{B2CBDFEB-0D84-4A01-B1EE-458FC3D46805}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,26 +36,10 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{205E771B-38FD-4312-8C91-3A8336BA9BBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{205E771B-38FD-4312-8C91-3A8336BA9BBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{205E771B-38FD-4312-8C91-3A8336BA9BBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{205E771B-38FD-4312-8C91-3A8336BA9BBC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4C7AF096-69BC-440F-9EBA-CD206119997B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4C7AF096-69BC-440F-9EBA-CD206119997B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4C7AF096-69BC-440F-9EBA-CD206119997B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4C7AF096-69BC-440F-9EBA-CD206119997B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3B8FF456-C588-4E36-BA6C-605DCB915961}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3B8FF456-C588-4E36-BA6C-605DCB915961}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B8FF456-C588-4E36-BA6C-605DCB915961}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B8FF456-C588-4E36-BA6C-605DCB915961}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2E706B10-DC40-4361-8932-A90157CE9512}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2E706B10-DC40-4361-8932-A90157CE9512}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2E706B10-DC40-4361-8932-A90157CE9512}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2E706B10-DC40-4361-8932-A90157CE9512}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0D9979E0-B779-4FD7-B04F-BE5126C4D95B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0D9979E0-B779-4FD7-B04F-BE5126C4D95B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0D9979E0-B779-4FD7-B04F-BE5126C4D95B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0D9979E0-B779-4FD7-B04F-BE5126C4D95B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0EC76B1A-2875-4304-974C-C9F49C827666}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0EC76B1A-2875-4304-974C-C9F49C827666}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0EC76B1A-2875-4304-974C-C9F49C827666}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -76,6 +60,18 @@ Global
 		{81835FA4-E159-43BF-84E2-18E7168F1943}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81835FA4-E159-43BF-84E2-18E7168F1943}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81835FA4-E159-43BF-84E2-18E7168F1943}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8A8CDBB-7A60-4F22-90FC-6B0AE00DDAF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8A8CDBB-7A60-4F22-90FC-6B0AE00DDAF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8A8CDBB-7A60-4F22-90FC-6B0AE00DDAF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8A8CDBB-7A60-4F22-90FC-6B0AE00DDAF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A355BF37-7A90-4B9A-920B-8B843916946C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A355BF37-7A90-4B9A-920B-8B843916946C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A355BF37-7A90-4B9A-920B-8B843916946C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A355BF37-7A90-4B9A-920B-8B843916946C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2CBDFEB-0D84-4A01-B1EE-458FC3D46805}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2CBDFEB-0D84-4A01-B1EE-458FC3D46805}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2CBDFEB-0D84-4A01-B1EE-458FC3D46805}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2CBDFEB-0D84-4A01-B1EE-458FC3D46805}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0EC76B1A-2875-4304-974C-C9F49C827666} = {44D40673-6696-42BC-920A-762004268912}
@@ -83,5 +79,7 @@ Global
 		{47E81483-63D5-4FAB-AC7B-52092CEA80AB} = {3566C679-5A45-4212-919E-F72D00C44BE2}
 		{1A60D136-B933-495C-A9A0-AABC40BFAE4B} = {3EACBB76-CB03-4653-8760-E5D7E3D1BC50}
 		{81835FA4-E159-43BF-84E2-18E7168F1943} = {3EACBB76-CB03-4653-8760-E5D7E3D1BC50}
+		{B8A8CDBB-7A60-4F22-90FC-6B0AE00DDAF4} = {C729DD61-150E-4B5A-99C0-CAB6213B496C}
+		{A355BF37-7A90-4B9A-920B-8B843916946C} = {C729DD61-150E-4B5A-99C0-CAB6213B496C}
 	EndGlobalSection
 EndGlobal
