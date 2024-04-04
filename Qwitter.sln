@@ -21,12 +21,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Payments.Contract",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qwitter-console", "qwitter-console\qwitter-console.csproj", "{B2CBDFEB-0D84-4A01-B1EE-458FC3D46805}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "qwitter-followers", "qwitter-followers", "{6EE6E04C-33E1-4A6B-9591-D46A297C9097}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Followers", "qwitter-followers\Qwitter.Followers\Qwitter.Followers.csproj", "{EE9D5E4C-5DC5-4921-B91A-472DD848B153}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Followers.Contract", "qwitter-followers\Qwitter.Followers.Contract\Qwitter.Followers.Contract.csproj", "{69813384-C3C9-44F7-B6CA-E3F1A1DF4B3A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,14 +58,6 @@ Global
 		{B2CBDFEB-0D84-4A01-B1EE-458FC3D46805}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2CBDFEB-0D84-4A01-B1EE-458FC3D46805}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2CBDFEB-0D84-4A01-B1EE-458FC3D46805}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EE9D5E4C-5DC5-4921-B91A-472DD848B153}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EE9D5E4C-5DC5-4921-B91A-472DD848B153}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EE9D5E4C-5DC5-4921-B91A-472DD848B153}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EE9D5E4C-5DC5-4921-B91A-472DD848B153}.Release|Any CPU.Build.0 = Release|Any CPU
-		{69813384-C3C9-44F7-B6CA-E3F1A1DF4B3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{69813384-C3C9-44F7-B6CA-E3F1A1DF4B3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{69813384-C3C9-44F7-B6CA-E3F1A1DF4B3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{69813384-C3C9-44F7-B6CA-E3F1A1DF4B3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0EC76B1A-2875-4304-974C-C9F49C827666} = {44D40673-6696-42BC-920A-762004268912}
@@ -79,7 +65,5 @@ Global
 		{47E81483-63D5-4FAB-AC7B-52092CEA80AB} = {3566C679-5A45-4212-919E-F72D00C44BE2}
 		{B8A8CDBB-7A60-4F22-90FC-6B0AE00DDAF4} = {C729DD61-150E-4B5A-99C0-CAB6213B496C}
 		{A355BF37-7A90-4B9A-920B-8B843916946C} = {C729DD61-150E-4B5A-99C0-CAB6213B496C}
-		{EE9D5E4C-5DC5-4921-B91A-472DD848B153} = {6EE6E04C-33E1-4A6B-9591-D46A297C9097}
-		{69813384-C3C9-44F7-B6CA-E3F1A1DF4B3A} = {6EE6E04C-33E1-4A6B-9591-D46A297C9097}
 	EndGlobalSection
 EndGlobal
