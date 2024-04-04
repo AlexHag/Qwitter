@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Qwitter.Users.Follows.Models;
 using Qwitter.Users.User.Models;
 
 namespace Qwitter.Users;
@@ -6,6 +7,7 @@ namespace Qwitter.Users;
 public class AppDbContext : DbContext
 {
     public DbSet<UserEntity> Users { get; set; }
+    public DbSet<FollowingRelationshipEntity> FollowingRelationships { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
     { }

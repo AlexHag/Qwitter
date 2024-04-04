@@ -9,6 +9,6 @@ public interface IUserRepository
     Task<UserEntity?> GetUserByEmail(string email);
     Task<UserEntity?> GetUserByUsernameOrEmail(string usernameOrEmail);
     Task<UserEntity> InsertUser(UserInsertModel user);
-    Task<UserEntity> UpdateUser(UserEntity user);
+    Task<UserEntity> UpdateUser(UserUpdateModel user);
     Task<UserEntity> DeleteUser(Guid userId);
 }

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Qwitter.Core.Application.Exceptions;
 using Qwitter.Users.Contract.User.Models;
 using Qwitter.Users.User.Models;
 
@@ -33,13 +34,7 @@ public class UserRepository : IUserRepository
 
     public async Task<UserEntity> DeleteUser(Guid userId)
     {
-        var user = await _dbContext.Users.FindAsync(userId);
-        
-        if (user == null)
-        {
-            throw new Exception("User not found");
-        }
-
+        var user = await _dbContext.Users.FindAsync(userId) ?? throw new Exception("User not found");
         user.UserState = UserState.Deleted;
         user.UpdatedAt = DateTime.Now;
 
@@ -62,9 +57,36 @@ public class UserRepository : IUserRepository
         return await _dbContext.Users.FirstOrDefaultAsync(u => u.Username == username);
     }
 
-    public Task<UserEntity> UpdateUser(UserEntity user)
+    public async Task<UserEntity> UpdateUser(UserUpdateModel user)
     {
-        throw new NotImplementedException();
+        var entity = await _dbContext.Users.FindAsync(user.UserId) ?? throw new NotFoundApiException("User not found");
+        
+        if (user.Email != null)
+            entity.Email = user.Email;
+
+        if (user.Username != null)
+            entity.Username = user.Username;
+        
+        if (user.Password != null)
+            entity.Password = user.Password;
+        
+        if (user.HasPremium != null)
+            entity.HasPremium = user.HasPremium.Value;
+        
+        if (user.FollowerCount != null)
+            entity.FollowerCount = user.FollowerCount.Value;
+        
+        if (user.FollowingCount != null)
+            entity.FollowingCount = user.FollowingCount.Value;
+        
+        if (user.UserState != null)
+            entity.UserState = user.UserState.Value;
+        
+        entity.UpdatedAt = DateTime.Now;
+
+        await _dbContext.SaveChangesAsync();
+
+        return entity;
     }
 
     public async Task<UserEntity?> GetUserByUsernameOrEmail(string usernameOrEmail)
