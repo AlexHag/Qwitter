@@ -3,6 +3,7 @@ using MassTransit;
 using Qwitter.Payments.Contract.Transactions.Events;
 using Qwitter.Payments.Contract.Transactions.Models;
 using Qwitter.Payments.Provider;
+using Qwitter.Payments.Transactions.Configuration;
 using Qwitter.Payments.Transactions.Models;
 using Qwitter.Payments.Transactions.Repositories;
 using Qwitter.Payments.Wallets.Repositories;
@@ -15,20 +16,20 @@ public class TransactionCompletedConsumer : IConsumer<TransactionCompletedEvent>
     private readonly ITransactionRepository _transactionRepository;
     private readonly IWalletRepository _walletRepository;
     private readonly IPaymentProviderService _paymentProvider;
-
-    // TODO: Configure this address in appsettings or database
-    private readonly string _withdrawingAddress = "0xdae90dB462A74F6C0eB8e93B10c596108921ba10";
+    private readonly TransactionConfiguration _transactionConfig;
 
     public TransactionCompletedConsumer(
         ILogger<TransactionCompletedConsumer> logger,
         ITransactionRepository transactionRepository,
         IWalletRepository walletRepository,
-        IPaymentProviderService paymentProvider)
+        IPaymentProviderService paymentProvider,
+        TransactionConfiguration transactionConfig)
     {
         _logger = logger;
         _transactionRepository = transactionRepository;
         _walletRepository = walletRepository;
         _paymentProvider = paymentProvider;
+        _transactionConfig = transactionConfig;
     }
 
     public async Task Consume(ConsumeContext<TransactionCompletedEvent> context)
@@ -49,7 +50,7 @@ public class TransactionCompletedConsumer : IConsumer<TransactionCompletedEvent>
             return;
         }
 
-        var success = await _paymentProvider.Transfer(wallet.PrivateKey, _withdrawingAddress);
+        var success = await _paymentProvider.Transfer(wallet.PrivateKey, _transactionConfig.WithdrawingAddress);
 
         if (success)
         {

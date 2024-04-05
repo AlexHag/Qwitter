@@ -3,6 +3,7 @@ using Qwitter.Core.Application.Configuration;
 using Qwitter.Core.Application.Kafka;
 using Qwitter.Payments.Provider;
 using Qwitter.Payments.Provider.Configuration;
+using Qwitter.Payments.Transactions.Configuration;
 using Qwitter.Payments.Transactions.Consumers;
 using Qwitter.Payments.Transactions.Repositories;
 using Qwitter.Payments.Transactions.Services;
@@ -15,6 +16,7 @@ public static class PaymentsModule
 {
     public static WebApplicationBuilder ConfigurePaymentsModule(this WebApplicationBuilder builder)
     {
+        builder.AddConfiguration<TransactionConfiguration>();
         builder.AddConfiguration<PaymentProviderCredentials>();
         builder.Services.AddHttpClient<IPaymentProviderService, PaymentProviderService>((services, client) =>
         {
