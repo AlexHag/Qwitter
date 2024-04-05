@@ -1,5 +1,5 @@
 using MassTransit;
-using Qwitter.Payments.Transactions.Models;
+using Qwitter.Payments.Contract.Transactions.Events;
 
 namespace Qwitter.Payments.Transactions.Consumers;
 

@@ -1,6 +1,6 @@
 using MassTransit;
 using Qwitter.Core.Application.Kafka;
-using Qwitter.Payments.Transactions.Models;
+using Qwitter.Payments.Contract.Transactions.Events;
 
 namespace Qwitter.Users.Premium.Consumers;
 

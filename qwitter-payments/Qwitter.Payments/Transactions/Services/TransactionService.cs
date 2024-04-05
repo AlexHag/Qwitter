@@ -1,5 +1,6 @@
 using Qwitter.Core.Application.Exceptions;
 using Qwitter.Core.Application.Kafka;
+using Qwitter.Payments.Contract.Transactions.Events;
 using Qwitter.Payments.Contract.Transactions.Models;
 using Qwitter.Payments.Provider;
 using Qwitter.Payments.Transactions.Models;

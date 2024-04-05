@@ -1,6 +1,6 @@
 using Qwitter.Core.Application.Kafka;
 
-namespace Qwitter.Payments.Transactions.Models;
+namespace Qwitter.Payments.Contract.Transactions.Events;
 
 [Message("transaction-completed")]
 public class TransactionCompletedEvent

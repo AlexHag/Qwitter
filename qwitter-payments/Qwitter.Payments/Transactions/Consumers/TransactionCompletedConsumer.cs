@@ -1,11 +1,11 @@
 
 using MassTransit;
+using Qwitter.Payments.Contract.Transactions.Events;
 using Qwitter.Payments.Contract.Transactions.Models;
 using Qwitter.Payments.Provider;
 using Qwitter.Payments.Transactions.Models;
 using Qwitter.Payments.Transactions.Repositories;
 using Qwitter.Payments.Wallets.Repositories;
-using Qwitter.Payments.Wallets.Services;
 
 namespace Qwitter.Payments.Transactions.Consumers;
 
