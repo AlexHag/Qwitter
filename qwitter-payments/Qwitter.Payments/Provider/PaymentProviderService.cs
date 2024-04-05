@@ -15,11 +15,16 @@ public interface IPaymentProviderService
 
 public class PaymentProviderService : IPaymentProviderService
 {
+    private readonly ILogger<PaymentProviderService> _logger;
     private readonly HttpClient _httpClient;
     private readonly PaymentProviderCredentials _credentials;
 
-    public PaymentProviderService(HttpClient httpClient, PaymentProviderCredentials credentials)
+    public PaymentProviderService(
+        ILogger<PaymentProviderService> logger,
+        HttpClient httpClient,
+        PaymentProviderCredentials credentials)
     {
+        _logger = logger;
         _httpClient = httpClient;
         _credentials = credentials;
     }
@@ -58,8 +63,6 @@ public class PaymentProviderService : IPaymentProviderService
         var amount = await transferService
             .CalculateTotalAmountToTransferWholeBalanceInEtherAsync(account.Address, fee1559.MaxFeePerGas.Value);
 
-        Console.WriteLine(amount);
-
         try
         {
             await transferService.TransferEtherAndWaitForReceiptAsync(address, amount, fee1559.MaxPriorityFeePerGas.Value, fee1559.MaxFeePerGas.Value);
@@ -67,7 +70,7 @@ public class PaymentProviderService : IPaymentProviderService
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
+            _logger.LogError(e, "Error transferring funds");
             return false;
         }
     }

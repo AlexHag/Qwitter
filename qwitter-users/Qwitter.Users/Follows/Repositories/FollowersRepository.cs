@@ -15,13 +15,16 @@ public interface IFollowsRepository
 
 public class FollowersRepository : IFollowsRepository
 {
+    private readonly ILogger<FollowersRepository> _logger;
     private readonly AppDbContext _dbContext;
     private readonly IMapper _mapper;
 
     public FollowersRepository(
+        ILogger<FollowersRepository> logger,
         AppDbContext dbContext,
         IMapper mapper)
     {
+        _logger = logger;
         _dbContext = dbContext;
         _mapper = mapper;
     }
@@ -65,7 +68,7 @@ public class FollowersRepository : IFollowsRepository
 
         if (relationship is null)
         {
-            Console.WriteLine($"Warning: Relationship not found between followee: {followeeId} and follower: {followerId}");
+            _logger.LogWarning("Relationship not found between followee: {followeeId} and follower: {followerId}", followeeId, followerId);
             return;
         }
 

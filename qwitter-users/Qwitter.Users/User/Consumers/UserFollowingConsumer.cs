@@ -6,10 +6,14 @@ namespace Qwitter.Users.User.Consumers;
 
 public class UserStoppedFollowingConsumer : IConsumer<UserStoppedFollowingEvent>
 {
+    private readonly ILogger<UserStoppedFollowingConsumer> _logger;
     private readonly IUserRepository _userRepository;
 
-    public UserStoppedFollowingConsumer(IUserRepository userRepository)
+    public UserStoppedFollowingConsumer(
+        ILogger<UserStoppedFollowingConsumer> logger,
+        IUserRepository userRepository)
     {
+        _logger = logger;
         _userRepository = userRepository;
     }
 
@@ -20,16 +24,16 @@ public class UserStoppedFollowingConsumer : IConsumer<UserStoppedFollowingEvent>
         
         if (followee is null)
         {
-            Console.WriteLine($"WARNING: {context.Message.FolloweeId} stopped following {context.Message.FollowerId}, but folowee not found");
+            _logger.LogWarning("{FolloweeId} stopped following {FollowerId}, but folowee not found", context.Message.FolloweeId, context.Message.FollowerId);
             return;
         }
 
         if (follower is null)
         {
-            Console.WriteLine($"WARNING: {context.Message.FolloweeId} stopped following {context.Message.FollowerId}, but follower not found");
+            _logger.LogWarning("{FolloweeId} stopped following {FollowerId}, but follower not found", context.Message.FolloweeId, context.Message.FollowerId);
             return;
         }
 
-        Console.WriteLine($"{followee.Username} stopped following {follower.Username}");
+        _logger.LogInformation("{FolloweeId} stopped following {FollowerId}", context.Message.FolloweeId, context.Message.FollowerId);
     }
 }

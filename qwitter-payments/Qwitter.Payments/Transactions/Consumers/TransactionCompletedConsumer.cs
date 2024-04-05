@@ -11,6 +11,7 @@ namespace Qwitter.Payments.Transactions.Consumers;
 
 public class TransactionCompletedConsumer : IConsumer<TransactionCompletedEvent>
 {
+    private readonly ILogger<TransactionCompletedConsumer> _logger;
     private readonly ITransactionRepository _transactionRepository;
     private readonly IWalletRepository _walletRepository;
     private readonly IPaymentProviderService _paymentProvider;
@@ -19,23 +20,24 @@ public class TransactionCompletedConsumer : IConsumer<TransactionCompletedEvent>
     private readonly string _withdrawingAddress = "0xdae90dB462A74F6C0eB8e93B10c596108921ba10";
 
     public TransactionCompletedConsumer(
+        ILogger<TransactionCompletedConsumer> logger,
         ITransactionRepository transactionRepository,
         IWalletRepository walletRepository,
         IPaymentProviderService paymentProvider)
     {
+        _logger = logger;
         _transactionRepository = transactionRepository;
         _walletRepository = walletRepository;
         _paymentProvider = paymentProvider;
     }
 
-    // TODO: Add logging
     public async Task Consume(ConsumeContext<TransactionCompletedEvent> context)
     {
         var transaction = await _transactionRepository.GetTransactionById(context.Message.TransactionId);
         
         if (transaction is null)
         {
-            Console.WriteLine("WARNING: Received transaction completed event but transaction was not found");
+            _logger.LogWarning("Received transaction completed event but transaction was not found. TransactionId: {TransactionId}", context.Message.TransactionId);
             return;
         }
 
@@ -43,7 +45,7 @@ public class TransactionCompletedConsumer : IConsumer<TransactionCompletedEvent>
 
         if (wallet is null)
         {
-            Console.WriteLine("WARNING: Received transaction completed event but wallet was not found");
+            _logger.LogWarning("Received transaction completed event but wallet was not found. TransactionId: {TransactionId}, WalletId: {WalletId}", transaction.Id, transaction.WalletId);
             return;
         }
 
@@ -51,8 +53,7 @@ public class TransactionCompletedConsumer : IConsumer<TransactionCompletedEvent>
 
         if (success)
         {
-            Console.WriteLine("Wallet withdrawn successfully...");
-
+            _logger.LogInformation("Wallet withdrawn successfully. TransactionId: {TransactionId}, WalletId: {WalletId}", transaction.Id, transaction.WalletId);
             await _transactionRepository.UpdateTransaction(new TransactionUpdateModel
             {
                 Id = transaction.Id,
@@ -61,7 +62,7 @@ public class TransactionCompletedConsumer : IConsumer<TransactionCompletedEvent>
         }
         else
         {
-            Console.WriteLine("WARNING: Failed to withdraw funds from wallet");
+            _logger.LogWarning("Failed to withdraw funds from wallet. TransactionId: {TransactionId}, WalletId: {WalletId}", transaction.Id, transaction.WalletId);
         }
     }
 }
