@@ -8,7 +8,7 @@ namespace Qwitter.Core.Application.Configuration;
 public static class ConfigurationExtensions
 {
     public static WebApplicationBuilder AddConfiguration<TConfiguration>(this WebApplicationBuilder builder)
-        where TConfiguration : class, new()
+        where TConfiguration : class
     {
         var attribute = typeof(TConfiguration).GetCustomAttribute<ConfigurationAttribute>();
 

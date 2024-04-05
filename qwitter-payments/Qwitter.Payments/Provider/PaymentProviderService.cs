@@ -1,6 +1,7 @@
 using Nethereum.Util;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
+using Qwitter.Payments.Provider.Configuration;
 using System.Text.Json;
 
 namespace Qwitter.Payments.Provider;
@@ -15,21 +16,18 @@ public interface IPaymentProviderService
 public class PaymentProviderService : IPaymentProviderService
 {
     private readonly HttpClient _httpClient;
-    private readonly string _url;
+    private readonly PaymentProviderCredentials _credentials;
 
-    public PaymentProviderService(string url)
+    public PaymentProviderService(HttpClient httpClient, PaymentProviderCredentials credentials)
     {
-        _url = url;
-        _httpClient = new HttpClient()
-        {
-            BaseAddress = new Uri(url)
-        };
+        _httpClient = httpClient;
+        _credentials = credentials;
     }
 
     public async Task<decimal> GetAmountReceived(string address)
     {
         var request = new { jsonrpc = "2.0", id = 1, method = "alchemy_getAssetTransfers", @params = new[] { new { fromBlock = "0x0", toBlock = "latest", toAddress = address, category = new[] { "external" } } } };
-        var response = await _httpClient.PostAsJsonAsync("", request);
+        var response = await _httpClient.PostAsJsonAsync($"v2/{_credentials.Token}", request);
         var content = await response.Content.ReadAsStringAsync();
 
         using var doc = JsonDocument.Parse(content);
@@ -49,7 +47,7 @@ public class PaymentProviderService : IPaymentProviderService
     public async Task<bool> Transfer(string key, string address)
     {
         var account = new Account(key);
-        var web3 = new Web3(account, _url);
+        var web3 = new Web3(account, _credentials.Token);
         
         var transferService = web3.Eth.GetEtherTransferService();
 

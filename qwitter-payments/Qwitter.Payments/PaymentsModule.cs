@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
+using Qwitter.Core.Application.Configuration;
 using Qwitter.Core.Application.Kafka;
 using Qwitter.Payments.Provider;
+using Qwitter.Payments.Provider.Configuration;
 using Qwitter.Payments.Transactions.Consumers;
 using Qwitter.Payments.Transactions.Repositories;
 using Qwitter.Payments.Transactions.Services;
@@ -13,7 +15,13 @@ public static class PaymentsModule
 {
     public static WebApplicationBuilder ConfigurePaymentsModule(this WebApplicationBuilder builder)
     {
-        builder.Services.AddSingleton<IPaymentProviderService>(new PaymentProviderService(builder.Configuration["PaymentProviderUrl"]!));
+        builder.AddConfiguration<PaymentProviderCredentials>();
+        builder.Services.AddHttpClient<IPaymentProviderService, PaymentProviderService>((services, client) =>
+        {
+            var configuration = services.GetRequiredService<PaymentProviderCredentials>();
+            client.BaseAddress = new Uri(configuration.BaseAddress);
+        });
+        
         builder.Services.AddScoped<IWalletRepository, WalletRepository>();
         builder.Services.AddScoped<IWalletService, WalletService>();
         builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
