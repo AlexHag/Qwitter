@@ -19,7 +19,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Payments", "qwitter
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Payments.Contract", "qwitter-payments\Qwitter.Payments.Contract\Qwitter.Payments.Contract.csproj", "{A355BF37-7A90-4B9A-920B-8B843916946C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "qwitter-console", "qwitter-console\qwitter-console.csproj", "{B2CBDFEB-0D84-4A01-B1EE-458FC3D46805}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "qwitter-content", "qwitter-content", "{19070378-3ADE-4DD3-B2CB-A41D07E8BA82}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Content", "qwitter-content\Qwitter.Content\Qwitter.Content.csproj", "{B5EA40FB-664D-485F-AFF8-29D991BFEA57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qwitter.Content.Contract", "qwitter-content\Qwitter.Content.Contract\Qwitter.Content.Contract.csproj", "{B7789DC8-EB62-4ED1-A08E-10AED7CC4DE7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,10 +58,14 @@ Global
 		{A355BF37-7A90-4B9A-920B-8B843916946C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A355BF37-7A90-4B9A-920B-8B843916946C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A355BF37-7A90-4B9A-920B-8B843916946C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B2CBDFEB-0D84-4A01-B1EE-458FC3D46805}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B2CBDFEB-0D84-4A01-B1EE-458FC3D46805}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B2CBDFEB-0D84-4A01-B1EE-458FC3D46805}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B2CBDFEB-0D84-4A01-B1EE-458FC3D46805}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5EA40FB-664D-485F-AFF8-29D991BFEA57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5EA40FB-664D-485F-AFF8-29D991BFEA57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5EA40FB-664D-485F-AFF8-29D991BFEA57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5EA40FB-664D-485F-AFF8-29D991BFEA57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7789DC8-EB62-4ED1-A08E-10AED7CC4DE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7789DC8-EB62-4ED1-A08E-10AED7CC4DE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7789DC8-EB62-4ED1-A08E-10AED7CC4DE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7789DC8-EB62-4ED1-A08E-10AED7CC4DE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{0EC76B1A-2875-4304-974C-C9F49C827666} = {44D40673-6696-42BC-920A-762004268912}
@@ -65,5 +73,7 @@ Global
 		{47E81483-63D5-4FAB-AC7B-52092CEA80AB} = {3566C679-5A45-4212-919E-F72D00C44BE2}
 		{B8A8CDBB-7A60-4F22-90FC-6B0AE00DDAF4} = {C729DD61-150E-4B5A-99C0-CAB6213B496C}
 		{A355BF37-7A90-4B9A-920B-8B843916946C} = {C729DD61-150E-4B5A-99C0-CAB6213B496C}
+		{B5EA40FB-664D-485F-AFF8-29D991BFEA57} = {19070378-3ADE-4DD3-B2CB-A41D07E8BA82}
+		{B7789DC8-EB62-4ED1-A08E-10AED7CC4DE7} = {19070378-3ADE-4DD3-B2CB-A41D07E8BA82}
 	EndGlobalSection
 EndGlobal
