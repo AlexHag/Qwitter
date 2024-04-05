@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Qwitter.Core.Application.Authentication;
 using Qwitter.Core.Application.Exceptions;
@@ -11,8 +12,16 @@ public static class WebApplicationServiceExtensions
 {
     public static WebApplicationBuilder ConfigureBuilder(this WebApplicationBuilder builder)
     {
+        builder.Services.AddLogging(p => p.AddConsole());
+        
+        builder.Services.AddSingleton<ILogger>(p => 
+        {
+            var factory = p.GetRequiredService<ILoggerFactory>();
+            return factory.CreateLogger("Qwitter");
+        });
+
         builder.AddJwtAuthentication();
-        builder.Services.AddControllers();
+        builder.Services.AddControllers().AddControllersAsServices();
         builder.AddSwagger();
 
         return builder;

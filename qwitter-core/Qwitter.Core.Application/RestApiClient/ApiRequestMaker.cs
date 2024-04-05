@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using Qwitter.Core.Application.Exceptions;
 
 namespace Qwitter.Core.Application.RestApiClient;
@@ -11,9 +12,9 @@ public static class ApiRequestMaker
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
 
-    public static async Task<TReturnType> MakeApiRequest<TReturnType>(HttpClient httpClient, string httpMethod, string prefix, string template, params ParamInfo[] parameters)
+    public static async Task<TReturnType> MakeApiRequest<TReturnType>(ILogger logger, HttpClient httpClient, string httpMethod, string prefix, string template, params ParamInfo[] parameters)
     {
-        var restRequestInfo = RestRequestInfo.Create(httpMethod, template, parameters);
+        var restRequestInfo = RestRequestInfo.Create(logger, httpMethod, template, parameters);
 
         var requestUri = string.IsNullOrEmpty(prefix) ? restRequestInfo.CreateUrl() : $"{prefix}/{restRequestInfo.CreateUrl()}";
 
@@ -23,6 +24,8 @@ public static class ApiRequestMaker
         {
             httpRequestMessage.Content = new StringContent(JsonSerializer.Serialize(restRequestInfo.Body), Encoding.UTF8, "application/json");
         }
+
+        logger.LogInformation("Making request to {requestUri}", requestUri);
 
         var response = await httpClient.SendAsync(httpRequestMessage);
 
@@ -37,6 +40,7 @@ public static class ApiRequestMaker
             }
             catch (JsonException)
             {
+                logger.LogError("Failed to deserialize response from {requestUri}", requestUri);
                 throw new InternalServerErrorApiException(await response.Content.ReadAsStringAsync());
             }
         }
@@ -44,8 +48,8 @@ public static class ApiRequestMaker
         {
             var contentString = await response.Content.ReadAsStringAsync();
 
-            // TODO: Add more information to exceptions
-            // TOOD: Implement logging
+            logger.LogError("Failed to make request to {requestUri}. Response: {response}", requestUri, contentString);
+            
             throw response.StatusCode switch
             {
                 System.Net.HttpStatusCode.NotFound => new NotFoundApiException(contentString),

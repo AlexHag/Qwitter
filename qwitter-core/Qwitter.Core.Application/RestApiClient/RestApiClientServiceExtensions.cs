@@ -1,6 +1,7 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Qwitter.Core.Application.RestApiClient;
 
@@ -20,7 +21,9 @@ public static class RestApiClientServiceExtensions
             BaseAddress = new Uri($"https://localhost:{host.Port}")
         };
 
-        var client = new RestClientProxy<TController>(httpClient).GetTransparentProxy();
+        var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<TController>>();
+
+        var client = new RestClientProxy<TController>(logger, httpClient).GetTransparentProxy();
 
         if (client is null)
         {

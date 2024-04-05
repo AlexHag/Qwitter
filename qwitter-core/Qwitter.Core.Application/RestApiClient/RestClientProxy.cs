@@ -1,14 +1,19 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.Extensions.Logging;
 
 namespace Qwitter.Core.Application.RestApiClient;
 
 public class RestClientProxy<TController> : DispatchProxy
 {
+    private readonly ILogger _logger;
     private readonly HttpClient _httpClient;
 
-    public RestClientProxy(HttpClient httpClient)
+    public RestClientProxy(
+        ILogger logger,
+        HttpClient httpClient)
     {
+        _logger = logger;
         _httpClient = httpClient;
     }
 
@@ -55,7 +60,7 @@ public class RestClientProxy<TController> : DispatchProxy
             }
         }
 
-        var response = makeApiRequestMethod.Invoke(null, [_httpClient, httpMethodAttribute.HttpMethods.First(), host.Prefix, httpMethodAttribute.Template, paramArgs]);
+        var response = makeApiRequestMethod.Invoke(null, [_logger, _httpClient, httpMethodAttribute.HttpMethods.First(), host.Prefix, httpMethodAttribute.Template, paramArgs]);
 
         return response;
     }

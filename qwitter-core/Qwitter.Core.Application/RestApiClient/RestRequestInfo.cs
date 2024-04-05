@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Logging;
 
 namespace Qwitter.Core.Application.RestApiClient;
 
@@ -39,7 +40,7 @@ public class RestRequestInfo
     }
 
     // TOOD: Use interface and factory method instead of static
-    public static RestRequestInfo Create(string httpMethod, string template, params ParamInfo?[]? parameters)
+    public static RestRequestInfo Create(ILogger logger, string httpMethod, string template, params ParamInfo?[]? parameters)
     {
         var restRequestInfo = new RestRequestInfo
         {
@@ -53,7 +54,7 @@ public class RestRequestInfo
         {
             if (parameter is null)
             {
-                Console.WriteLine("Warning one parameter is null but not all of them may be null");
+                logger.LogInformation("Warning one parameter is null but not all of them may be null. Method: {httpMethod}, Template: {template}", httpMethod, template);
                 continue;
             }
 
