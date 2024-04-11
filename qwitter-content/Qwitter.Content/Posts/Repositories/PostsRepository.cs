@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Qwitter.Content.Posts.Models;
+using Qwitter.Core.Application.Exceptions;
 
 namespace Qwitter.Content.Posts.Repositories;
 
@@ -22,10 +23,13 @@ public class PostsRepository : IPostsRepository
 
     public async Task<PostEntity> CreatePost(Guid userId, string content)
     {
+        var user = await _dbContext.Users.FindAsync(userId) ?? throw new NotFoundApiException("User not found");
+
         var post = new PostEntity
         {
             Id = Guid.NewGuid(),
             UserId = userId,
+            User = user,
             Content = content,
             Likes = 0,
             Dislikes = 0,
@@ -49,7 +53,7 @@ public class PostsRepository : IPostsRepository
 
     public async Task<IEnumerable<PostEntity>> GetUserPosts(Guid userId)
     {
-        return await _dbContext.Posts.Where(p => p.UserId == userId).ToListAsync();
+        return await _dbContext.Posts.Include(p => p.User).Where(p => p.UserId == userId).ToListAsync();
     }
 
     public async Task LikePost(Guid postId)

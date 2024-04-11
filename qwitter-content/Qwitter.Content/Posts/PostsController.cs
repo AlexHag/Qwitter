@@ -41,19 +41,12 @@ public class PostsController : ControllerBase, IPostsController
         return _mapper.Map<CreatePostResponse>(post);
     }
 
+    // TODO: Pagination
     [HttpGet("user/{userId}")]
     public async Task<IEnumerable<PostResponse>> GetUserPosts(Guid userId)
     {
         var posts = await _postsRepository.GetUserPosts(userId);
-
-        return posts.Select(p => new PostResponse
-        {
-            Id = p.Id,
-            UserId = p.UserId,
-            Content = p.Content,
-            Likes = p.Likes,
-            CreatedAt = p.CreatedAt
-        });
+        return posts.Select(_mapper.Map<PostResponse>);
     }
 
     [HttpGet("mine")]
