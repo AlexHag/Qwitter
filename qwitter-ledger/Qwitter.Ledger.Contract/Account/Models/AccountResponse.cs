@@ -10,4 +10,6 @@ public class AccountResponse
     public AccountType AccountType { get; set; }
     public required string Currency { get; set; }
     public decimal Balance { get; set; }
+    public bool OverdraftAllowed { get; set; }
+    public bool IsPrimary { get; set; }
 }

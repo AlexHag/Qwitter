@@ -20,9 +20,16 @@ public class TransactionsController : ControllerBase, ITransactionsController
     }
 
     [HttpPost("credit")]
-    public async Task<CreditFundsResponse> CreditFunds(CreditFundsRequest request)
+    public async Task<TransactionResponse> CreditFunds(CreditFundsRequest request)
     {
         var response = await _transactionService.CreditFunds(request);
-        return _mapper.Map<CreditFundsResponse>(response);
+        return _mapper.Map<TransactionResponse>(response);
+    }
+
+    [HttpPost("debit")]
+    public async Task<TransactionResponse> DebitFunds(DebitFundsRequest request)
+    {
+        var response = await _transactionService.DebitFunds(request);
+        return _mapper.Map<TransactionResponse>(response);
     }
 }

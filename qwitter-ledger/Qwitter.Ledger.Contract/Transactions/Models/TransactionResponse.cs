@@ -1,6 +1,6 @@
 namespace Qwitter.Ledger.Contract.Transactions.Models;
 
-public class CreditFundsResponse
+public class TransactionResponse
 {
     public Guid Id { get; set; }
     public Guid AccountId { get; set; }
@@ -12,5 +12,6 @@ public class CreditFundsResponse
     public decimal DestinationAmount { get; set; }
     public decimal ExchangeRate { get; set; }
     public decimal? Fee { get; set; }
+    public string? Message { get; set; }
     public DateTime CreatedAt { get; set; }
 }

@@ -22,5 +22,37 @@ public class AppDbContext : DbContext
     {
         modelBuilder.Entity<UserEntity>()
             .HasKey(u => u.UserId);
+        
+        modelBuilder.Entity<AccountEntity>()
+            .Property(p => p.Balance)
+            .HasPrecision(18, 8);
+
+        modelBuilder.Entity<ExchangeRateEntity>()
+            .Property(p => p.Rate)
+            .HasPrecision(18, 8);
+
+        modelBuilder.Entity<TransactionEntity>()
+            .Property(p => p.PreviousBalance)
+            .HasPrecision(18, 8);
+
+        modelBuilder.Entity<TransactionEntity>()
+            .Property(p => p.NewBalance)
+            .HasPrecision(18, 8);
+
+        modelBuilder.Entity<TransactionEntity>()
+            .Property(p => p.SourceAmount)
+            .HasPrecision(18, 8);
+
+        modelBuilder.Entity<TransactionEntity>()
+            .Property(p => p.DestinationAmount)
+            .HasPrecision(18, 8);
+
+        modelBuilder.Entity<TransactionEntity>()
+            .Property(p => p.ExchangeRate)
+            .HasPrecision(18, 8);
+
+        modelBuilder.Entity<TransactionEntity>()
+            .Property(p => p.Fee)
+            .HasPrecision(18, 8);
     }
 }

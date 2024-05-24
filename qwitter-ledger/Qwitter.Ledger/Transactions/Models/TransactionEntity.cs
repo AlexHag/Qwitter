@@ -12,5 +12,6 @@ public class TransactionEntity
     public decimal DestinationAmount { get; set; }
     public decimal ExchangeRate { get; set; }
     public decimal? Fee { get; set; }
+    public string? Message { get; set; }
     public DateTime CreatedAt { get; set; }
 }

@@ -1,6 +1,6 @@
 namespace Qwitter.Ledger.Contract.Transactions.Models;
 
-public class CreditFundsRequest
+public class DebitFundsRequest
 {
     public Guid UserId { get; set; }
     public Guid? AccountId { get; set; }

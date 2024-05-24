@@ -13,6 +13,7 @@ public class AccountEntity
     public AccountStatus AccountStatus { get; set; }
     public decimal Balance { get; set; }
     public required string Currency { get; set; }
+    public bool OverdraftAllowed { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }

@@ -8,8 +8,9 @@ namespace Qwitter.Ledger.Contract.Transactions;
 public interface ITransactionsController
 {
     [HttpPost("credit")]
-    Task<CreditFundsResponse> CreditFunds(CreditFundsRequest request);
-    // Task DebitFunds();
+    Task<TransactionResponse> CreditFunds(CreditFundsRequest request);
+    [HttpPost("debit")]
+    Task<TransactionResponse> DebitFunds(DebitFundsRequest request);
     // Task ReserveFunds();
     // Task DebitReservedFunds();
     // Task CancelReservedFunds();
