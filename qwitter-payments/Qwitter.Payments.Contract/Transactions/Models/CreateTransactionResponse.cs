@@ -5,6 +5,7 @@ public class CreateTransactionResponse
     public Guid Id { get; set; }
     public Guid UserId { get; set; }
     public decimal Amount { get; set; }
+    public required string Currency { get; set; }
     public required string Topic { get; set; }
     public required string PaymentAddress { get; set; }
 }

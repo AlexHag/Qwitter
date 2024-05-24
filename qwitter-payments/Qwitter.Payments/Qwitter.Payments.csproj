@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Qwitter.Payments.Contract\Qwitter.Payments.Contract.csproj" />
+    <ProjectReference Include="..\..\qwitter-users\Qwitter.Users.Contract\Qwitter.Users.Contract.csproj" />
   </ItemGroup>
 
   <ItemGroup>

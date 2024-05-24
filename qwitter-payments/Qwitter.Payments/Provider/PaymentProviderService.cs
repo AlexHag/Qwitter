@@ -8,9 +8,9 @@ namespace Qwitter.Payments.Provider;
 
 public interface IPaymentProviderService
 {
-    Task<decimal> GetAmountReceived(string address);
-    Task<bool> Transfer(string key, string address);
-    Task<bool> Transfer(string key, string address, decimal amount);
+    Task<decimal> GetAmountReceived(string address, string currency);
+    Task<bool> Transfer(string key, string address, string currency);
+    Task<bool> Transfer(string key, string address, decimal amount, string currency);
 }
 
 public class PaymentProviderService : IPaymentProviderService
@@ -29,8 +29,13 @@ public class PaymentProviderService : IPaymentProviderService
         _credentials = credentials;
     }
 
-    public async Task<decimal> GetAmountReceived(string address)
+    public async Task<decimal> GetAmountReceived(string address, string currency)
     {
+        if (currency != "ETH")
+        {
+            throw new NotSupportedException("Currency not supported");
+        }
+
         var request = new { jsonrpc = "2.0", id = 1, method = "alchemy_getAssetTransfers", @params = new[] { new { fromBlock = "0x0", toBlock = "latest", toAddress = address, category = new[] { "external" } } } };
         var response = await _httpClient.PostAsJsonAsync($"v2/{_credentials.Token}", request);
         var content = await response.Content.ReadAsStringAsync();
@@ -49,8 +54,13 @@ public class PaymentProviderService : IPaymentProviderService
         return totalValue;
     }
 
-    public async Task<bool> Transfer(string key, string address)
+    public async Task<bool> Transfer(string key, string address, string currency)
     {
+        if (currency != "ETH")
+        {
+            throw new NotSupportedException("Currency not supported");
+        }
+
         var account = new Account(key);
         var web3 = new Web3(account, _credentials.Token);
         
@@ -75,7 +85,7 @@ public class PaymentProviderService : IPaymentProviderService
         }
     }
 
-    public Task<bool> Transfer(string key, string address, decimal amount)
+    public Task<bool> Transfer(string key, string address, decimal amount, string currency)
     {
         throw new NotImplementedException();
     }

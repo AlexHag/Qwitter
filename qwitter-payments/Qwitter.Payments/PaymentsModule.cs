@@ -19,6 +19,8 @@ public static class PaymentsModule
     {
         builder.AddConfiguration<TransactionConfiguration>();
         builder.AddConfiguration<PaymentProviderCredentials>();
+        builder.AddConfiguration<PaymentsConfiguration>();
+
         builder.Services.AddHttpClient<IPaymentProviderService, PaymentProviderService>((services, client) =>
         {
             var configuration = services.GetRequiredService<PaymentProviderCredentials>();

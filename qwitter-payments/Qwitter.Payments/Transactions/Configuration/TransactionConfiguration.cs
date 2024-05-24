@@ -6,4 +6,5 @@ namespace Qwitter.Payments.Transactions.Configuration;
 public class TransactionConfiguration
 {
     public required string WithdrawingAddress { get; set; }
+    public required bool TransferFundsAfterCompletion { get; set; }
 }

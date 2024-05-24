@@ -21,22 +21,30 @@ public class TransactionService : ITransactionService
     private readonly IWalletService _walletService;
     private readonly IEventProducer _eventProducer;
     private readonly IPaymentProviderService _paymentProvider;
+    private readonly PaymentsConfiguration _config;
 
     public TransactionService(
         ITransactionRepository transactionRepository,
         IWalletService walletService,
         IEventProducer producer,
-        IPaymentProviderService paymentProvider)
+        IPaymentProviderService paymentProvider,
+        PaymentsConfiguration config)
     {
         _transactionRepository = transactionRepository;
         _walletService = walletService;
         _eventProducer = producer;
         _paymentProvider = paymentProvider;
+        _config = config;
     }
 
     public async Task<CreateTransactionResponse> CreateTransaction(CreateTransactionRequest request)
     {
-        var wallet = await _walletService.CreateWallet(request.UserId);
+        if (!_config.SupportedCurrencies.Contains(request.Currency))
+        {
+            throw new NotSupportedException("Currency not supported");
+        }
+
+        var wallet = await _walletService.CreateWallet(request.UserId, request.Currency);
 
         var transaction = await _transactionRepository.InsertTransaction(new TransactionInsertModel
         {
@@ -44,7 +52,8 @@ public class TransactionService : ITransactionService
             WalletId = wallet.Id,
             PaymentAddress = wallet.Address,
             Topic = request.Topic,
-            Amount = request.Amount
+            Amount = request.Amount,
+            Currency = request.Currency,
         });
 
         await _eventProducer.Produce(new TransactionCreatedEvent
@@ -58,6 +67,7 @@ public class TransactionService : ITransactionService
             Id = transaction.Id,
             UserId = request.UserId,
             Amount = request.Amount,
+            Currency = request.Currency,
             Topic = request.Topic,
             PaymentAddress = wallet.Address,
         };
@@ -66,14 +76,14 @@ public class TransactionService : ITransactionService
     public async Task SyncTransaction(Guid transactionId)
     {
         var transaction = await _transactionRepository.GetTransactionById(transactionId);
-        
+
         if (transaction is null)
             throw new NotFoundApiException("Transaction not found");
         
         if (transaction.Status != TransactionStatus.Pending)
             return;
         
-        var amountReceived = await _paymentProvider.GetAmountReceived(transaction.PaymentAddress);
+        var amountReceived = await _paymentProvider.GetAmountReceived(transaction.PaymentAddress, transaction.Currency);
 
         if (amountReceived >= transaction.Amount)
         {
@@ -87,7 +97,9 @@ public class TransactionService : ITransactionService
             await _eventProducer.Produce(new TransactionCompletedEvent
             {
                 UserId = transaction.UserId,
-                TransactionId = transaction.Id
+                TransactionId = transaction.Id,
+                Amount = transaction.Amount,
+                Currency = transaction.Currency
             }, transaction.Topic);
         }
         else if (amountReceived != transaction.AmountReceived)

@@ -38,6 +38,7 @@ public class TransactionRepository : ITransactionRepository
             Topic = transaction.Topic,
             Amount = transaction.Amount,
             AmountReceived = 0,
+            Currency = transaction.Currency,
             Status = TransactionStatus.Pending,
             CreatedAt = DateTime.UtcNow
         };

@@ -4,5 +4,6 @@ public class CreateTransactionRequest
 {
     public Guid UserId { get; set; }
     public decimal Amount { get; set; }
+    public required string Currency { get; set; }
     public required string Topic { get; set; }
 }

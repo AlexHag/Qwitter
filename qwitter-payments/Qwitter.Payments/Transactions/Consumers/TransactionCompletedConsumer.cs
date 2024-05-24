@@ -34,11 +34,19 @@ public class TransactionCompletedConsumer : IConsumer<TransactionCompletedEvent>
 
     public async Task Consume(ConsumeContext<TransactionCompletedEvent> context)
     {
-        var transaction = await _transactionRepository.GetTransactionById(context.Message.TransactionId);
+        if (_transactionConfig.TransferFundsAfterCompletion)
+        {
+            await TransferToRootWallet(context.Message);
+        }
+    }
+
+    private async Task TransferToRootWallet(TransactionCompletedEvent context)
+    {
+        var transaction = await _transactionRepository.GetTransactionById(context.TransactionId);
         
         if (transaction is null)
         {
-            _logger.LogWarning("Received transaction completed event but transaction was not found. TransactionId: {TransactionId}", context.Message.TransactionId);
+            _logger.LogWarning("Received transaction completed event but transaction was not found. TransactionId: {TransactionId}", context.TransactionId);
             return;
         }
 
@@ -50,7 +58,7 @@ public class TransactionCompletedConsumer : IConsumer<TransactionCompletedEvent>
             return;
         }
 
-        var success = await _paymentProvider.Transfer(wallet.PrivateKey, _transactionConfig.WithdrawingAddress);
+        var success = await _paymentProvider.Transfer(wallet.PrivateKey, _transactionConfig.WithdrawingAddress, transaction.Currency);
 
         if (success)
         {

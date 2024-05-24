@@ -11,6 +11,7 @@ public class TransactionEntity
     public required string Topic { get; set; }
     public decimal Amount { get; set; }
     public decimal AmountReceived { get; set; }
+    public required string Currency { get; set; }
     public TransactionStatus Status { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
