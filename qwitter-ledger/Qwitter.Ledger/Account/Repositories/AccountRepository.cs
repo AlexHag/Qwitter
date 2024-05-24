@@ -8,7 +8,7 @@ public interface IAccountRepository
     Task Insert(AccountEntity account);
     Task<AccountEntity?> GetById(Guid accountId);
     Task<AccountEntity?> GetByAccountNumber(string accountNumber);
-    Task<List<AccountEntity>> GetByUserId(Guid userId);
+    Task<List<AccountEntity>> GetAllByUserId(Guid userId);
     Task Update(AccountEntity account);
 }
 
@@ -34,6 +34,7 @@ public class AccountRepository : IAccountRepository
 
     public async Task Update(AccountEntity account)
     {
+        account.UpdatedAt = DateTime.UtcNow;
         _dbContext.Accounts.Update(account);
         await _dbContext.SaveChangesAsync();
     }
@@ -43,7 +44,7 @@ public class AccountRepository : IAccountRepository
         return _dbContext.Accounts.FirstOrDefaultAsync(a => a.AccountNumber == accountNumber);
     }
 
-    public Task<List<AccountEntity>> GetByUserId(Guid userId)
+    public Task<List<AccountEntity>> GetAllByUserId(Guid userId)
     {
         return _dbContext.Accounts.Where(a => a.UserId == userId).ToListAsync();
     }

@@ -101,7 +101,7 @@ public class AccountService : IAccountService
             throw new NotFoundApiException("User not found");
         }
 
-        var accounts = await _accountRepository.GetByUserId(userId);
+        var accounts = await _accountRepository.GetAllByUserId(userId);
 
         var response = accounts.Select(_mapper.Map<AccountResponse>).ToList();
 

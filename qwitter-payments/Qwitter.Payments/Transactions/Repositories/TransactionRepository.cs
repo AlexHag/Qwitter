@@ -7,9 +7,9 @@ namespace Qwitter.Payments.Transactions.Repositories;
 
 public interface ITransactionRepository
 {
-    Task<TransactionEntity> InsertTransaction(TransactionInsertModel transaction);
-    Task<TransactionEntity> UpdateTransaction(TransactionUpdateModel transaction);
-    Task<TransactionEntity?> GetTransactionById(Guid transactionId);
+    Task Insert(TransactionEntity transaction);
+    Task Update(TransactionEntity transaction);
+    Task<TransactionEntity?> GetById(Guid transactionId);
 }
 
 public class TransactionRepository : ITransactionRepository
@@ -21,50 +21,22 @@ public class TransactionRepository : ITransactionRepository
         _dbContext = dbContext;
     }
 
-    public async Task<TransactionEntity?> GetTransactionById(Guid transactionId)
+    public async Task<TransactionEntity?> GetById(Guid transactionId)
     {
         var entity = await _dbContext.Transactions.FindAsync(transactionId);
         return entity;
     }
 
-    public async Task<TransactionEntity> InsertTransaction(TransactionInsertModel transaction)
+    public async Task Insert(TransactionEntity transaction)
     {
-        var entity = new TransactionEntity
-        {
-            Id = Guid.NewGuid(),
-            UserId = transaction.UserId,
-            WalletId = transaction.WalletId,
-            PaymentAddress = transaction.PaymentAddress,
-            Topic = transaction.Topic,
-            Amount = transaction.Amount,
-            AmountReceived = 0,
-            Currency = transaction.Currency,
-            Status = TransactionStatus.Pending,
-            CreatedAt = DateTime.UtcNow
-        };
-
-        await _dbContext.Transactions.AddAsync(entity);
+        await _dbContext.Transactions.AddAsync(transaction);
         await _dbContext.SaveChangesAsync();
-
-        return entity;
     }
 
-    public async Task<TransactionEntity> UpdateTransaction(TransactionUpdateModel transaction)
+    public async Task Update(TransactionEntity transaction)
     {
-        var entity = await _dbContext.Transactions.FindAsync(transaction.Id);
-        
-        if (entity is null)
-            throw new NotFoundApiException("Transaction not found");
-
-        if (transaction.AmountReceived is not null)
-            entity.AmountReceived = transaction.AmountReceived.Value;
-        
-        if (transaction.Status is not null)
-            entity.Status = transaction.Status.Value;
-        
-        entity.UpdatedAt = DateTime.UtcNow;
-
+        transaction.UpdatedAt = DateTime.UtcNow;
+        _dbContext.Transactions.Update(transaction);
         await _dbContext.SaveChangesAsync();
-        return entity;
     }
 }

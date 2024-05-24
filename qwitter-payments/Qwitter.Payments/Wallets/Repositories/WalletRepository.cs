@@ -6,7 +6,7 @@ namespace Qwitter.Payments.Wallets.Repositories;
 public interface IWalletRepository
 {
     Task InsertWallet(WalletEntity wallet);
-    Task<WalletEntity?> GetWalletById(Guid walletId);
+    Task<WalletEntity?> GetById(Guid walletId);
 }
 
 public class WalletRepository : IWalletRepository
@@ -18,7 +18,7 @@ public class WalletRepository : IWalletRepository
         _dbContext = dbContext;
     }
 
-    public async Task<WalletEntity?> GetWalletById(Guid walletId)
+    public async Task<WalletEntity?> GetById(Guid walletId)
     {
         return await _dbContext.Wallets.FindAsync(walletId);
     }

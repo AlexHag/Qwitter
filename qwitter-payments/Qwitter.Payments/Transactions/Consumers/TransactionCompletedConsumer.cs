@@ -42,7 +42,7 @@ public class TransactionCompletedConsumer : IConsumer<TransactionCompletedEvent>
 
     private async Task TransferToRootWallet(TransactionCompletedEvent context)
     {
-        var transaction = await _transactionRepository.GetTransactionById(context.TransactionId);
+        var transaction = await _transactionRepository.GetById(context.TransactionId);
         
         if (transaction is null)
         {
@@ -50,7 +50,7 @@ public class TransactionCompletedConsumer : IConsumer<TransactionCompletedEvent>
             return;
         }
 
-        var wallet = await _walletRepository.GetWalletById(transaction.WalletId);
+        var wallet = await _walletRepository.GetById(transaction.WalletId);
 
         if (wallet is null)
         {
@@ -63,11 +63,9 @@ public class TransactionCompletedConsumer : IConsumer<TransactionCompletedEvent>
         if (success)
         {
             _logger.LogInformation("Wallet withdrawn successfully. TransactionId: {TransactionId}, WalletId: {WalletId}", transaction.Id, transaction.WalletId);
-            await _transactionRepository.UpdateTransaction(new TransactionUpdateModel
-            {
-                Id = transaction.Id,
-                Status = TransactionStatus.Withdrawn
-            });
+            // Fix
+            transaction.Status = TransactionStatus.Withdrawn;
+            await _transactionRepository.Update(transaction);
         }
         else
         {

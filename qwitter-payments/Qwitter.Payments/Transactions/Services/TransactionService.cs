@@ -46,15 +46,21 @@ public class TransactionService : ITransactionService
 
         var wallet = await _walletService.CreateWallet(request.UserId, request.Currency);
 
-        var transaction = await _transactionRepository.InsertTransaction(new TransactionInsertModel
+        var transaction = new TransactionEntity
         {
+            Id = Guid.NewGuid(),
             UserId = request.UserId,
             WalletId = wallet.Id,
             PaymentAddress = wallet.Address,
             Topic = request.Topic,
             Amount = request.Amount,
+            AmountReceived = 0,
             Currency = request.Currency,
-        });
+            Status = TransactionStatus.Pending,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        await _transactionRepository.Insert(transaction);
 
         await _eventProducer.Produce(new TransactionCreatedEvent
         {
@@ -75,7 +81,7 @@ public class TransactionService : ITransactionService
 
     public async Task SyncTransaction(Guid transactionId)
     {
-        var transaction = await _transactionRepository.GetTransactionById(transactionId);
+        var transaction = await _transactionRepository.GetById(transactionId);
 
         if (transaction is null)
             throw new NotFoundApiException("Transaction not found");
@@ -87,12 +93,10 @@ public class TransactionService : ITransactionService
 
         if (amountReceived >= transaction.Amount)
         {
-            await _transactionRepository.UpdateTransaction(new TransactionUpdateModel
-            {
-                Id = transaction.Id,
-                AmountReceived = amountReceived,
-                Status = TransactionStatus.Completed
-            });
+            // Fix
+            transaction.AmountReceived = amountReceived;
+            transaction.Status = TransactionStatus.Completed;
+            await _transactionRepository.Update(transaction);
 
             await _eventProducer.Produce(new TransactionCompletedEvent
             {
@@ -104,11 +108,9 @@ public class TransactionService : ITransactionService
         }
         else if (amountReceived != transaction.AmountReceived)
         {
-            await _transactionRepository.UpdateTransaction(new TransactionUpdateModel
-            {
-                Id = transaction.Id,
-                AmountReceived = amountReceived
-            });
+            // Fix
+            transaction.AmountReceived = amountReceived;
+            await _transactionRepository.Update(transaction);
         }
     }
 }
