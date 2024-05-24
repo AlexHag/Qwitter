@@ -8,6 +8,7 @@ using MapsterMapper;
 using Qwitter.Users.Contract.User.Events;
 using Qwitter.Core.Application.Authentication;
 using Qwitter.Core.Application.Exceptions;
+using Qwitter.Users.Contract.User.Models;
 
 namespace Qwitter.Users.Auth;
 
@@ -51,7 +52,8 @@ public class AuthController : ControllerBase, IAuthController
 
         return new AuthResponse
         {
-            Token = token
+            Token = token,
+            User = _mapper.Map<UserProfile>(user)
         };
     }
 
@@ -76,7 +78,8 @@ public class AuthController : ControllerBase, IAuthController
 
         return new AuthResponse
         {
-            Token = token
+            Token = token,
+            User = _mapper.Map<UserProfile>(user)
         };
     }
 }

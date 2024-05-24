@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Qwitter.Users.Contract.Auth.Models;
 using Qwitter.Users.User.Models;
 
