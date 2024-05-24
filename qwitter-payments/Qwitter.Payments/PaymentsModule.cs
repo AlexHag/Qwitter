@@ -7,6 +7,7 @@ using Qwitter.Payments.Transactions.Configuration;
 using Qwitter.Payments.Transactions.Consumers;
 using Qwitter.Payments.Transactions.Repositories;
 using Qwitter.Payments.Transactions.Services;
+using Qwitter.Payments.User.Repositories;
 using Qwitter.Payments.Wallets.Repositories;
 using Qwitter.Payments.Wallets.Services;
 
@@ -28,6 +29,7 @@ public static class PaymentsModule
         builder.Services.AddScoped<IWalletService, WalletService>();
         builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
         builder.Services.AddScoped<ITransactionService, TransactionService>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
 
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!));
