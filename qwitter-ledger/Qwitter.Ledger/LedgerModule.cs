@@ -12,6 +12,9 @@ using Qwitter.Ledger.User.Repositories;
 using Qwitter.Ledger.User.Consumers;
 using Qwitter.Transactions.Consumers;
 using MapsterMapper;
+using Qwitter.Ledger.Invoices.Repositories;
+using Qwitter.Ledger.Invoices.Services;
+using Qwitter.Ledger.Invoices.Consumers;
 
 namespace Qwitter.Ledger;
 
@@ -32,10 +35,14 @@ public static class LedgerModule
         builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
         builder.Services.AddScoped<ITransactionService, TransactionService>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
+        builder.Services.AddScoped<IInvoicePaymentRepository, InvoicePaymentRepository>();
+        builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 
         // builder.RegisterConsumer<TransactionCompletedConsumer>("ledger-group");
         builder.RegisterConsumer<UserCreatedConsumer>("ledger-group");
         builder.RegisterConsumer<UserStateChangedConsumer>("ledger-group");
+        builder.RegisterConsumer<InvoiceOverpayedConsumer>("ledger-group");
 
         builder.UseKafka();
         

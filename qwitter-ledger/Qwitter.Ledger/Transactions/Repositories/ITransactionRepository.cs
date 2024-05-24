@@ -7,6 +7,7 @@ namespace Qwitter.Ledger.Transactions.Repositories;
 public interface ITransactionRepository
 {
     Task Insert(TransactionEntity entity);
+    Task<TransactionEntity?> GetById(Guid id);
     Task<IEnumerable<TransactionEntity>> GetByBankAccountId(Guid bankAaccountId, PaginationRequest request);
 }
 
@@ -29,6 +30,11 @@ public class TransactionRepository : ITransactionRepository
             .ToListAsync();
 
         return query;
+    }
+
+    public async Task<TransactionEntity?> GetById(Guid id)
+    {
+        return await _dbContext.Transactions.FindAsync(id);
     }
 
     public async Task Insert(TransactionEntity entity)

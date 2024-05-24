@@ -155,7 +155,9 @@ public class TransactionService : ITransactionService
             throw new BadRequestApiException("Account is frozen");
         }
 
-        var rate = await _exchangeRate.GetExchangeRate(request.Currency, account.Currency);
+        var currency = request.Currency ?? account.Currency;
+
+        var rate = await _exchangeRate.GetExchangeRate(currency, account.Currency);
 
         if (rate is null)
         {
@@ -177,10 +179,10 @@ public class TransactionService : ITransactionService
             BankAccountId = account.Id,
             PreviousBalance = account.Balance,
             NewBalance = newBalance,
-            SourceCurrency = request.Currency,
-            DestinationCurrency = account.Currency,
-            SourceAmount = request.Amount,
-            DestinationAmount = amount,
+            SourceCurrency = account.Currency,
+            DestinationCurrency = currency,
+            SourceAmount = amount,
+            DestinationAmount = request.Amount,
             ExchangeRate = rate.Value,
             Fee = 0,
             Message = request.Message,

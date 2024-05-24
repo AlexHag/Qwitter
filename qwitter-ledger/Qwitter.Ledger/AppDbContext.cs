@@ -4,6 +4,7 @@ using Qwitter.Ledger.Bank.Models;
 using Qwitter.Ledger.ExchangeRates.Models;
 using Qwitter.Ledger.Transactions.Models;
 using Qwitter.Ledger.User.Models;
+using Qwitter.Ledger.Invoices.Models;
 
 namespace Qwitter.Ledger;
 
@@ -14,6 +15,8 @@ public class AppDbContext : DbContext
     public DbSet<BankInstitutionEntity> BankInstitutions { get; set; }
     public DbSet<ExchangeRateEntity> ExchangeRates { get; set; }
     public DbSet<TransactionEntity> Transactions { get; set; }
+    public DbSet<InvoiceEntity> Invoices { get; set; }
+    public DbSet<InvoicePaymentEntity> InvoicePayments { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
     { }
@@ -53,6 +56,18 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<TransactionEntity>()
             .Property(p => p.Fee)
+            .HasPrecision(18, 8);
+        
+        modelBuilder.Entity<InvoiceEntity>()
+            .Property(p => p.Amount)
+            .HasPrecision(18, 8);
+        
+        modelBuilder.Entity<InvoiceEntity>()
+            .Property(p => p.AmountPayed)
+            .HasPrecision(18, 8);
+        
+        modelBuilder.Entity<InvoicePaymentEntity>()
+            .Property(p => p.Amount)
             .HasPrecision(18, 8);
     }
 }
