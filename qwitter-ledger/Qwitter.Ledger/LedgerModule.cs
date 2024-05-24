@@ -1,0 +1,44 @@
+using Microsoft.EntityFrameworkCore;
+using Qwitter.Core.Application.Configuration;
+using Qwitter.Core.Application.Kafka;
+using Qwitter.Ledger.Account.Configuration;
+using Qwitter.Ledger.Account.Repositories;
+using Qwitter.Ledger.Account.Services;
+using Qwitter.Ledger.Bank.Repositories;
+using Qwitter.Ledger.ExchangeRates.Repositories;
+using Qwitter.Ledger.Transactions.Repositories;
+using Qwitter.Ledger.Transactions.Services;
+using Qwitter.Ledger.User.Repositories;
+using Qwitter.Ledger.User.Consumers;
+using Qwitter.Transactions.Consumers;
+using MapsterMapper;
+
+namespace Qwitter.Ledger;
+
+public static class LedgerModule
+{
+    public static WebApplicationBuilder ConfigureLedgerModule(this WebApplicationBuilder builder)
+    {
+        builder.AddConfiguration<BankConfiguration>();
+
+        builder.Services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!));
+
+        builder.Services.AddScoped<IMapper, Mapper>();
+        builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+        builder.Services.AddScoped<IAccountService, AccountService>();
+        builder.Services.AddScoped<IBankInstitutionRepository, BankInstitutionRepository>();
+        builder.Services.AddScoped<IExchangeRateRepository, ExchangeRateRepository>();
+        builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
+        builder.Services.AddScoped<ITransactionService, TransactionService>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+
+        // builder.RegisterConsumer<TransactionCompletedConsumer>("ledger-group");
+        builder.RegisterConsumer<UserCreatedConsumer>("ledger-group");
+        builder.RegisterConsumer<UserStateChangedConsumer>("ledger-group");
+
+        builder.UseKafka();
+        
+        return builder;
+    }
+}

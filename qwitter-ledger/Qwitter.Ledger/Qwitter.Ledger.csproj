@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mapster" Version="7.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Qwitter.Ledger.Contract\Qwitter.Ledger.Contract.csproj" />
+    <ProjectReference Include="..\..\qwitter-users\Qwitter.Users.Contract\Qwitter.Users.Contract.csproj" />
+    <ProjectReference Include="..\..\qwitter-payments\Qwitter.Payments.Contract\Qwitter.Payments.Contract.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\certificates\user_auth\user_auth_cert.pem">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>user_auth_cert.pem</Link>
+    </None>
+  </ItemGroup>
+
+</Project>
