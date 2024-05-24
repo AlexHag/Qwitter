@@ -1,6 +1,6 @@
 using Qwitter.Core.Application.Configuration;
 
-namespace Qwitter.Ledger.Account.Configuration;
+namespace Qwitter.Ledger.BankAccount.Configuration;
 
 [Configuration("Bank")]
 public class BankConfiguration

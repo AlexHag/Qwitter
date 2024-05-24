@@ -1,6 +1,6 @@
 namespace Qwitter.Ledger.Contract.Account;
 
-public enum AccountStatus
+public enum BankAccountStatus
 {
     Active,
     Cancelled,

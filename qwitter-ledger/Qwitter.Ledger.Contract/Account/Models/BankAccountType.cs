@@ -1,6 +1,6 @@
 namespace Qwitter.Ledger.Contract.Account;
 
-public enum AccountType
+public enum BankAccountType
 {
     Debit,
     Credit

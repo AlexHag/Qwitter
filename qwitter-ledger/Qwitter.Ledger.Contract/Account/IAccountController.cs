@@ -5,21 +5,21 @@ using Qwitter.Ledger.Contract.Transactions.Models;
 
 namespace Qwitter.Ledger.Contract.Account;
 
-[ApiHost("5005", "account")]
-public interface IAccountController
+[ApiHost("5005", "bank-account")]
+public interface IBankAccountController
 {
     [HttpPost]
-    Task<AccountResponse> CreateLedgerAccount(CreateLedgerAccountRequest request);
+    Task<BankAccountResponse> CreateBankAccount(CreateBankAccountRequest request);
 
-    [HttpGet("{accountId}")]
-    Task<AccountResponse> GetLedgerAccount(Guid accountId);
+    [HttpGet("{bankAccountId}")]
+    Task<BankAccountResponse> GetBankAccount(Guid bankAaccountId);
 
-    [HttpPost("{accountId}/transactions")]
-    Task<IEnumerable<TransactionResponse>> GetLedgerAccountTransactions(Guid accountId, PaginationRequest request);
+    [HttpPost("{bankAccountId}/transactions")]
+    Task<IEnumerable<TransactionResponse>> GetBankAccountTransactions(Guid bankAccountId, PaginationRequest request);
 
     [HttpGet("user/{userId}")]
-    Task<List<AccountResponse>> GetUserLedgerAccounts(Guid userId);
+    Task<List<BankAccountResponse>> GetUserBankAccounts(Guid userId);
 
-    [HttpPut("user/{userId}/primary-account/{accountId}")]
-    Task UpdateUserPrimaryAccount(Guid userId, Guid accountId);
+    [HttpPut("user/{userId}/primary-bank-account/{bankAccountId}")]
+    Task UpdateUserBankPrimaryAccount(Guid userId, Guid bankAccountId);
 }

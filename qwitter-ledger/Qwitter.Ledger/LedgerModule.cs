@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Qwitter.Core.Application.Configuration;
 using Qwitter.Core.Application.Kafka;
-using Qwitter.Ledger.Account.Configuration;
-using Qwitter.Ledger.Account.Repositories;
-using Qwitter.Ledger.Account.Services;
+using Qwitter.Ledger.BankAccount.Configuration;
+using Qwitter.Ledger.BankAccount.Repositories;
+using Qwitter.Ledger.BankAccount.Services;
 using Qwitter.Ledger.Bank.Repositories;
 using Qwitter.Ledger.ExchangeRates.Repositories;
 using Qwitter.Ledger.Transactions.Repositories;
@@ -25,8 +25,8 @@ public static class LedgerModule
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!));
 
         builder.Services.AddScoped<IMapper, Mapper>();
-        builder.Services.AddScoped<IAccountRepository, AccountRepository>();
-        builder.Services.AddScoped<IAccountService, AccountService>();
+        builder.Services.AddScoped<IBankAccountRepository, BankAccountRepository>();
+        builder.Services.AddScoped<IBankAccountService, BankAccountService>();
         builder.Services.AddScoped<IBankInstitutionRepository, BankInstitutionRepository>();
         builder.Services.AddScoped<IExchangeRateRepository, ExchangeRateRepository>();
         builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();

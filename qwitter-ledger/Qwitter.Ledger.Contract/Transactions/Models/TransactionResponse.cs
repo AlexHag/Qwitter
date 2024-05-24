@@ -3,7 +3,7 @@ namespace Qwitter.Ledger.Contract.Transactions.Models;
 public class TransactionResponse
 {
     public Guid Id { get; set; }
-    public Guid AccountId { get; set; }
+    public Guid BankAccountId { get; set; }
     public decimal PreviousBalance { get; set; }
     public decimal NewBalance { get; set; }
     public required string SourceCurrency { get; set; }

@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Qwitter.Ledger.Account.Models;
+using Qwitter.Ledger.BankAccount.Models;
 using Qwitter.Ledger.Bank.Models;
 using Qwitter.Ledger.ExchangeRates.Models;
 using Qwitter.Ledger.Transactions.Models;
@@ -10,7 +10,7 @@ namespace Qwitter.Ledger;
 public class AppDbContext : DbContext
 {
     public DbSet<UserEntity> Users { get; set; }
-    public DbSet<AccountEntity> Accounts { get; set; }
+    public DbSet<BankAccountEntity> BankAccounts { get; set; }
     public DbSet<BankInstitutionEntity> BankInstitutions { get; set; }
     public DbSet<ExchangeRateEntity> ExchangeRates { get; set; }
     public DbSet<TransactionEntity> Transactions { get; set; }
@@ -23,7 +23,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<UserEntity>()
             .HasKey(u => u.UserId);
         
-        modelBuilder.Entity<AccountEntity>()
+        modelBuilder.Entity<BankAccountEntity>()
             .Property(p => p.Balance)
             .HasPrecision(18, 8);
 

@@ -1,51 +1,51 @@
 using MapsterMapper;
 using Qwitter.Core.Application.Exceptions;
 using Qwitter.Core.Application.Persistence;
-using Qwitter.Ledger.Account.Configuration;
-using Qwitter.Ledger.Account.Models;
-using Qwitter.Ledger.Account.Repositories;
+using Qwitter.Ledger.BankAccount.Configuration;
+using Qwitter.Ledger.BankAccount.Models;
+using Qwitter.Ledger.BankAccount.Repositories;
 using Qwitter.Ledger.Contract.Account;
 using Qwitter.Ledger.Contract.Transactions.Models;
 using Qwitter.Ledger.Transactions.Repositories;
 using Qwitter.Ledger.User.Repositories;
 
-namespace Qwitter.Ledger.Account.Services;
+namespace Qwitter.Ledger.BankAccount.Services;
 
-public interface IAccountService
+public interface IBankAccountService
 {
-    Task<AccountResponse> CreateLedgerAccount(CreateLedgerAccountRequest request);
-    Task<AccountResponse> GetLedgerAccount(Guid accountId);
-    Task<List<AccountResponse>> GetUserLedgerAccounts(Guid userId);
-    Task<IEnumerable<TransactionResponse>> GetLedgerAccountTransactions(Guid accountId, PaginationRequest request);
-    Task UpdateUserPrimaryAccount(Guid userId, Guid accountId);
+    Task<BankAccountResponse> CreateBankAccount(CreateBankAccountRequest request);
+    Task<BankAccountResponse> GetBankAccount(Guid bankAccountId);
+    Task<List<BankAccountResponse>> GetUserBankAccounts(Guid userId);
+    Task<IEnumerable<TransactionResponse>> GetBankAccountTransactions(Guid bankAccountId, PaginationRequest request);
+    Task UpdateUserPrimaryBankAccount(Guid userId, Guid bankAccountId);
 }
 
-public class AccountService : IAccountService
+public class BankAccountService : IBankAccountService
 {
-    private readonly ILogger<AccountController> _logger;
+    private readonly ILogger<BankAccountService> _logger;
     private readonly IMapper _mapper;
-    private readonly IAccountRepository _accountRepository;
+    private readonly IBankAccountRepository _bankAccountRepository;
     private readonly IUserRepository _userRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly BankConfiguration _bankConfiguration;
 
-    public AccountService(
-        ILogger<AccountController> logger,
+    public BankAccountService(
+        ILogger<BankAccountService> logger,
         IMapper mapper,
-        IAccountRepository accountRepository,
+        IBankAccountRepository bankAccountRepository,
         IUserRepository userRepository,
         ITransactionRepository transactionRepository,
         BankConfiguration bankConfiguration)
     {
         _logger = logger;
         _mapper = mapper;
-        _accountRepository = accountRepository;
+        _bankAccountRepository = bankAccountRepository;
         _userRepository = userRepository;
         _transactionRepository = transactionRepository;
         _bankConfiguration = bankConfiguration;
     }
 
-    public async Task<AccountResponse> CreateLedgerAccount(CreateLedgerAccountRequest request)
+    public async Task<BankAccountResponse> CreateBankAccount(CreateBankAccountRequest request)
     {
         var user = await _userRepository.GetById(request.UserId);
 
@@ -60,7 +60,7 @@ public class AccountService : IAccountService
             throw new BadRequestApiException("User is verified");
         }
 
-        var account = new AccountEntity
+        var bankAccount = new BankAccountEntity
         {
             Id = Guid.NewGuid(),
             UserId = request.UserId,
@@ -68,31 +68,31 @@ public class AccountService : IAccountService
             AccountNumber = await GenerateAccountNumber(_bankConfiguration.AccountNumberLength),
             RoutingNumber = _bankConfiguration.DefaultRoutingNumber,
             AccountType = request.AccountType,
-            AccountStatus = AccountStatus.Active,
+            AccountStatus = BankAccountStatus.Active,
             Balance = 0,
             Currency = request.Currency,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = null
         };
 
-        await _accountRepository.Insert(account);
+        await _bankAccountRepository.Insert(bankAccount);
 
-        return _mapper.Map<AccountResponse>(account);
+        return _mapper.Map<BankAccountResponse>(bankAccount);
     }
 
-    public async Task<AccountResponse> GetLedgerAccount(Guid accountId)
+    public async Task<BankAccountResponse> GetBankAccount(Guid bankAccountId)
     {
-        var account = await _accountRepository.GetById(accountId);
+        var bankAccount = await _bankAccountRepository.GetById(bankAccountId);
         
-        if (account is null)
+        if (bankAccount is null)
         {
             throw new NotFoundApiException("Account not found");
         }
 
-        return _mapper.Map<AccountResponse>(account);
+        return _mapper.Map<BankAccountResponse>(bankAccount);
     }
 
-    public async Task<List<AccountResponse>> GetUserLedgerAccounts(Guid userId)
+    public async Task<List<BankAccountResponse>> GetUserBankAccounts(Guid userId)
     {
         var user = await _userRepository.GetById(userId);
 
@@ -101,17 +101,17 @@ public class AccountService : IAccountService
             throw new NotFoundApiException("User not found");
         }
 
-        var accounts = await _accountRepository.GetAllByUserId(userId);
+        var bankAccounts = await _bankAccountRepository.GetAllByUserId(userId);
 
-        var response = accounts.Select(_mapper.Map<AccountResponse>).ToList();
+        var response = bankAccounts.Select(_mapper.Map<BankAccountResponse>).ToList();
 
-        if (user.PrimaryAccountId != null && user.PrimaryAccountId != Guid.Empty)
+        if (user.PrimaryBankAccountId != null && user.PrimaryBankAccountId != Guid.Empty)
         {
-            var primaryAccount = response.FirstOrDefault(a => a.Id == user.PrimaryAccountId);
+            var primaryBankAccount = response.FirstOrDefault(a => a.Id == user.PrimaryBankAccountId);
 
-            if (primaryAccount != null)
+            if (primaryBankAccount != null)
             {
-                primaryAccount.IsPrimary = true;
+                primaryBankAccount.IsPrimary = true;
             }
         }
 
@@ -132,9 +132,9 @@ public class AccountService : IAccountService
         var number = new string(Enumerable.Repeat(chars, length)
             .Select(s => s[random.Next(s.Length)]).ToArray());
         
-        var existingAccount = await _accountRepository.GetByAccountNumber(number);
+        var existingBankAccount = await _bankAccountRepository.GetByAccountNumber(number);
 
-        if (existingAccount != null)
+        if (existingBankAccount != null)
         {
             return await GenerateAccountNumber(length, maxDepth + 1);
         }
@@ -142,17 +142,17 @@ public class AccountService : IAccountService
         return number;
     }
 
-    public async Task<IEnumerable<TransactionResponse>> GetLedgerAccountTransactions(Guid accountId, PaginationRequest request)
+    public async Task<IEnumerable<TransactionResponse>> GetBankAccountTransactions(Guid bankAccountId, PaginationRequest request)
     {
-        var transactions = await _transactionRepository.GetByAccountId(accountId, request);
+        var transactions = await _transactionRepository.GetByBankAccountId(bankAccountId, request);
         return transactions.Select(_mapper.Map<TransactionResponse>);
     }
 
-    public async Task UpdateUserPrimaryAccount(Guid userId, Guid accountId)
+    public async Task UpdateUserPrimaryBankAccount(Guid userId, Guid bankAccountId)
     {
         var user = await _userRepository.GetById(userId) ?? throw new NotFoundApiException("User not found");
-        var account = await _accountRepository.GetById(accountId) ?? throw new NotFoundApiException("Account not found");
-        user.PrimaryAccountId = account.Id;
+        var bankAccount = await _bankAccountRepository.GetById(bankAccountId) ?? throw new NotFoundApiException("Account not found");
+        user.PrimaryBankAccountId = bankAccount.Id;
         await _userRepository.Update(user);
     }
 }

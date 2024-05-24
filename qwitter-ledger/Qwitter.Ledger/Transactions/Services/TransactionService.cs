@@ -1,8 +1,10 @@
 
 using Qwitter.Core.Application.Exceptions;
+using Qwitter.Core.Application.Kafka;
 using Qwitter.Core.Application.Persistence;
-using Qwitter.Ledger.Account.Repositories;
+using Qwitter.Ledger.BankAccount.Repositories;
 using Qwitter.Ledger.Contract.Account;
+using Qwitter.Ledger.Contract.Transactions.Events;
 using Qwitter.Ledger.Contract.Transactions.Models;
 using Qwitter.Ledger.ExchangeRates.Repositories;
 using Qwitter.Ledger.Transactions.Models;
@@ -20,20 +22,23 @@ public interface ITransactionService
 public class TransactionService : ITransactionService
 {
     private readonly IUserRepository _userRepository;
-    private readonly IAccountRepository _accountRepository;
+    private readonly IBankAccountRepository _bankAccountRepository;
     private readonly IExchangeRateRepository _exchangeRate;
     private readonly ITransactionRepository _ledgerRepository;
+    private readonly IEventProducer _eventProducer;
 
     public TransactionService(
         IUserRepository userRepository,
-        IAccountRepository accountRepository,
+        IBankAccountRepository bankAccountRepository,
         IExchangeRateRepository exchangeRate,
-        ITransactionRepository ledgerRepository)
+        ITransactionRepository ledgerRepository,
+        IEventProducer eventProducer)
     {
         _userRepository = userRepository;
-        _accountRepository = accountRepository;
+        _bankAccountRepository = bankAccountRepository;
         _exchangeRate = exchangeRate;
         _ledgerRepository = ledgerRepository;
+        _eventProducer = eventProducer;
     }
 
     public async Task<TransactionEntity> CreditFunds(CreditFundsRequest request)
@@ -52,23 +57,23 @@ public class TransactionService : ITransactionService
 
         Guid accountId;
 
-        if (request.AccountId != null)
+        if (request.BankAccountId != null)
         {
-            accountId = request.AccountId.Value;
+            accountId = request.BankAccountId.Value;
         }
         else
         {
-            if (user.PrimaryAccountId == null)
+            if (user.PrimaryBankAccountId == null)
             {
                 throw new BadRequestApiException("User has no default account");
             }
 
-            accountId = user.PrimaryAccountId.Value;
+            accountId = user.PrimaryBankAccountId.Value;
         }
 
-        var account = await _accountRepository.GetById(accountId) ?? throw new NotFoundApiException("Account not found");
+        var account = await _bankAccountRepository.GetById(accountId) ?? throw new NotFoundApiException("Account not found");
 
-        if (account.AccountStatus == AccountStatus.Cancelled)
+        if (account.AccountStatus == BankAccountStatus.Cancelled)
         {
             throw new BadRequestApiException("Account is cancelled");
         }
@@ -86,7 +91,7 @@ public class TransactionService : ITransactionService
         var transaction = new TransactionEntity
         {
             Id = Guid.NewGuid(),
-            AccountId = account.Id,
+            BankAccountId = account.Id,
             PreviousBalance = account.Balance,
             NewBalance = newBalance,
             SourceCurrency = request.Currency,
@@ -103,7 +108,7 @@ public class TransactionService : ITransactionService
 
         account.Balance += amount;
 
-        await _accountRepository.Update(account);
+        await _bankAccountRepository.Update(account);
 
         return transaction;
     }
@@ -124,28 +129,28 @@ public class TransactionService : ITransactionService
 
         Guid accountId;
 
-        if (request.AccountId != null)
+        if (request.BankAccountId != null)
         {
-            accountId = request.AccountId.Value;
+            accountId = request.BankAccountId.Value;
         }
         else
         {
-            if (user.PrimaryAccountId == null)
+            if (user.PrimaryBankAccountId == null)
             {
                 throw new BadRequestApiException("User has no default account");
             }
 
-            accountId = user.PrimaryAccountId.Value;
+            accountId = user.PrimaryBankAccountId.Value;
         }
 
-        var account = await _accountRepository.GetById(accountId) ?? throw new NotFoundApiException("Account not found");
+        var account = await _bankAccountRepository.GetById(accountId) ?? throw new NotFoundApiException("Account not found");
 
-        if (account.AccountStatus == AccountStatus.Cancelled)
+        if (account.AccountStatus == BankAccountStatus.Cancelled)
         {
             throw new BadRequestApiException("Account is cancelled");
         }
 
-        if (account.AccountStatus == AccountStatus.Frozen)
+        if (account.AccountStatus == BankAccountStatus.Frozen)
         {
             throw new BadRequestApiException("Account is frozen");
         }
@@ -159,23 +164,17 @@ public class TransactionService : ITransactionService
 
         var amount = request.Amount * rate.Value;
 
-        if (amount > account.Balance)
+        if (amount > account.Balance && !account.OverdraftAllowed)
         {
-            if (!account.OverdraftAllowed)
-            {
-                throw new BadRequestApiException("Insufficient funds");
-            }
-
-            
+            throw new BadRequestApiException("Insufficient funds");
         }
-
 
         var newBalance = account.Balance - amount;
     
         var transaction = new TransactionEntity
         {
             Id = Guid.NewGuid(),
-            AccountId = account.Id,
+            BankAccountId = account.Id,
             PreviousBalance = account.Balance,
             NewBalance = newBalance,
             SourceCurrency = request.Currency,
@@ -190,9 +189,18 @@ public class TransactionService : ITransactionService
 
         await _ledgerRepository.Insert(transaction);
 
-        account.Balance -= amount;
+        if (amount > account.Balance)
+        {
+            await _eventProducer.Produce(new TransactionOverdraftEvent
+            {
+                UserId = user.UserId,
+                AccountId = account.Id,
+                TransactionId = transaction.Id
+            });
+        }
 
-        await _accountRepository.Update(account);
+        account.Balance -= amount;
+        await _bankAccountRepository.Update(account);
 
         return transaction;
     }
