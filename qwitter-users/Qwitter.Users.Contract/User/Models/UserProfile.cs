@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Qwitter.Core.Application.Persistence;
 
 namespace Qwitter.Users.Contract.User.Models;
 

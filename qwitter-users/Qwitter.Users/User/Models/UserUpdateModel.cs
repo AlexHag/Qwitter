@@ -1,4 +1,4 @@
-using Qwitter.Users.Contract.User.Models;
+using Qwitter.Core.Application.Persistence;
 
 namespace Qwitter.Users.User.Models;
 

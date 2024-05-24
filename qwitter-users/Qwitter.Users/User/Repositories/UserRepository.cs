@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Qwitter.Core.Application.Exceptions;
-using Qwitter.Users.Contract.User.Models;
+using Qwitter.Core.Application.Persistence;
 using Qwitter.Users.User.Models;
 
 namespace Qwitter.Users.Repositories.User;
@@ -46,7 +46,7 @@ public class UserRepository : IUserRepository
     public async Task<UserEntity> DeleteUser(Guid userId)
     {
         var user = await _dbContext.Users.FindAsync(userId) ?? throw new Exception("User not found");
-        user.UserState = UserState.Deleted;
+        user.UserState = UserState.Canceled;
         user.UpdatedAt = DateTime.Now;
 
         await _dbContext.SaveChangesAsync();

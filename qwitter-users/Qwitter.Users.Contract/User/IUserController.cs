@@ -10,9 +10,15 @@ public interface IUserController
     [HttpGet("me")]
     Task<UserProfile> GetUser();
 
-    [HttpGet("get/{foo}/and/{bar}")]
-    Task<TestResponse> Get(string foo, string bar, string baz, string bom);
+    [HttpPut("{userId}/verify")]
+    Task VerifyUser(Guid userId);
 
-    [HttpPost("posting/{foo}/path")]
-    Task<TestResponse> Post(string foo, string bar, string baz, TestRequest body);
+    [HttpPut("{userId}/cancel")]
+    Task CancelUser(Guid userId);
+
+    [HttpPut("{userId}/block")]
+    Task BlockUser(Guid userId);
+
+    [HttpPut("{userId}/unblock")]
+    Task UnBlockUser(Guid userId);
 }
