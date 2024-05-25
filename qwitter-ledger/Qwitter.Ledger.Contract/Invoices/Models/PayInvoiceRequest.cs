@@ -1,10 +1,10 @@
-namespace Qwitter.Ledger.Contract.Transactions.Models;
+namespace Qwitter.Ledger.Contract.Invoices.Models;
 
-public class DebitFundsRequest
+public class PayInvoiceRequest
 {
     public Guid UserId { get; set; }
     public Guid? BankAccountId { get; set; }
+    public Guid InvoiceId { get; set; }
     public decimal Amount { get; set; }
-    public string? Currency { get; set; }
     public string? Message { get; set; }
 }
