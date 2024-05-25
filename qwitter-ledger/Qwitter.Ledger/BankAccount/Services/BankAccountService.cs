@@ -77,6 +77,12 @@ public class BankAccountService : IBankAccountService
 
         await _bankAccountRepository.Insert(bankAccount);
 
+        if (user.PrimaryBankAccountId is null)
+        {
+            user.PrimaryBankAccountId = bankAccount.Id;
+            await _userRepository.Update(user);
+        }
+
         return _mapper.Map<BankAccountResponse>(bankAccount);
     }
 
@@ -152,6 +158,12 @@ public class BankAccountService : IBankAccountService
     {
         var user = await _userRepository.GetById(userId) ?? throw new NotFoundApiException("User not found");
         var bankAccount = await _bankAccountRepository.GetById(bankAccountId) ?? throw new NotFoundApiException("Account not found");
+        
+        if (bankAccount.AccountStatus != BankAccountStatus.Active)
+        {
+            throw new BadRequestApiException("Account is not active");
+        }
+        
         user.PrimaryBankAccountId = bankAccount.Id;
         await _userRepository.Update(user);
     }
