@@ -1,0 +1,48 @@
+
+.bank-home {
+    margin: auto;
+    margin-top: 36px;
+    width: 80%;
+    text-align: left;
+}
+
+.bank-accounts {
+    margin-top: 36px;
+    padding-bottom: 36px;
+    width: 60%;
+    box-shadow: 0 14px 18px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    border-radius: 8px;
+}
+
+.bank-accounts h2 {
+    /* padding: 36px; */
+    padding-left: 36px;
+    padding-top: 36px;
+}
+.bank-accounts h3 {
+    padding-left: 36px;
+    padding-top: 36px;
+    padding-bottom: 8px;
+}
+
+.primary-bank-account-header, .primary-bank-account-body {
+    display: flex;
+    padding: 8px 36px;
+    align-items: center;
+}
+
+.primary-bank-account-header {
+    background-color: rgb(220, 220, 220);
+    font-weight: bold;
+}
+
+.primary-bank-account-header p, .primary-bank-account-body p {
+    flex: 1 0 0;
+    text-align: left;
+    min-width: 120px;
+}
+
+.primary-bank-account-header p:not(:last-child), .primary-bank-account-body p:not(:last-child) {
+    margin-right: 20px;
+}

@@ -1,0 +1,20 @@
+.page-header {
+    /* background-color: #282c34; */
+    background-color: black;
+    min-height: 5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.page-header h1 {
+    color: white;
+    margin: auto;
+}
+.page-header a {
+    color: white;
+    text-decoration: none;
+}
+.page-header a:hover {
+    color: lightgray;
+}

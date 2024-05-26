@@ -1,0 +1,81 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* Center the form in the page */
+.auth-form {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    padding: 20px;
+    box-shadow: 0 14px 18px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    border-radius: 8px;
+}
+
+/* Style for form controls */
+.auth-form-input {
+    margin-bottom: 20px;
+}
+
+.auth-form-input label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.auth-form-input input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Style for the buttons */
+.auth-button-primary {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 16px;
+    margin-bottom: 16px;
+}
+
+.auth-button-primary:hover {
+    background-color: #0056b3;
+}
+
+.auth-button-secondary {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background-color: #6e7277;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.auth-button-secondary:hover {
+    background-color: #5b5f63;
+}
+
+
+/* SR-only styles for accessibility */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}

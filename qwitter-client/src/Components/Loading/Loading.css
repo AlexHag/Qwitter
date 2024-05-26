@@ -1,0 +1,13 @@
+.loading-container {
+    box-sizing: border-box;
+    background-size: cover;
+    height: 100vh;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+.spinner {
+    scale:2;
+}
