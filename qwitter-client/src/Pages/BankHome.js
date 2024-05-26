@@ -5,73 +5,8 @@ import { useEffect, useState } from "react";
 import Loading from "../Components/Loading/Loading";
 import PageHeader from "../Components/PageHeader";
 import Modal from "../Components/Modal";
+import OpenNewBankAccount from "../Components/Bank/OpenNewBankAccount";
 import "../Styles/BankHome.css";
-
-function OpenNewBankAccount({ onClose }) {
-  const auth = useAuth();
-  const [accountName, setAccountName] = useState(null);
-  const [currency, setCurrency] = useState("USD");
-  const [accountType, setAccountType] = useState("Debit");
-  const [error, setError] = useState(null);
-  const bankAPI = useBankAPI();
-
-  const handleSubmit = () => {
-    if (accountName == null || accountName == "") {
-      setError("Account name can't be empty");
-      return;
-    }
-    bankAPI.createBankAccount(accountName, currency, accountType)
-      .then(() => {
-        setError(null);
-        onClose();
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.error(error);
-        setError("Something went wrong! Try again later");
-      });
-  }
-
-  return (
-    <>
-      <div style={{ paddingBottom: "36px" }} className="flex-space-between">
-        <h1>Open new bank account</h1>
-        <button className="qwitter-button-gray" onClick={onClose}>Close</button>
-      </div>
-
-      <div onSubmit={handleSubmit} className="auth-form-input">
-        <label htmlFor="account-name">Account Name</label>
-        <input
-          id="account-name"
-          name="accountName"
-          placeholder="Account Name"
-          onChange={(e) => setAccountName(e.target.value)}
-        />
-
-        <label style={{ marginTop: "18px" }} htmlFor="currency">Currency</label>
-        <select className="custom-select" name="currency" id="currency" onChange={(e) => setCurrency(e.target.value)}>
-          <option value="USD">USD</option>
-          <option value="SEK">SEK</option>
-          <option value="EUR">EUR</option>
-          <option value="BTC">BTC</option>
-          <option value="ETH">ETH</option>
-        </select>
-
-        <label style={{ marginTop: "18px" }} htmlFor="accountType">Type</label>
-        <select name="accountType" id="accountType" onChange={(e) => setAccountType(e.target.value)}>
-          <option value="Debit">Debit</option>
-          <option value="Credit">Credit</option>
-        </select>
-
-        <br></br>
-
-        <p style={{ color: "red", marginTop: "18px" }}>{error}</p>
-
-        <button style={{ marginTop: "18px" }} className="qwitter-button" onClick={handleSubmit}>Submit</button>
-      </div>
-    </>
-  )
-}
 
 function BankHome() {
   const auth = useAuth();
@@ -80,16 +15,7 @@ function BankHome() {
   const [accounts, setAccounts] = useState([]);
   const [primaryAccount, setPrimaryAccount] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
   const [showOpenBankAccountModal, setShowOpenBankAccountModal] = useState(false);
-
-  const handleOpenBankAccountModal = () => {
-    setShowOpenBankAccountModal(true);
-  };
-
-  const handleCloseOpenBankAccountModal = () => {
-    setShowOpenBankAccountModal(false);
-  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -120,6 +46,8 @@ function BankHome() {
       <div className="bank-home">
         <h1>Overview</h1>
 
+        <div className="bank-home-body">
+
         {isLoading ? <Loading /> :
           <div className="bank-accounts">
             <h2>Accounts</h2>
@@ -127,10 +55,15 @@ function BankHome() {
               <div>
                 <div className="flex-space-between">
                   <h3>You don't have any accounts</h3>
-                  <button style={{ margin: "36px", padding: "8px 16px" }} className="qwitter-button" onClick={handleOpenBankAccountModal}>Open Account</button>
+                  <button 
+                  style={{ margin: "36px", padding: "8px 16px" }} 
+                  className="qwitter-button" 
+                  onClick={() => setShowOpenBankAccountModal(true)}>
+                    Open Account
+                  </button>
                 </div>
                 <Modal show={showOpenBankAccountModal} >
-                  <OpenNewBankAccount onClose={handleCloseOpenBankAccountModal} />
+                  <OpenNewBankAccount onClose={() => setShowOpenBankAccountModal(false)} />
                 </Modal>
               </div>
               :
@@ -165,9 +98,15 @@ function BankHome() {
                       </div>)}
                   </>}
                   <div>
-                    <button style={{ margin: "36px 0px 0px 36px", padding: "8px 16px" }} className="qwitter-button" onClick={handleOpenBankAccountModal}>Open another account</button>
+                    <button 
+                    style={{ margin: "36px 0px 0px 36px", 
+                    padding: "8px 16px" }} 
+                    className="qwitter-button" 
+                    onClick={() => setShowOpenBankAccountModal(true)}>
+                      Open another account
+                    </button>
                     <Modal show={showOpenBankAccountModal} >
-                      <OpenNewBankAccount onClose={handleCloseOpenBankAccountModal} />
+                      <OpenNewBankAccount onClose={() => setShowOpenBankAccountModal(false)} />
                     </Modal>
                   </div>
               </>}
@@ -175,8 +114,12 @@ function BankHome() {
           </div>}
 
         <div className="bank-actions">
-          <button>Deposit</button>
-          <button>Send money</button>
+          <div className="flex-space-between">
+          <button style={{ margin: "36px 0px 0px 36px", padding: "8px 16px" }} className="qwitter-button">Deposit</button>
+          <button style={{ margin: "36px 36px 0px 36px", padding: "8px 16px" }} className="qwitter-button">Send money</button>
+          </div>
+        </div>
+
         </div>
       </div>
     </>

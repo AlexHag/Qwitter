@@ -6,6 +6,20 @@
     text-align: left;
 }
 
+.bank-home-body {
+    display: flex;
+}
+
+.bank-actions {
+    margin-top: 36px;
+    margin-left: 36px;
+    padding-bottom: 36px;
+    width: 40%;
+    box-shadow: 0 14px 18px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    border-radius: 8px;
+}
+
 .bank-accounts {
     margin-top: 36px;
     padding-bottom: 36px;
