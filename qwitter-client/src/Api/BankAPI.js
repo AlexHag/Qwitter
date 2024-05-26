@@ -18,6 +18,18 @@ export class BankAPI {
       url: `${this.apiUrl}/bank-account/user/${this.user.userId}`,
       headers: authHeader(this.token)
     });
+  
+  createBankAccount = (accountName, currency, accountType) => 
+    backend.POST({
+      url: `${this.apiUrl}/bank-account`,
+      headers: authHeader(this.token),
+      body: {
+        accountName,
+        currency,
+        accountType,
+        userId: this.user.userId
+      }
+    }); 
 }
 
 export const useBankAPI = () => {
