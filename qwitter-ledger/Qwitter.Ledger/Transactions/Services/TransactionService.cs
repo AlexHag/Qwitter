@@ -3,7 +3,7 @@ using Qwitter.Core.Application.Exceptions;
 using Qwitter.Core.Application.Kafka;
 using Qwitter.Core.Application.Persistence;
 using Qwitter.Ledger.BankAccount.Repositories;
-using Qwitter.Ledger.Contract.Account;
+using Qwitter.Ledger.Contract.BankAccount.Models;
 using Qwitter.Ledger.Contract.Transactions.Events;
 using Qwitter.Ledger.Contract.Transactions.Models;
 using Qwitter.Ledger.ExchangeRates.Repositories;

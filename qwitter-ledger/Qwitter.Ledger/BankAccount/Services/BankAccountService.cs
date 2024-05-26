@@ -4,7 +4,7 @@ using Qwitter.Core.Application.Persistence;
 using Qwitter.Ledger.BankAccount.Configuration;
 using Qwitter.Ledger.BankAccount.Models;
 using Qwitter.Ledger.BankAccount.Repositories;
-using Qwitter.Ledger.Contract.Account;
+using Qwitter.Ledger.Contract.BankAccount.Models;
 using Qwitter.Ledger.Contract.Transactions.Models;
 using Qwitter.Ledger.Transactions.Repositories;
 using Qwitter.Ledger.User.Repositories;

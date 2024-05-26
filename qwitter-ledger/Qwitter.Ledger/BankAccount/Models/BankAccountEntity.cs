@@ -1,4 +1,4 @@
-using Qwitter.Ledger.Contract.Account;
+using Qwitter.Ledger.Contract.BankAccount.Models;
 
 namespace Qwitter.Ledger.BankAccount.Models;
 

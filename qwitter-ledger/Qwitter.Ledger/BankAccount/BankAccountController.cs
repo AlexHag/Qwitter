@@ -2,7 +2,8 @@ using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Qwitter.Core.Application.Persistence;
 using Qwitter.Ledger.BankAccount.Services;
-using Qwitter.Ledger.Contract.Account;
+using Qwitter.Ledger.Contract.BankAccount;
+using Qwitter.Ledger.Contract.BankAccount.Models;
 using Qwitter.Ledger.Contract.Transactions.Models;
 
 namespace Qwitter.Ledger.BankAccount;

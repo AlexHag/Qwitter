@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Qwitter.Core.Application.Persistence;
 using Qwitter.Core.Application.RestApiClient;
+using Qwitter.Ledger.Contract.BankAccount.Models;
 using Qwitter.Ledger.Contract.Transactions.Models;
 
-namespace Qwitter.Ledger.Contract.Account;
+namespace Qwitter.Ledger.Contract.BankAccount;
 
 [ApiHost("5005", "bank-account")]
 public interface IBankAccountController

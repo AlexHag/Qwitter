@@ -1,4 +1,4 @@
-namespace Qwitter.Ledger.Contract.Account;
+namespace Qwitter.Ledger.Contract.BankAccount.Models;
 
 public enum BankAccountStatus
 {

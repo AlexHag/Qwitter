@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace Qwitter.Ledger.Contract.Account;
+namespace Qwitter.Ledger.Contract.BankAccount.Models;
 
 public class CreateBankAccountRequest
 {
