@@ -30,6 +30,18 @@ export class BankAPI {
         userId: this.user.userId
       }
     }); 
+  
+  internalBankTransfer = (fromAccountId, toAccountId, amount) =>
+    backend.POST({
+      url: `${this.apiUrl}/internal-bank-transfer`,
+      headers: authHeader(this.token),
+      body: {
+        userId: this.user.userId,
+        fromAccountId,
+        toAccountId,
+        amount
+      }
+    });
 }
 
 export const useBankAPI = () => {

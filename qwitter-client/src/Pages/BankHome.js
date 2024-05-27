@@ -6,6 +6,7 @@ import Loading from "../Components/Loading/Loading";
 import PageHeader from "../Components/PageHeader";
 import Modal from "../Components/Modal";
 import OpenNewBankAccount from "../Components/Bank/OpenNewBankAccount";
+import TransferMoney from "../Components/Bank/TransferMoney";
 import "../Styles/BankHome.css";
 
 function BankHome() {
@@ -16,6 +17,7 @@ function BankHome() {
   const [primaryAccount, setPrimaryAccount] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [showOpenBankAccountModal, setShowOpenBankAccountModal] = useState(false);
+  const [showTransferMoneyModal, setShowTransferMoneyModal] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -24,6 +26,7 @@ function BankHome() {
         const primary = p.find(a => a.isPrimary);
         setPrimaryAccount(primary);
         const otherAccounts = p.filter(a => !a.isPrimary);
+        console.log(otherAccounts);
         setAccounts(otherAccounts);
         setIsLoading(false);
       })
@@ -37,6 +40,7 @@ function BankHome() {
   const doStuff = () => {
     console.log(accounts);
     console.log(primaryAccount);
+    console.log([primaryAccount, ...accounts])
   }
 
   return (
@@ -115,8 +119,20 @@ function BankHome() {
 
         <div className="bank-actions">
           <div className="flex-space-between">
-          <button style={{ margin: "36px 0px 0px 36px", padding: "8px 16px" }} className="qwitter-button">Deposit</button>
-          <button style={{ margin: "36px 36px 0px 36px", padding: "8px 16px" }} className="qwitter-button">Send money</button>
+          <button 
+            style={{ margin: "36px 0px 0px 36px", padding: "8px 16px" }} 
+            className="qwitter-button">
+              Deposit
+          </button>
+          <button 
+            style={{ margin: "36px 36px 0px 36px", padding: "8px 16px" }}
+            className="qwitter-button"
+            onClick={() => setShowTransferMoneyModal(true)}>
+              Transfer
+          </button>
+          <Modal show={showTransferMoneyModal} >
+            <TransferMoney onClose={() => setShowTransferMoneyModal(false)} accounts={[primaryAccount, ...accounts]} primaryAccount={primaryAccount} />
+          </Modal>
           </div>
         </div>
 
