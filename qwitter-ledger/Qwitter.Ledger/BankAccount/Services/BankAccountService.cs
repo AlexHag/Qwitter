@@ -57,7 +57,7 @@ public class BankAccountService : IBankAccountService
         if (user.UserState != UserState.Verified)
         {
             _logger.LogWarning("Cannot create account. UserId {UserId} is not verified", request.UserId);
-            throw new BadRequestApiException("User is verified");
+            throw new BadRequestApiException("You need to verify your account before you can open a bank account");
         }
 
         var bankAccount = new BankAccountEntity
