@@ -15,6 +15,7 @@ using MapsterMapper;
 using Qwitter.Ledger.Invoices.Repositories;
 using Qwitter.Ledger.Invoices.Services;
 using Qwitter.Ledger.Invoices.Consumers;
+using Qwitter.Ledger.InternalBankTransfer.Services;
 
 namespace Qwitter.Ledger;
 
@@ -38,6 +39,7 @@ public static class LedgerModule
         builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
         builder.Services.AddScoped<IInvoicePaymentRepository, InvoicePaymentRepository>();
         builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+        builder.Services.AddScoped<IInternalBankTransferService, InternalBankTransferService>();
 
         // builder.RegisterConsumer<TransactionCompletedConsumer>("ledger-group");
         builder.RegisterConsumer<UserCreatedConsumer>("ledger-group");
