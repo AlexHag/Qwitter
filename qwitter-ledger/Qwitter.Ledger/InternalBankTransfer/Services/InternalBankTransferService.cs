@@ -84,7 +84,7 @@ public class InternalBankTransferService : IInternalBankTransferService
             UserId = toAccount.UserId,
             BankAccountId = toAccount.Id,
             Amount = transaction.DestinationAmount,
-            Currency = toAccount.Currency
+            Currency = fromAccount.Currency
         };
 
         await _transactionService.CreditFunds(creditFundsRequest);

@@ -63,7 +63,7 @@ function TransferMoney({ onClose, accounts }) {
           name="amount"
           placeholder="Amount"
           type="number"
-          value={amount}
+          value={amount.toFixed(2)}
           onChange={(e) => setAmount(e.target.value)}
         />
 
@@ -72,7 +72,7 @@ function TransferMoney({ onClose, accounts }) {
           <button className="qwitter-button-gray" style={{width: "15%"}} onClick={() => setAmount(25)}>25</button>
           <button className="qwitter-button-gray" style={{width: "15%"}} onClick={() => setAmount(50)}>50</button>
           <button className="qwitter-button-gray" style={{width: "15%"}} onClick={() => setAmount(100)}>100</button>
-          <button className="qwitter-button-gray" style={{width: "15%"}} onClick={() => setAmount(500)}>500</button>
+          <button className="qwitter-button-gray" style={{width: "15%"}} onClick={() => setAmount(accounts[fromAccountIdx].balance)}>Max ({accounts[fromAccountIdx].balance.toFixed(2)})</button>
         </div>
         
         <label style={{ marginTop: "18px" }} htmlFor="fromAccount">From</label>
