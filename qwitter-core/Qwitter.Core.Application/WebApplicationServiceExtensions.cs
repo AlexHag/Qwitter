@@ -37,6 +37,8 @@ public static class WebApplicationServiceExtensions
             app.UseSwaggerUI();
         }
 
+        app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000"));
+
         app.UseHttpsRedirection();
         app.UseAuthentication();
 
