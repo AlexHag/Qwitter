@@ -69,7 +69,7 @@ public class RestRequestInfo
 
             if (parameter.Value is not string)
                 throw new ArgumentException($"Parameter {parameter.Info?.Name} must be a string");
-            
+
             restRequestInfo.UrlParams ??= new Dictionary<string, string>();
 
             if (parameter.Info is null || parameter.Info.Name is null)

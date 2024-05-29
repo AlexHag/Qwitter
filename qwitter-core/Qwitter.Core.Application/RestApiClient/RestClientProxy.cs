@@ -6,16 +6,8 @@ namespace Qwitter.Core.Application.RestApiClient;
 
 public class RestClientProxy<TController> : DispatchProxy
 {
-    private readonly ILogger _logger;
-    private readonly HttpClient _httpClient;
-
-    public RestClientProxy(
-        ILogger logger,
-        HttpClient httpClient)
-    {
-        _logger = logger;
-        _httpClient = httpClient;
-    }
+    private ILogger _logger = null!;
+    private HttpClient _httpClient = null!;
 
     protected override object? Invoke(MethodInfo? targetMethod, object?[]? args)
     {
@@ -26,28 +18,36 @@ public class RestClientProxy<TController> : DispatchProxy
 
         var host = typeof(TController).GetCustomAttribute<ApiHostAttribute>();
         
-        if (host == null)
+        if (host is null)
         {
             throw new Exception($"{typeof(ApiHostAttribute).Name} is required for the controller interface {typeof(TController).Name}");
         }
 
         var httpMethodAttribute = targetMethod?.GetCustomAttribute<HttpMethodAttribute>();
 
-        if (httpMethodAttribute == null)
+        if (httpMethodAttribute is null)
         {
             throw new Exception($"{typeof(HttpMethodAttribute).Name} is required for the method {targetMethod?.Name}");
         }
 
-        if (targetMethod!.ReturnType.GetGenericTypeDefinition() != typeof(Task<>))
+        MethodInfo makeApiRequestMethod;
+
+        if (typeof(Task).IsAssignableFrom(targetMethod?.ReturnType) && targetMethod.ReturnType.IsGenericType)
         {
-            throw new InvalidOperationException($"Return type for method {targetMethod.Name} must be {typeof(Task<>).Name}");
+            var apiReturnType = targetMethod.ReturnType.GenericTypeArguments[0];
+            makeApiRequestMethod = typeof(ApiRequestMaker)
+                .GetMethod(nameof(ApiRequestMaker.MakeApiRequest), BindingFlags.Public | BindingFlags.Static)!
+                .MakeGenericMethod(apiReturnType);
         }
-
-        var apiReturnType = targetMethod.ReturnType.GenericTypeArguments[0];
-
-        MethodInfo makeApiRequestMethod = typeof(ApiRequestMaker)
-            .GetMethod(nameof(ApiRequestMaker.MakeApiRequest), BindingFlags.Public | BindingFlags.Static)!
-            .MakeGenericMethod(apiReturnType);
+        else if (targetMethod?.ReturnType == typeof(Task))
+        {
+            makeApiRequestMethod = typeof(ApiRequestMaker)
+                .GetMethod(nameof(ApiRequestMaker.MakeApiRequestVoid), BindingFlags.Public | BindingFlags.Static)!;
+        }
+        else
+        {
+            throw new InvalidOperationException($"Return type for method {targetMethod?.Name} must be {typeof(Task<>).Name}");
+        }
         
         var paramArgs = args is null || args.Length == 0 ? null : new ParamInfo[args.Length];
         var parameterInfo = targetMethod.GetParameters();
@@ -65,8 +65,20 @@ public class RestClientProxy<TController> : DispatchProxy
         return response;
     }
 
-    public TController GetTransparentProxy()
+    private void SetParameters(
+        ILogger logger,
+        HttpClient httpClient)
     {
-        return Create<TController, RestClientProxy<TController>>();
+        _httpClient = httpClient;
+        _logger = logger;
+    }
+
+    public TController GetTransparentProxy(
+        ILogger logger,
+        HttpClient httpClient)
+    {
+        object proxy = Create<TController, RestClientProxy<TController>>() ?? throw new ArgumentNullException($"Failed to create RestClient proxy for {typeof(TController).Name}");
+        ((RestClientProxy<TController>)proxy).SetParameters(logger, httpClient);
+        return (TController)proxy;
     }
 }

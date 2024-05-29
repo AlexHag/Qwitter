@@ -23,7 +23,7 @@ public static class RestApiClientServiceExtensions
 
         var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<TController>>();
 
-        var client = new RestClientProxy<TController>(logger, httpClient).GetTransparentProxy();
+        var client = new RestClientProxy<TController>().GetTransparentProxy(logger, httpClient);
 
         if (client is null)
         {
