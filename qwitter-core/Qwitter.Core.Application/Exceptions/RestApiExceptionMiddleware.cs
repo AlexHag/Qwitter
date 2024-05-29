@@ -23,12 +23,17 @@ public class RestApiExceptionMiddleware
         }
         catch (Exception ex)
         {
-            await HandleExceptionAsync(context, ex);
+            var handled = HandleExceptionAsync(context, ex);
+
+            if (!handled)
+            {
+                throw;
+            }
         }
     }
 
     // TODO: Add more info to response
-    private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+    private static bool HandleExceptionAsync(HttpContext context, Exception exception)
     {
         var code = exception switch
         {
@@ -40,7 +45,8 @@ public class RestApiExceptionMiddleware
         var result = JsonSerializer.Serialize(new { error = exception.Message });
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)code;
-        return context.Response.WriteAsync(result);
+        context.Response.WriteAsync(result);
+        return code != HttpStatusCode.InternalServerError;
     }
 }
 
