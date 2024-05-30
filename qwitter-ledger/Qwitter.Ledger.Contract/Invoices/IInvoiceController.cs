@@ -5,7 +5,7 @@ using Qwitter.Ledger.Contract.Invoices.Models;
 
 namespace Qwitter.Ledger.Contract.Invoices;
 
-[ApiHost("5005", "invoice")]
+[ApiHost(Host.Port, "invoice")]
 public interface IInvoiceController
 {
     [HttpPost]

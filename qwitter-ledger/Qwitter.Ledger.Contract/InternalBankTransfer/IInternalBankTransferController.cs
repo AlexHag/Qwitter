@@ -5,7 +5,7 @@ using Qwitter.Ledger.Contract.Transactions.Models;
 
 namespace Qwitter.Ledger.Contract.InternalBankTransfer;
 
-[ApiHost("5005", "internal-bank-transfer")]
+[ApiHost(Host.Port, "internal-bank-transfer")]
 public interface IInternalBankTransferController
 {
     [HttpPost]

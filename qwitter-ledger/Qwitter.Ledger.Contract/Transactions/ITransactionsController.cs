@@ -4,7 +4,7 @@ using Qwitter.Ledger.Contract.Transactions.Models;
 
 namespace Qwitter.Ledger.Contract.Transactions;
 
-[ApiHost("5005", "transactions")]
+[ApiHost(Host.Port, "transactions")]
 public interface ITransactionsController
 {
     [HttpPost("credit")]

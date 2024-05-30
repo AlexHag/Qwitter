@@ -6,7 +6,7 @@ using Qwitter.Ledger.Contract.Transactions.Models;
 
 namespace Qwitter.Ledger.Contract.BankAccount;
 
-[ApiHost("5005", "bank-account")]
+[ApiHost(Host.Port, "bank-account")]
 public interface IBankAccountController
 {
     [HttpPost]

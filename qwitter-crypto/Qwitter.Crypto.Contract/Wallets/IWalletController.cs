@@ -5,7 +5,7 @@ using Qwitter.Crypto.Contract.Wallets.Models;
 
 namespace Qwitter.Crypto.Contract.Wallets;
 
-[ApiHost("7006", "wallets")]
+[ApiHost(Host.Port, "wallets")]
 public interface IWalletController
 {
     [HttpPost]
