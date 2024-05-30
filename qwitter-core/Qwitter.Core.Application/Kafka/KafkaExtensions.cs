@@ -148,7 +148,7 @@ public static class KafkaExtensions
         configurator.ConcurrentMessageLimit = 10;
         configurator.UseKillSwitch(k =>
             k.SetActivationThreshold(1).SetRestartTimeout(m: 1).SetTripThreshold(0.2).SetTrackingPeriod(m: 1));
-        configurator.UseMessageRetry(retry => retry.Interval(1000, TimeSpan.FromSeconds(1)));
+        configurator.UseMessageRetry(retry => retry.Interval(5, TimeSpan.FromSeconds(1)));
         configurator.ConfigureConsumer<TConsumer>(context);
     }
 

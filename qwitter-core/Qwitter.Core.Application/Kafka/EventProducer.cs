@@ -7,7 +7,7 @@ namespace Qwitter.Core.Application.Kafka;
 public interface IEventProducer
 {
     Task Produce(object @event);
-    Task Produce(object @event, string topicSuffix);
+    Task Produce(object @event, string? topicSuffix);
 }
 
 public class EventProducer : IEventProducer
@@ -35,7 +35,7 @@ public class EventProducer : IEventProducer
         await _producer.ProduceAsync(messageAttribute.TopicName, message);
     }
 
-    public async Task Produce(object @event, string topicSuffix)
+    public async Task Produce(object @event, string? topicSuffix)
     {
         var messageAttribute = @event.GetType().GetCustomAttribute<MessageAttribute>();
 
@@ -48,6 +48,7 @@ public class EventProducer : IEventProducer
             Value = JsonSerializer.Serialize(@event)
         };
 
-        await _producer.ProduceAsync($"{messageAttribute.TopicName}-{topicSuffix}", message);
+        string topic = string.IsNullOrWhiteSpace(topicSuffix) ? messageAttribute.TopicName : $"{messageAttribute.TopicName}-{topicSuffix}";
+        await _producer.ProduceAsync(topic, message);
     }
 }

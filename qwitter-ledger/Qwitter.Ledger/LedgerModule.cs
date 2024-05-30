@@ -16,6 +16,11 @@ using Qwitter.Ledger.Invoices.Repositories;
 using Qwitter.Ledger.Invoices.Services;
 using Qwitter.Ledger.Invoices.Consumers;
 using Qwitter.Ledger.InternalBankTransfer.Services;
+using Qwitter.Core.Application.RestApiClient;
+using Qwitter.Crypto.Contract.Wallets;
+using Qwitter.Ledger.Crypto.Repositories;
+using Qwitter.Ledger.Crypto.Services;
+using Qwitter.Ledger.Crypto.Consumers;
 
 namespace Qwitter.Ledger;
 
@@ -40,11 +45,16 @@ public static class LedgerModule
         builder.Services.AddScoped<IInvoicePaymentRepository, InvoicePaymentRepository>();
         builder.Services.AddScoped<IInvoiceService, InvoiceService>();
         builder.Services.AddScoped<IInternalBankTransferService, InternalBankTransferService>();
+        builder.Services.AddScoped<IBankAccountCryptoWalletRepository, BankAccountCryptoWalletRepository>();
+        builder.Services.AddScoped<ICryptoService, CryptoService>();
 
         // builder.RegisterConsumer<TransactionCompletedConsumer>("ledger-group");
-        builder.RegisterConsumer<UserCreatedConsumer>("ledger-group");
-        builder.RegisterConsumer<UserStateChangedConsumer>("ledger-group");
-        builder.RegisterConsumer<InvoiceOverpayedConsumer>("ledger-group");
+        builder.RegisterConsumer<CryptoDepositEventConsumer>(App.Name);
+        builder.RegisterConsumer<UserCreatedConsumer>(App.Name);
+        builder.RegisterConsumer<UserStateChangedConsumer>(App.Name);
+        builder.RegisterConsumer<InvoiceOverpayedConsumer>(App.Name);
+
+        builder.AddRestApiClient<IWalletController>();
 
         builder.UseKafka();
         

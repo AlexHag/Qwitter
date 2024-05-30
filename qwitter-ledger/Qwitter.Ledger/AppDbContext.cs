@@ -5,6 +5,7 @@ using Qwitter.Ledger.ExchangeRates.Models;
 using Qwitter.Ledger.Transactions.Models;
 using Qwitter.Ledger.User.Models;
 using Qwitter.Ledger.Invoices.Models;
+using Qwitter.Ledger.Crypto.Models;
 
 namespace Qwitter.Ledger;
 
@@ -17,6 +18,7 @@ public class AppDbContext : DbContext
     public DbSet<TransactionEntity> Transactions { get; set; }
     public DbSet<InvoiceEntity> Invoices { get; set; }
     public DbSet<InvoicePaymentEntity> InvoicePayments { get; set; }
+    public DbSet<BankAccountCryptoWalletEntity> BankAccountCryptoWallets { get; set; }
 
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
     { }
@@ -69,5 +71,14 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<InvoicePaymentEntity>()
             .Property(p => p.Amount)
             .HasPrecision(18, 8);
+        
+        modelBuilder.Entity<BankAccountCryptoWalletEntity>()
+            .HasIndex(p => p.WalletId)
+            .HasDatabaseName("IX_BankAccountCryptoWallets_WalletId");
+        
+        modelBuilder.Entity<BankAccountCryptoWalletEntity>()
+            .HasIndex(p => new { p.BankAccountId, p.Currency})
+            .IsUnique()
+            .HasDatabaseName("IX_BankAccountCryptoWallets_BankAccountId_Currency");
     }
 }
