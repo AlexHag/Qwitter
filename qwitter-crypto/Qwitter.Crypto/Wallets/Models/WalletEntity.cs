@@ -7,4 +7,5 @@ public class WalletEntity
     public required string Address { get; set; }
     public decimal Balance { get; set; }
     public string? PrivateKey { get; set; }
+    public string? SubTopic { get; set; }
 }

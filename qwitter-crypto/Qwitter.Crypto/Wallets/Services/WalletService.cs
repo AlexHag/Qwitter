@@ -45,7 +45,8 @@ public class WalletService : IWalletService
 
     public async Task<WalletResponse> CreateWallet(CreateWalletRequest request)
     {
-        var walletService = _serviceProvider.GetRequiredKeyedService<ICryptoWalletService>(request.Currency) ?? throw new NotImplementedException($"{request.Currency} is not supported yet");
+        // Fix: This throws InvalidOperationException if the currency is not supported
+        var walletService = _serviceProvider.GetRequiredKeyedService<ICryptoWalletService>(request.Currency) ?? throw new NotFoundApiException($"{request.Currency} is not supported yet");
         var wallet = await walletService.CreateWallet();
 
         var entity = new WalletEntity
@@ -54,7 +55,8 @@ public class WalletService : IWalletService
             Currency = wallet.Currency,
             Address = wallet.Address,
             Balance = 0,
-            PrivateKey = wallet.PrivateKey
+            PrivateKey = wallet.PrivateKey,
+            SubTopic = request.SubTopic
         };
 
         await _walletRepository.InsertWallet(entity);
@@ -104,7 +106,7 @@ public class WalletService : IWalletService
                 TransactionHash = transfer.TransactionHash,
                 Amount = transfer.Amount,
                 Currency = wallet.Currency
-            });
+            }, wallet.SubTopic);
 
             var entity = _mapper.Map<CryptoTransferEntity>(transfer);
             entity.Id = Guid.NewGuid();

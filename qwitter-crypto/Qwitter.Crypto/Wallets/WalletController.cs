@@ -1,10 +1,6 @@
-using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
-using Qwitter.Core.Application.Exceptions;
 using Qwitter.Crypto.Contract.Wallets;
 using Qwitter.Crypto.Contract.Wallets.Models;
-using Qwitter.Crypto.Currency.Contract.Wallets;
-using Qwitter.Crypto.Wallets.Repositories;
 using Qwitter.Crypto.Wallets.Services;
 
 namespace Qwitter.Crypto.Wallets;
