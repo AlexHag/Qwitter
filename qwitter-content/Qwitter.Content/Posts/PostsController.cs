@@ -7,6 +7,7 @@ using Qwitter.Content.Posts.Repositories;
 using Qwitter.Core.Application.Authentication;
 using Qwitter.Core.Application.Exceptions;
 using Qwitter.Core.Application.Kafka;
+using Qwitter.Core.Application.Persistence;
 
 namespace Qwitter.Content.Posts;
 
@@ -71,5 +72,12 @@ public class PostsController : ControllerBase, IPostsController
     {
         await _postsRepository.DislikePost(request.PostId);
         return Ok();
+    }
+
+    [HttpPost("latest")]
+    public async Task<IEnumerable<PostResponse>> GetLatestPosts(PaginationRequest request)
+    {
+        var posts = await _postsRepository.GetLatestPosts(request);
+        return posts.Select(_mapper.Map<PostResponse>);
     }
 }

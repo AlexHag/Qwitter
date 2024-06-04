@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Qwitter.Content.Contract.Posts.Models;
+using Qwitter.Core.Application.Persistence;
 using Qwitter.Core.Application.RestApiClient;
 
 namespace Qwitter.Content.Contract;
@@ -14,6 +15,9 @@ public interface IPostsController
 
     [HttpGet("user/{userId}")]
     Task<IEnumerable<PostResponse>> GetUserPosts(Guid userId);
+
+    [HttpPost("latest")]
+    Task<IEnumerable<PostResponse>> GetLatestPosts(PaginationRequest request);
 
     [Authorize]
     [HttpGet("mine")]

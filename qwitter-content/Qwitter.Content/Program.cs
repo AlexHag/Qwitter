@@ -9,6 +9,7 @@ using Mapster;
 using Qwitter.Content.Posts.Models;
 using Qwitter.Content.Contract.Posts.Models;
 using Qwitter.Users.Premium.Consumers;
+using Qwitter.Content.Comments.Repositories;
 
 namespace Qwitter.Content;
 
@@ -26,6 +27,8 @@ public static class Program
     {
         builder.Services.AddScoped<IPostsRepository, PostsRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+
         builder.Services.AddScoped<IMapper, Mapper>();
 
         builder.Services.AddDbContext<AppDbContext>(options =>

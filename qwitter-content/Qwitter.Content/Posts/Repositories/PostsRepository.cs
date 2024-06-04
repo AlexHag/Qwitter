@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Qwitter.Content.Posts.Models;
 using Qwitter.Core.Application.Exceptions;
+using Qwitter.Core.Application.Persistence;
 
 namespace Qwitter.Content.Posts.Repositories;
 
@@ -8,6 +9,7 @@ public interface IPostsRepository
 {
     Task<PostEntity> CreatePost(Guid userId, string content);
     Task<IEnumerable<PostEntity>> GetUserPosts(Guid userId);
+    Task<IEnumerable<PostEntity>> GetLatestPosts(PaginationRequest request);
     Task LikePost(Guid postId);
     Task DislikePost(Guid postId);
 }
@@ -49,6 +51,18 @@ public class PostsRepository : IPostsRepository
             post.Dislikes++;
             await _dbContext.SaveChangesAsync();
         }
+    }
+
+    public async Task<IEnumerable<PostEntity>> GetLatestPosts(PaginationRequest request)
+    {
+        var posts = await _dbContext.Posts
+            .Include(p => p.User)
+            .OrderBy(p => p.CreatedAt)
+            .Skip(request.Offset)
+            .Take(request.Take)
+            .ToListAsync();
+        
+        return posts;
     }
 
     public async Task<IEnumerable<PostEntity>> GetUserPosts(Guid userId)
