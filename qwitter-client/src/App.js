@@ -2,10 +2,11 @@ import './App.css';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Login from './Pages/Login';
 import Register from './Pages/Register';
-import HomeRoute from './Pages/HomeRoute';
 import Profile from './Pages/Profile';
 import AuthProvider from './Auth/AuthProvider';
 import PrivateRoute from './Auth/PrivateRoute';
+import BankHome from './Pages/BankHome';
+import Home from './Pages/Home';
 
 function App() {
   return (
@@ -18,8 +19,9 @@ function App() {
             <Route element={<PrivateRoute />}>
               {/* Private routes that require authentication */}
               <Route path="/profile" element={<Profile />} />
+              <Route path="/bank" element={<BankHome />} />
             </Route>
-            <Route path="/" element={<HomeRoute />} />
+            <Route path="/" element={<Home />} />
           </Routes>
         </AuthProvider>
       </Router>

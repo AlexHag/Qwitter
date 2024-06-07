@@ -63,7 +63,7 @@ function TransferMoney({ onClose, accounts }) {
           name="amount"
           placeholder="Amount"
           type="number"
-          value={amount.toFixed(2)}
+          value={amount?.toFixed(2)}
           onChange={(e) => setAmount(e.target.value)}
         />
 

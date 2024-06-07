@@ -1,0 +1,168 @@
+header {
+    background-color: #fff;
+    border-bottom: 1px solid #ccc;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    margin-right: 20px;
+}
+
+.logo img {
+    width: 40px;
+    height: 40px;
+}
+
+.search {
+    flex-grow: 1;
+    margin: 0 20px;
+}
+
+.search input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+}
+
+.actions button {
+    margin: 0 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.actions button:hover {
+    background-color: #f0f0f0;
+}
+
+.actions i {
+    font-size: 20px;
+}
+
+.actions .notification-count {
+    font-size: 14px;
+    margin-left: 5px;
+    color: "red";
+}
+
+.profile-picture {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: 0 10px;
+}
+
+.create-button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #0079d3;
+    color: #fff;
+    cursor: pointer;
+}
+
+.create-button:hover {
+    background-color: #0069c0;
+}
+
+
+.landing-page {
+    margin: 0;
+    padding: 0;
+}
+
+nav {
+    background-color: #333;
+    color: #fff;
+    padding: 1em;
+    text-align: center;
+}
+
+.heading {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.closeButton {
+    cursor: pointer;
+    font-size: 24px;
+    margin-right: 10px;
+}
+
+.line {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 5% 20%;
+}
+
+.line button {
+    margin-top: 50px;
+    width: 300px;
+    height: 50px;
+}
+
+.about {
+    background-color: #f7f7f7;
+    padding: 2em;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2em;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.boxes {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.box {
+    width: 30%;
+    margin: 10px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.topic {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.topic a {
+    text-decoration: none;
+}

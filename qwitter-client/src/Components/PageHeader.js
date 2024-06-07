@@ -12,7 +12,7 @@ function PageHeader() {
 
   return (
     <div className="page-header">
-      <h1><Link to="/">Home</Link></h1>
+      <h1><Link to="/">Wide Bank</Link></h1>
       {loginHeader()}
     </div>
   )

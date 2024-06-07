@@ -29,9 +29,9 @@ const AuthProvider = ({ children }) => {
         setIsLoading(false);
       })
       .catch(err => {
-        console.log(err);
         setIsLoading(false);
-        throw err;
+        alert("You have been logged out.")
+        logOut();
       });
   }
 

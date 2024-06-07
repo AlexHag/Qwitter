@@ -1,3 +1,7 @@
+* {
+  /* border: 1px solid black; */
+}
+
 .qwitter-button {
   padding: 8px 16px;
   background-color: rgb(0, 123, 255);

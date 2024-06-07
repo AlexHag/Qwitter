@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../Auth/AuthProvider";
+import PageHeader from "../Components/PageHeader";
 import "../Styles/Auth.css";
 
 const Register = () => {
@@ -25,6 +26,7 @@ const Register = () => {
 
   return (
     <>
+      <PageHeader />
       <button onClick={() => navigate("/")}>Home</button>
 
       <form onSubmit={handleSubmitEvent} className="auth-form">

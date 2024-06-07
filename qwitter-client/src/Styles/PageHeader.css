@@ -1,7 +1,6 @@
 .page-header {
-    /* background-color: #282c34; */
-    background-color: black;
-    min-height: 5rem;
+    background-color: #333;
+    min-height: 7rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,7 +13,4 @@
 .page-header a {
     color: white;
     text-decoration: none;
-}
-.page-header a:hover {
-    color: lightgray;
 }
