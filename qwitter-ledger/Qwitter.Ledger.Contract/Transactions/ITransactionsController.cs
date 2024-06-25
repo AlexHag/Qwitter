@@ -7,11 +7,15 @@ namespace Qwitter.Ledger.Contract.Transactions;
 [ApiHost(Host.Port, "transactions")]
 public interface ITransactionsController
 {
-    [HttpPost("credit")]
-    Task<TransactionResponse> CreditFunds(CreditFundsRequest request);
-    [HttpPost("debit")]
-    Task<TransactionResponse> DebitFunds(DebitFundsRequest request);
-    // Task ReserveFunds();
-    // Task DebitReservedFunds();
-    // Task CancelReservedFunds();
+    // Authorize as Service
+    [HttpPost("allocate-funds")]
+    Task<BankAccountAllocationResponse> AllocateBankAccountFunds(AllocateFundsRequest request);
+
+    // Authorize as Service
+    [HttpPost("settle-funds")]
+    Task<BankAccountAllocationResponse> SettleBankAccountAllocation(SettleAllocationRequest request);
+
+    // Authorize as User
+    [HttpPost("transfer-funds")]
+    Task<BankAccountTransaction> TransferFunds(TransferFundsRequest request);
 }

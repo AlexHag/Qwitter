@@ -15,9 +15,6 @@ public interface IBankAccountController
     [HttpGet("{bankAccountId}")]
     Task<BankAccountResponse> GetBankAccount(Guid bankAaccountId);
 
-    [HttpPost("{bankAccountId}/transactions")]
-    Task<IEnumerable<TransactionResponse>> GetBankAccountTransactions(Guid bankAccountId, PaginationRequest request);
-
     [HttpGet("user/{userId}")]
     Task<List<BankAccountResponse>> GetUserBankAccounts(Guid userId);
 

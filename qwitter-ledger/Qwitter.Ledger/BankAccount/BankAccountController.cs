@@ -1,4 +1,3 @@
-using MapsterMapper;
 using Microsoft.AspNetCore.Mvc;
 using Qwitter.Core.Application.Persistence;
 using Qwitter.Ledger.BankAccount.Services;
@@ -30,12 +29,6 @@ public class BankAccountController : ControllerBase, IBankAccountController
     public async Task<BankAccountResponse> GetBankAccount(Guid bankAccountId)
     {
         return await _accountService.GetBankAccount(bankAccountId);
-    }
-
-    [HttpPost("{bankAccountId}/transactions")]
-    public async Task<IEnumerable<TransactionResponse>> GetBankAccountTransactions(Guid bankAccountId, PaginationRequest request)
-    {
-        return await _accountService.GetBankAccountTransactions(bankAccountId, request);
     }
 
     [HttpGet("user/{userId}")]

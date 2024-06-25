@@ -89,69 +89,70 @@ public class InvoiceService : IInvoiceService
 
     public async Task<InvoiceEntity> PayInvoice(PayInvoiceRequest request)
     {
-        var user = await _userRepository.GetById(request.UserId) ?? throw new NotFoundApiException("User not found");
+        throw new NotImplementedException();
+        // var user = await _userRepository.GetById(request.UserId) ?? throw new NotFoundApiException("User not found");
 
-        if (user.UserState != UserState.Verified)
-        {
-            throw new BadRequestApiException($"Cannot pay invoice for unverified user {user.UserId}");
-        }
+        // if (user.UserState != UserState.Verified)
+        // {
+        //     throw new BadRequestApiException($"Cannot pay invoice for unverified user {user.UserId}");
+        // }
 
-        var invoice = await _invoiceRepository.GetById(request.InvoiceId) ?? throw new NotFoundApiException("Invoice not found");
+        // var invoice = await _invoiceRepository.GetById(request.InvoiceId) ?? throw new NotFoundApiException("Invoice not found");
 
-        if (invoice.Status == InvoiceStatus.Paid)
-        {
-            throw new BadRequestApiException($"Invoice {invoice.Id} is already paid");
-        }
+        // if (invoice.Status == InvoiceStatus.Paid)
+        // {
+        //     throw new BadRequestApiException($"Invoice {invoice.Id} is already paid");
+        // }
 
-        if (invoice.Status == InvoiceStatus.Cancelled)
-        {
-            throw new BadRequestApiException($"Cannot pay canceled invoice {invoice.Id}");
-        }
+        // if (invoice.Status == InvoiceStatus.Cancelled)
+        // {
+        //     throw new BadRequestApiException($"Cannot pay canceled invoice {invoice.Id}");
+        // }
 
-        var debitFundsRequest = new DebitFundsRequest
-        {
-            UserId = request.UserId,
-            BankAccountId = request.BankAccountId,
-            Amount = request.Amount,
-            Currency = invoice.Currency,
-            Message = request.Message,
-        };
+        // var debitFundsRequest = new DebitFundsRequest
+        // {
+        //     // UserId = request.UserId,
+        //     BankAccountId = request.BankAccountId.Value,
+        //     Amount = request.Amount,
+        //     // Currency = invoice.Currency,
+        //     // Message = request.Message,
+        // };
 
-        var transaction = await _transactionService.DebitFunds(debitFundsRequest);
+        // var transaction = await _transactionService.DebitFunds(debitFundsRequest);
 
-        var invoicePayment = new InvoicePaymentEntity
-        {
-            Id = Guid.NewGuid(),
-            InvoiceId = invoice.Id,
-            TransactionId = transaction.Id,
-            Amount = transaction.DestinationAmount,
-            Currency = transaction.DestinationCurrency,
-            CreatedAt = DateTime.UtcNow
-        };
+        // var invoicePayment = new InvoicePaymentEntity
+        // {
+        //     Id = Guid.NewGuid(),
+        //     InvoiceId = invoice.Id,
+        //     TransactionId = transaction.Id,
+        //     Amount = transaction.DestinationAmount.Value,
+        //     Currency = transaction.DestinationCurrency,
+        //     CreatedAt = DateTime.UtcNow
+        // };
 
-        await _invoicePaymentRepository.Insert(invoicePayment);
-        invoice.AmountPayed += transaction.DestinationAmount;
+        // await _invoicePaymentRepository.Insert(invoicePayment);
+        // invoice.AmountPayed += transaction.DestinationAmount.Value;
 
-        if (invoice.AmountPayed >= invoice.Amount)
-        {
-            invoice.Status = InvoiceStatus.Paid;
-        }
+        // if (invoice.AmountPayed >= invoice.Amount)
+        // {
+        //     invoice.Status = InvoiceStatus.Paid;
+        // }
 
-        await _invoiceRepository.Update(invoice);
+        // await _invoiceRepository.Update(invoice);
 
-        if (invoice.AmountPayed > invoice.Amount)
-        {
-            var overpayedEvent = new InvoiceOverpayedEvent
-            {
-                UserId = request.UserId,
-                InvoiceId = invoice.Id,
-                TransactionId = transaction.Id,
-                InvoicePaymentId = invoicePayment.Id
-            };
+        // if (invoice.AmountPayed > invoice.Amount)
+        // {
+        //     var overpayedEvent = new InvoiceOverpayedEvent
+        //     {
+        //         UserId = request.UserId,
+        //         InvoiceId = invoice.Id,
+        //         TransactionId = transaction.Id,
+        //         InvoicePaymentId = invoicePayment.Id
+        //     };
 
-            await _eventProducer.Produce(overpayedEvent);
-        }
+        //     await _eventProducer.Produce(overpayedEvent);
+        // }
 
-        return invoice;
+        // return invoice;
     }
 }

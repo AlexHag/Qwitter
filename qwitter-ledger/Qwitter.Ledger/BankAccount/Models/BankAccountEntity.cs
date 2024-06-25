@@ -16,4 +16,39 @@ public class BankAccountEntity
     public bool OverdraftAllowed { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
+
+    public bool CanTransfer(decimal amount, out string reason)
+    {
+        if (!IsActive(out reason))
+        {
+            return false;
+        }
+
+        if (Balance < amount && !OverdraftAllowed)
+        {
+            reason = "Insufficient funds";
+            return false;
+        }
+
+        reason = string.Empty;
+        return true;
+    }
+
+    public bool IsActive(out string reason)
+    {
+        if (AccountStatus == BankAccountStatus.Cancelled)
+        {
+            reason = "Account is cancelled";
+            return false;
+        }
+
+        if (AccountStatus == BankAccountStatus.Frozen)
+        {
+            reason = "Account is frozen";
+            return false;
+        }
+
+        reason = string.Empty;
+        return true;
+    }
 }

@@ -12,49 +12,50 @@ public class InvoiceOverpayedConsumer : IConsumer<InvoiceOverpayedEvent>
     private readonly ILogger<InvoiceOverpayedConsumer> _logger;
     private readonly IInvoiceRepository _invoiceRepository;
     private readonly ITransactionService _transactionService;
-    private readonly ITransactionRepository _transactionRepository;
+    // private readonly ITransactionRepository _transactionRepository;
 
     public InvoiceOverpayedConsumer(
         ILogger<InvoiceOverpayedConsumer> logger,
         IInvoiceRepository invoiceRepository,
-        ITransactionService transactionService,
-        ITransactionRepository transactionRepository)
+        ITransactionService transactionService)
+        // ITransactionRepository transactionRepository)
     {
         _logger = logger;
         _invoiceRepository = invoiceRepository;
         _transactionService = transactionService;
-        _transactionRepository = transactionRepository;
+        // _transactionRepository = transactionRepository;
     }
 
     public async Task Consume(ConsumeContext<InvoiceOverpayedEvent> context)
     {
-        var invoice = await _invoiceRepository.GetById(context.Message.InvoiceId);
+        throw new NotImplementedException();
+        // var invoice = await _invoiceRepository.GetById(context.Message.InvoiceId);
 
-        if (invoice is null)
-        {
-            _logger.LogWarning("Invoice with id {InvoiceId} not found", context.Message.InvoiceId);
-            throw new Exception($"Invoice with id {context.Message.InvoiceId} not found");
-        }
+        // if (invoice is null)
+        // {
+        //     _logger.LogWarning("Invoice with id {InvoiceId} not found", context.Message.InvoiceId);
+        //     throw new Exception($"Invoice with id {context.Message.InvoiceId} not found");
+        // }
 
-        var transaction = await _transactionRepository.GetById(context.Message.TransactionId);
+        // var transaction = await _transactionRepository.GetById(context.Message.TransactionId);
 
-        if (transaction is null)
-        {
-            _logger.LogWarning("Transaction with id {TransactionId} not found", context.Message.TransactionId);
-            throw new Exception($"Transaction with id {context.Message.TransactionId} not found");
-        }
+        // if (transaction is null)
+        // {
+        //     _logger.LogWarning("Transaction with id {TransactionId} not found", context.Message.TransactionId);
+        //     throw new Exception($"Transaction with id {context.Message.TransactionId} not found");
+        // }
 
-        var amountOverPayed = invoice.AmountPayed - invoice.Amount;
+        // var amountOverPayed = invoice.AmountPayed - invoice.Amount;
 
-        var creditFundsRequest = new CreditFundsRequest
-        {
-            UserId = context.Message.UserId,
-            BankAccountId = transaction.BankAccountId,
-            Amount = amountOverPayed,
-            Currency = invoice.Currency,
-            Message = "Overpayed invoice refund"
-        };
+        // var creditFundsRequest = new CreditFundsRequest
+        // {
+        //     UserId = context.Message.UserId,
+        //     BankAccountId = transaction.BankAccountId,
+        //     Amount = amountOverPayed,
+        //     Currency = invoice.Currency,
+        //     Message = "Overpayed invoice refund"
+        // };
 
-        await _transactionService.CreditFunds(creditFundsRequest);
+        // await _transactionService.CreditFunds(creditFundsRequest);
     }
 }

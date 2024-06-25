@@ -1,209 +1,159 @@
-
 using Qwitter.Core.Application.Exceptions;
 using Qwitter.Core.Application.Kafka;
-using Qwitter.Core.Application.Persistence;
 using Qwitter.Ledger.BankAccount.Repositories;
-using Qwitter.Ledger.Contract.BankAccount.Models;
 using Qwitter.Ledger.Contract.Transactions.Events;
 using Qwitter.Ledger.Contract.Transactions.Models;
-using Qwitter.Ledger.ExchangeRates.Repositories;
+using Qwitter.Ledger.FundAllocations.Models;
+using Qwitter.Ledger.FundAllocations.Models.Enums;
+using Qwitter.Ledger.FundAllocations.Repositories;
 using Qwitter.Ledger.Transactions.Models;
 using Qwitter.Ledger.Transactions.Repositories;
-using Qwitter.Ledger.User.Repositories;
 
 namespace Qwitter.Ledger.Transactions.Services;
 
 public interface ITransactionService
 {
-    Task<TransactionEntity> CreditFunds(CreditFundsRequest request);
-    Task<TransactionEntity> DebitFunds(DebitFundsRequest request);
+    Task<(FundAllocationEntity, BankAccountTransactionEntity)> AllocateBankAccountFunds(AllocateFundsRequest request);
+    Task<(FundAllocationEntity, BankAccountTransactionEntity)> SettleBankAccountAllocation(SettleAllocationRequest request);
+
+    Task<BankAccountTransactionEntity> TransferFunds(TransferFundsRequest request);
 }
 
 public class TransactionService : ITransactionService
 {
-    private readonly IUserRepository _userRepository;
     private readonly IBankAccountRepository _bankAccountRepository;
-    private readonly IExchangeRateRepository _exchangeRate;
-    private readonly ITransactionRepository _ledgerRepository;
+    private readonly IFundAllocationRepository _fundAllocationRepository;
+    private readonly IBankAccountTransactionRepository _accountTransactionRepository;
+    private readonly IAllocationCurrencyExchangeService _allocationCurrencyExchangeService;
     private readonly IEventProducer _eventProducer;
 
     public TransactionService(
-        IUserRepository userRepository,
         IBankAccountRepository bankAccountRepository,
-        IExchangeRateRepository exchangeRate,
-        ITransactionRepository ledgerRepository,
+        IFundAllocationRepository fundAllocationRepository,
+        IBankAccountTransactionRepository accountTransactionRepository,
+        IAllocationCurrencyExchangeService allocationCurrencyExchangeService,
         IEventProducer eventProducer)
     {
-        _userRepository = userRepository;
         _bankAccountRepository = bankAccountRepository;
-        _exchangeRate = exchangeRate;
-        _ledgerRepository = ledgerRepository;
+        _fundAllocationRepository = fundAllocationRepository;
+        _accountTransactionRepository = accountTransactionRepository;
+        _allocationCurrencyExchangeService = allocationCurrencyExchangeService;
         _eventProducer = eventProducer;
     }
 
-    public async Task<TransactionEntity> CreditFunds(CreditFundsRequest request)
+    public async Task<BankAccountTransactionEntity> TransferFunds(TransferFundsRequest request)
     {
-        var user = await _userRepository.GetById(request.UserId) ?? throw new NotFoundApiException("User not found");
-
-        if (user.UserState != UserState.Verified)
+        var (sourceAllocation, sourceTransaction) = await AllocateBankAccountFunds(new AllocateFundsRequest
         {
-            throw new BadRequestApiException("User is not verified");
-        }
+            BankAccountId = request.FromBankAcountId,
+            Amount = request.Amount
+        });
 
-        if (request.Amount < 0)
+        await SettleBankAccountAllocation(new SettleAllocationRequest
         {
-            throw new BadRequestApiException("Amount must be greater than 0");
-        }
+            BankAccountId = request.ToBankAccountId,
+            FundAllocationId = sourceAllocation.Id
+        });
 
-        Guid accountId;
-
-        if (request.BankAccountId != null)
-        {
-            accountId = request.BankAccountId.Value;
-        }
-        else
-        {
-            if (user.PrimaryBankAccountId == null)
-            {
-                throw new BadRequestApiException("User has no default account");
-            }
-
-            accountId = user.PrimaryBankAccountId.Value;
-        }
-
-        var account = await _bankAccountRepository.GetById(accountId) ?? throw new NotFoundApiException("Account not found");
-
-        if (account.AccountStatus == BankAccountStatus.Cancelled)
-        {
-            throw new BadRequestApiException("Account is cancelled");
-        }
-
-        var rate = await _exchangeRate.GetExchangeRate(request.Currency, account.Currency);
-
-        if (rate is null)
-        {
-            throw new BadRequestApiException("Exchange rate not found");
-        }
-
-        var amount = request.Amount * rate.Value;
-        var newBalance = account.Balance + amount;
-    
-        var transaction = new TransactionEntity
-        {
-            Id = Guid.NewGuid(),
-            BankAccountId = account.Id,
-            PreviousBalance = account.Balance,
-            NewBalance = newBalance,
-            SourceCurrency = request.Currency,
-            DestinationCurrency = account.Currency,
-            SourceAmount = request.Amount,
-            DestinationAmount = amount,
-            ExchangeRate = rate.Value,
-            Fee = 0,
-            Message = request.Message,
-            CreatedAt = DateTime.UtcNow
-        };
-
-        await _ledgerRepository.Insert(transaction);
-
-        account.Balance += amount;
-
-        await _bankAccountRepository.Update(account);
-
-        return transaction;
+        return sourceTransaction;
     }
 
-    public async Task<TransactionEntity> DebitFunds(DebitFundsRequest request)
+    public async Task<(FundAllocationEntity, BankAccountTransactionEntity)> AllocateBankAccountFunds(AllocateFundsRequest request)
     {
-        var user = await _userRepository.GetById(request.UserId) ?? throw new NotFoundApiException("User not found");
+        var account = await _bankAccountRepository.GetById(request.BankAccountId) ?? throw new NotFoundApiException("Account not found");
 
-        if (user.UserState != UserState.Verified)
+        if (!account.CanTransfer(request.Amount, out var reason))
         {
-            throw new BadRequestApiException("User is not verified");
+            throw new BadRequestApiException(reason);
         }
 
-        if (request.Amount < 0)
+        var allocation = new FundAllocationEntity
         {
-            throw new BadRequestApiException("Amount must be greater than 0");
-        }
+            Id = Guid.NewGuid(),
+            SourceAmount = request.Amount,
+            SourceCurrency = account.Currency,
+            Status = FundAllocationStatus.Hold,
+            Source = FundAllocationSource.BankAccount,
+            SourceReferenceId = account.Id
+        };
 
-        Guid accountId;
+        await _fundAllocationRepository.Insert(allocation);
 
-        if (request.BankAccountId != null)
-        {
-            accountId = request.BankAccountId.Value;
-        }
-        else
-        {
-            if (user.PrimaryBankAccountId == null)
-            {
-                throw new BadRequestApiException("User has no default account");
-            }
-
-            accountId = user.PrimaryBankAccountId.Value;
-        }
-
-        var account = await _bankAccountRepository.GetById(accountId) ?? throw new NotFoundApiException("Account not found");
-
-        if (account.AccountStatus == BankAccountStatus.Cancelled)
-        {
-            throw new BadRequestApiException("Account is cancelled");
-        }
-
-        if (account.AccountStatus == BankAccountStatus.Frozen)
-        {
-            throw new BadRequestApiException("Account is frozen");
-        }
-
-        var currency = request.Currency ?? account.Currency;
-
-        var rate = await _exchangeRate.GetExchangeRate(currency, account.Currency);
-
-        if (rate is null)
-        {
-            throw new BadRequestApiException("Exchange rate not found");
-        }
-
-        var amount = request.Amount * rate.Value;
-
-        if (amount > account.Balance && !account.OverdraftAllowed)
-        {
-            throw new BadRequestApiException("Insufficient funds");
-        }
-
-        var newBalance = account.Balance - amount;
-    
-        var transaction = new TransactionEntity
+        var transaction = new BankAccountTransactionEntity
         {
             Id = Guid.NewGuid(),
             BankAccountId = account.Id,
+            AllocationId = allocation.Id,
             PreviousBalance = account.Balance,
-            NewBalance = newBalance,
-            SourceCurrency = account.Currency,
-            DestinationCurrency = currency,
-            SourceAmount = amount,
-            DestinationAmount = request.Amount,
-            ExchangeRate = rate.Value,
-            Fee = 0,
-            Message = request.Message,
-            CreatedAt = DateTime.UtcNow
+            NewBalance = account.Balance - request.Amount,
+            Amount = request.Amount
         };
 
-        await _ledgerRepository.Insert(transaction);
+        await _accountTransactionRepository.Insert(transaction);
 
-        if (amount > account.Balance)
+        account.Balance -= request.Amount;
+        await _bankAccountRepository.Update(account);
+
+        if (account.Balance < 0)
         {
             await _eventProducer.Produce(new TransactionOverdraftEvent
             {
-                UserId = user.UserId,
+                UserId = account.UserId,
                 AccountId = account.Id,
-                TransactionId = transaction.Id
             });
         }
 
-        account.Balance -= amount;
+        return (allocation, transaction);
+    }
+
+    public async Task<(FundAllocationEntity, BankAccountTransactionEntity)> SettleBankAccountAllocation(SettleAllocationRequest request)
+    {
+        var allocation = await _fundAllocationRepository.GetById(request.FundAllocationId) ?? throw new NotFoundApiException("Allocation not found");
+
+        if (allocation.Status != FundAllocationStatus.Hold)
+        {
+            throw new BadRequestApiException($"Cannot settle allocation in status: {allocation.Status}");
+        }
+
+        var account = await _bankAccountRepository.GetById(request.BankAccountId) ?? throw new NotFoundApiException("Account not found");
+
+        if (!account.IsActive(out var reason))
+        {
+            throw new BadRequestApiException(reason);
+        }
+
+        if (allocation.SourceCurrency != account.Currency)
+        {
+            allocation = await _allocationCurrencyExchangeService.ConvertAllocationCurrency(allocation.Id, account.Currency);
+        }
+        else
+        {
+            allocation.DestinationAmount = allocation.SourceAmount;
+            allocation.DestinationCurrency = allocation.SourceCurrency;
+            allocation.ExchangeRate = 1;
+        }
+
+        allocation.Fee = 0;
+        allocation.Destination = FundAllocationDestination.BankAccount;
+        allocation.DestinationReferenceId = account.Id;
+        allocation.Status = FundAllocationStatus.Settled;
+        await _fundAllocationRepository.Update(allocation);
+
+        var transaction = new BankAccountTransactionEntity
+        {
+            Id = Guid.NewGuid(),
+            BankAccountId = account.Id,
+            AllocationId = allocation.Id,
+            PreviousBalance = account.Balance,
+            NewBalance = account.Balance + allocation.DestinationAmount.Value,
+            Amount = allocation.DestinationAmount.Value
+        };
+
+        await _accountTransactionRepository.Insert(transaction);
+
+        account.Balance += allocation.DestinationAmount.Value;
         await _bankAccountRepository.Update(account);
 
-        return transaction;
+        return (allocation, transaction);
     }
 }

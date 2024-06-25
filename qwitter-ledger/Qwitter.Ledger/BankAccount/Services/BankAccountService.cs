@@ -16,7 +16,6 @@ public interface IBankAccountService
     Task<BankAccountResponse> CreateBankAccount(CreateBankAccountRequest request);
     Task<BankAccountResponse> GetBankAccount(Guid bankAccountId);
     Task<List<BankAccountResponse>> GetUserBankAccounts(Guid userId);
-    Task<IEnumerable<TransactionResponse>> GetBankAccountTransactions(Guid bankAccountId, PaginationRequest request);
     Task UpdateUserPrimaryBankAccount(Guid userId, Guid bankAccountId);
 }
 
@@ -26,7 +25,6 @@ public class BankAccountService : IBankAccountService
     private readonly IMapper _mapper;
     private readonly IBankAccountRepository _bankAccountRepository;
     private readonly IUserRepository _userRepository;
-    private readonly ITransactionRepository _transactionRepository;
     private readonly BankConfiguration _bankConfiguration;
 
     public BankAccountService(
@@ -34,14 +32,12 @@ public class BankAccountService : IBankAccountService
         IMapper mapper,
         IBankAccountRepository bankAccountRepository,
         IUserRepository userRepository,
-        ITransactionRepository transactionRepository,
         BankConfiguration bankConfiguration)
     {
         _logger = logger;
         _mapper = mapper;
         _bankAccountRepository = bankAccountRepository;
         _userRepository = userRepository;
-        _transactionRepository = transactionRepository;
         _bankConfiguration = bankConfiguration;
     }
 
@@ -146,12 +142,6 @@ public class BankAccountService : IBankAccountService
         }
 
         return number;
-    }
-
-    public async Task<IEnumerable<TransactionResponse>> GetBankAccountTransactions(Guid bankAccountId, PaginationRequest request)
-    {
-        var transactions = await _transactionRepository.GetByBankAccountId(bankAccountId, request);
-        return transactions.Select(_mapper.Map<TransactionResponse>);
     }
 
     public async Task UpdateUserPrimaryBankAccount(Guid userId, Guid bankAccountId)

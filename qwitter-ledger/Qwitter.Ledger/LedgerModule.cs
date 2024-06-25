@@ -10,17 +10,16 @@ using Qwitter.Ledger.Transactions.Repositories;
 using Qwitter.Ledger.Transactions.Services;
 using Qwitter.Ledger.User.Repositories;
 using Qwitter.Ledger.User.Consumers;
-using Qwitter.Transactions.Consumers;
 using MapsterMapper;
 using Qwitter.Ledger.Invoices.Repositories;
 using Qwitter.Ledger.Invoices.Services;
 using Qwitter.Ledger.Invoices.Consumers;
-using Qwitter.Ledger.InternalBankTransfer.Services;
 using Qwitter.Core.Application.RestApiClient;
 using Qwitter.Crypto.Contract.Wallets;
 using Qwitter.Ledger.Crypto.Repositories;
 using Qwitter.Ledger.Crypto.Services;
 using Qwitter.Ledger.Crypto.Consumers;
+using Qwitter.Ledger.FundAllocations.Repositories;
 
 namespace Qwitter.Ledger;
 
@@ -38,15 +37,20 @@ public static class LedgerModule
         builder.Services.AddScoped<IBankAccountService, BankAccountService>();
         builder.Services.AddScoped<IBankInstitutionRepository, BankInstitutionRepository>();
         builder.Services.AddScoped<IExchangeRateRepository, ExchangeRateRepository>();
-        builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
         builder.Services.AddScoped<ITransactionService, TransactionService>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
         builder.Services.AddScoped<IInvoicePaymentRepository, InvoicePaymentRepository>();
         builder.Services.AddScoped<IInvoiceService, InvoiceService>();
-        builder.Services.AddScoped<IInternalBankTransferService, InternalBankTransferService>();
         builder.Services.AddScoped<IBankAccountCryptoWalletRepository, BankAccountCryptoWalletRepository>();
         builder.Services.AddScoped<ICryptoService, CryptoService>();
+
+        builder.Services.AddScoped<IBankAccountTransactionRepository, BankAccountTransactionRepository>();
+
+        builder.Services.AddScoped<ISystemBankAccountRepository, SystemBankAccountRepository>();
+        builder.Services.AddScoped<IAllocationCurrencyExchangeService, AllocationCurrencyExchangeService>();
+        builder.Services.AddScoped<ISystemTransactionService, SystemTransactionService>();
+        builder.Services.AddScoped<IFundAllocationRepository, FundAllocationRepository>();
 
         // builder.RegisterConsumer<TransactionCompletedConsumer>("ledger-group");
         builder.RegisterConsumer<CryptoDepositEventConsumer>(App.Name);

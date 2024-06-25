@@ -32,6 +32,7 @@ public class CryptoDepositEventConsumer : IConsumer<CryptoDepositEvent>
 
     public async Task Consume(ConsumeContext<CryptoDepositEvent> context)
     {
+        // TODO: Credit the system
         _logger.LogInformation("Consuming CryptoDepositEvent {WalletId} {TransactionHash} {Amount} {Currency}", context.Message.WalletId, context.Message.TransactionHash, context.Message.Amount, context.Message.Currency);
         var wallet = await _bankAccountCryptoWalletRepository.GetByWalletId(context.Message.WalletId);
 
@@ -42,16 +43,17 @@ public class CryptoDepositEventConsumer : IConsumer<CryptoDepositEvent>
             return;
         }
 
-        var creditFundsRequest = new CreditFundsRequest
-        {
-            UserId = wallet.UserId,
-            BankAccountId = wallet.BankAccountId,
-            Amount = context.Message.Amount,
-            Currency = context.Message.Currency,
-            Message = $"Crypto deposit. Transaction hash: {context.Message.TransactionHash}"
-        };
+        // var creditFundsRequest = new CreditFundsRequest
+        // {
+        //     UserId = wallet.UserId,
+        //     BankAccountId = wallet.BankAccountId,
+        //     Amount = context.Message.Amount,
+        //     Currency = context.Message.Currency,
+        //     Message = $"Crypto deposit. Transaction hash: {context.Message.TransactionHash}"
+        // };
 
         // TODO: Handle blocked or unverified accounts
-        await _transactionService.CreditFunds(creditFundsRequest);
+        // Credit the account
+        // await _transactionService.CreditFunds(creditFundsRequest);
     }
 }

@@ -19,17 +19,34 @@ public class TransactionsController : ControllerBase, ITransactionsController
         _transactionService = transactionService;
     }
 
-    [HttpPost("credit")]
-    public async Task<TransactionResponse> CreditFunds(CreditFundsRequest request)
+    [HttpPost("allocate-funds")]
+    public async Task<BankAccountAllocationResponse> AllocateBankAccountFunds(AllocateFundsRequest request)
     {
-        var response = await _transactionService.CreditFunds(request);
-        return _mapper.Map<TransactionResponse>(response);
+        var (allocation, transaction) = await _transactionService.AllocateBankAccountFunds(request);
+
+        return new()
+        {
+            Allocation = _mapper.Map<FundAllocation>(allocation),
+            Transaction = _mapper.Map<BankAccountTransaction>(transaction)
+        };
     }
 
-    [HttpPost("debit")]
-    public async Task<TransactionResponse> DebitFunds(DebitFundsRequest request)
+    [HttpPost("settle-funds")]
+    public async Task<BankAccountAllocationResponse> SettleBankAccountAllocation(SettleAllocationRequest request)
     {
-        var response = await _transactionService.DebitFunds(request);
-        return _mapper.Map<TransactionResponse>(response);
+        var (allocation, transaction) = await _transactionService.SettleBankAccountAllocation(request);
+
+        return new()
+        {
+            Allocation = _mapper.Map<FundAllocation>(allocation),
+            Transaction = _mapper.Map<BankAccountTransaction>(transaction)
+        };
+    }
+
+    [HttpPost("transfer-funds")]
+    public async Task<BankAccountTransaction> TransferFunds(TransferFundsRequest request)
+    {
+        var transaction = await _transactionService.TransferFunds(request);
+        return _mapper.Map<BankAccountTransaction>(transaction);
     }
 }
