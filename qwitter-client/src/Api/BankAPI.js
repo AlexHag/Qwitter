@@ -42,6 +42,17 @@ export class BankAPI {
         amount
       }
     });
+
+  getCryptoWallet = (bankAccountId, currency) =>
+    backend.POST({
+      url: `${this.apiUrl}/bank-account/crypto-wallet`,
+      headers: authHeader(this.token),
+      body: {
+        userId: this.user.userId,
+        bankAccountId,
+        currency
+      }
+    });
 }
 
 export const useBankAPI = () => {

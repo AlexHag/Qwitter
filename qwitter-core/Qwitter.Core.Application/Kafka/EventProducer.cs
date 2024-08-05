@@ -8,6 +8,7 @@ public interface IEventProducer
 {
     Task Produce(object @event);
     Task Produce(object @event, string? topicSuffix);
+    Task Produce(string topic, object @event);
 }
 
 public class EventProducer : IEventProducer
@@ -51,4 +52,25 @@ public class EventProducer : IEventProducer
         string topic = string.IsNullOrWhiteSpace(topicSuffix) ? messageAttribute.TopicName : $"{messageAttribute.TopicName}-{topicSuffix}";
         await _producer.ProduceAsync(topic, message);
     }
+
+    public async Task Produce(string topic, object @event)
+    {
+        var message = new Message<string, string>
+        {
+            Key = Guid.NewGuid().ToString(),
+            Value = JsonSerializer.Serialize(@event)
+        };
+
+        await _producer.ProduceAsync(topic, message);
+    }
+}
+
+public abstract class MyEvt
+{
+    public abstract string TopicName { get; }
+}
+
+public class TransactionEvt : MyEvt
+{
+    public override string TopicName => "transaction";
 }

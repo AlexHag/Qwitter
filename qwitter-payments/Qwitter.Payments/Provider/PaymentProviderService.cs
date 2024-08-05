@@ -61,8 +61,10 @@ public class PaymentProviderService : IPaymentProviderService
             throw new NotSupportedException("Currency not supported");
         }
 
+        var url = $"{_credentials.BaseAddress}/v2/{_credentials.Token}";
+
         var account = new Account(key);
-        var web3 = new Web3(account, _credentials.Token);
+        var web3 = new Web3(account, url);
         
         var transferService = web3.Eth.GetEtherTransferService();
 

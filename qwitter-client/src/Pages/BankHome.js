@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import PageHeader from "../Components/PageHeader";
 import TransferMoneyModal from "../Components/Bank/TransferMoneyModal";
 import AccountsView from "../Components/Bank/AccountsView";
+import DepositMoneyModal from "../Components/Bank/DepositMoneyModal";
 import "../Styles/BankHome.css";
 
 function BankHome() {
@@ -12,6 +13,7 @@ function BankHome() {
   const [accounts, setAccounts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showTransferMoneyModal, setShowTransferMoneyModal] = useState(false);
+  const [showDepositMoneyModal, setShowDepositMoneyModal] = useState(false);
 
   useEffect(() => {
     fetchAccounts();
@@ -42,9 +44,12 @@ function BankHome() {
             <div className="flex-space-between">
               <button
                 style={{ margin: "36px 0px 0px 36px", padding: "8px 16px" }}
-                className="qwitter-button">
+                className="qwitter-button"
+                // onClick={() => navigate("/deposit")}>
+                onClick={() => setShowDepositMoneyModal(true)}>
                 Deposit
               </button>
+              <DepositMoneyModal show={showDepositMoneyModal} onClose={() => setShowDepositMoneyModal(false)} accounts={accounts} callback={fetchAccounts} />
               <button
                 style={{ margin: "36px 36px 0px 36px", padding: "8px 16px" }}
                 className="qwitter-button"

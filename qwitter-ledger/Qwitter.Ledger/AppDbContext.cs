@@ -7,6 +7,8 @@ using Qwitter.Ledger.User.Models;
 using Qwitter.Ledger.Invoices.Models;
 using Qwitter.Ledger.Crypto.Models;
 using Qwitter.Ledger.FundAllocations.Models;
+using Qwitter.SystemLedger.Models;
+using Qwitter.Ledger.SystemLedger.Models;
 
 namespace Qwitter.Ledger;
 
@@ -19,7 +21,8 @@ public class AppDbContext : DbContext
     public DbSet<InvoiceEntity> Invoices { get; set; }
     public DbSet<InvoicePaymentEntity> InvoicePayments { get; set; }
     public DbSet<BankAccountCryptoWalletEntity> BankAccountCryptoWallets { get; set; }
-    public DbSet<SystemBankAccountEntity> SystemBankAccounts { get; set; }
+    public DbSet<SystemAccountEntity> SystemAccounts { get; set; }
+    public DbSet<SystemTransactionEntity> SystemTransactions { get; set; }
     public DbSet<FundAllocationEntity> FundAllocations { get; set; }
     public DbSet<BankAccountTransactionEntity> AccountTransactions { get; set; }
 
@@ -88,7 +91,7 @@ public class AppDbContext : DbContext
             .IsUnique()
             .HasDatabaseName("IX_BankAccountCryptoWallets_BankAccountId_Currency");
         
-        modelBuilder.Entity<SystemBankAccountEntity>()
+        modelBuilder.Entity<SystemAccountEntity>()
             .Property(p => p.Balance)
             .HasPrecision(18, 8);
     }

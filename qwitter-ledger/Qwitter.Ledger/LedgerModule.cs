@@ -20,6 +20,7 @@ using Qwitter.Ledger.Crypto.Repositories;
 using Qwitter.Ledger.Crypto.Services;
 using Qwitter.Ledger.Crypto.Consumers;
 using Qwitter.Ledger.FundAllocations.Repositories;
+using Qwitter.Ledger.FundAllocations.Services;
 
 namespace Qwitter.Ledger;
 

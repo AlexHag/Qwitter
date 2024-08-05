@@ -7,6 +7,8 @@ import AuthProvider from './Auth/AuthProvider';
 import PrivateRoute from './Auth/PrivateRoute';
 import BankHome from './Pages/BankHome';
 import Home from './Pages/Home';
+import StartDepositPage from './Components/Bank/Deposit/StartDepositPage';
+import CryptoDepositPage from './Components/Bank/Deposit/CryptoDepositPage';
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
               {/* Private routes that require authentication */}
               <Route path="/profile" element={<Profile />} />
               <Route path="/bank" element={<BankHome />} />
+              <Route path="/deposit" element={<StartDepositPage />} />
+              <Route path="/crypto-deposit" element={<CryptoDepositPage />} />
             </Route>
             <Route path="/" element={<Home />} />
           </Routes>

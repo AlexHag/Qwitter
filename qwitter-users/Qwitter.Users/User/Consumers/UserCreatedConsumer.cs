@@ -12,8 +12,9 @@ public class UserCreatedConsumer : IConsumer<UserCreatedEvent>
         _logger = logger;
     }
 
-    public async Task Consume(ConsumeContext<UserCreatedEvent> context)
+    public Task Consume(ConsumeContext<UserCreatedEvent> context)
     {
         _logger.LogInformation("Consuming user created event, {userId}, {email}, {username}", context.Message.UserId, context.Message.Email, context.Message.Username);
+        return Task.CompletedTask;
     }
 }

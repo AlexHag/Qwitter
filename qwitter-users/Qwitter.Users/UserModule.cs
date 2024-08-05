@@ -20,7 +20,7 @@ public static class UserModule
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!));
 
         builder.RegisterConsumer<UserCreatedConsumer>("user-group");
-        builder.RegisterConsumer<PremiumPurchasedConsumer>("user-group");
+        // builder.RegisterConsumer<PremiumPurchasedConsumer>("user-group");
         builder.RegisterConsumer<UserStartedFollowingConsumer>("user-group");
         builder.RegisterConsumer<UserStoppedFollowingConsumer>("user-group");
 

@@ -1,5 +1,6 @@
 
 using Qwitter.Core.Application.Exceptions;
+using Qwitter.Core.Application.Persistence;
 using Qwitter.Crypto.Contract.Wallets;
 using Qwitter.Crypto.Contract.Wallets.Models;
 using Qwitter.Ledger.BankAccount.Repositories;
@@ -37,12 +38,6 @@ public class CryptoService : ICryptoService
     {
         var bankAccount = await _bankAccountRepository.GetById(request.BankAccountId) ?? throw new NotFoundApiException($"BankAccountId: {request.BankAccountId} not found");
 
-        if (request.UserId != bankAccount.UserId)
-        {
-            _logger.LogWarning("Attempted unauthorized access to bank account crypt wallet by UserId {userId} to BankAccountId: {bankAccountId} - Currency: {currency}", request.UserId, request.BankAccountId, request.Currency);
-            throw new NotFoundApiException($"BankAccountId: {request.BankAccountId} not found");
-        }
-
         var existingWallet = await _bankAccountCryptoWalletRepository.GetByBankAccountIdAndCurrency(request.BankAccountId, request.Currency);
 
         if (existingWallet is not null)
@@ -54,19 +49,17 @@ public class CryptoService : ICryptoService
             };
         }
 
-        _logger.LogInformation("Creating new wallet for UserId: {UserId} - BankAccountId: {BankAccountId} - Currency: {Currency}", request.UserId, request.BankAccountId, request.Currency);
-
         var newWallet = await _walletController.CreateWallet(new CreateWalletRequest
         {
             Currency = request.Currency,
-            SubTopic = App.Name
+            DestinationDomain = FundDomain.BankAccount,
+            DestinationId = bankAccount.Id
         });
 
         var entity = new BankAccountCryptoWalletEntity
         {
             Id = Guid.NewGuid(),
             WalletId = newWallet.Id,
-            UserId = request.UserId,
             BankAccountId = request.BankAccountId,
             Address = newWallet.Address,
             Currency = newWallet.Currency

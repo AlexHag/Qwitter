@@ -1,0 +1,10 @@
+
+.start-deposit-form {
+    /* border: 1px solid black; */
+    margin: 5% 10%;
+}
+
+.start-deposit-form label {
+    display: block;
+    font-size: 32px;
+}

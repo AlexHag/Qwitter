@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Loading from "../../Components/Loading/Loading";
 import OpenNewBankAccountModal from "./OpenNewBankAccountModal";
 import "../../Styles/BankHome.css";
@@ -32,11 +32,13 @@ function AccountsView({ accounts, fetchAccounts, isLoading }) {
                 <p>Name</p>
                 <p>Account Number</p>
                 <p>Balance</p>
+                <p></p>
               </div>
               <div className="primary-bank-account-body">
                 <p>{accounts[0].accountName}</p>
                 <p>{accounts[0].accountNumber}</p>
                 <p>{accounts[0].balance}</p>
+                <p><button className="qwitter-button">Details</button></p>
               </div>
 
               {accounts.length < 1 ?
@@ -47,12 +49,14 @@ function AccountsView({ accounts, fetchAccounts, isLoading }) {
                     <p>Name</p>
                     <p>Account Number</p>
                     <p>Balance</p>
+                    <p></p>
                   </div>
                   {accounts.slice(1).map(account =>
                     <div className="primary-bank-account-body">
                       <p>{account.accountName}</p>
                       <p>{account.accountNumber}</p>
                       <p>{account.balance}</p>
+                      <p><button className="qwitter-button">Details</button></p>
                     </div>)}
                 </>}
               <div>

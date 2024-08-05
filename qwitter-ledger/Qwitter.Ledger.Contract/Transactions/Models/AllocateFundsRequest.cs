@@ -4,4 +4,5 @@ public class AllocateFundsRequest
 {
     public Guid BankAccountId { get; set; }
     public decimal Amount { get; set; }
+    // TODO: Add destination
 }

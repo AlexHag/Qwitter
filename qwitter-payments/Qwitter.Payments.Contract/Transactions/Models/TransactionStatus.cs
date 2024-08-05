@@ -1,4 +1,3 @@
-
 namespace Qwitter.Payments.Contract.Transactions.Models;
 
 // TODO: Add more statuses

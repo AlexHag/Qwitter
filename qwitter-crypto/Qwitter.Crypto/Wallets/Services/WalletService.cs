@@ -56,7 +56,8 @@ public class WalletService : IWalletService
             Address = wallet.Address,
             Balance = 0,
             PrivateKey = wallet.PrivateKey,
-            SubTopic = request.SubTopic
+            DestinationDomain = request.DestinationDomain,
+            DestinationId = request.DestinationId,
         };
 
         await _walletRepository.InsertWallet(entity);
@@ -101,12 +102,13 @@ public class WalletService : IWalletService
             }
 
             await _eventProducer.Produce(new CryptoDepositEvent
-            {
-                WalletId = wallet.Id,
-                TransactionHash = transfer.TransactionHash,
-                Amount = transfer.Amount,
-                Currency = wallet.Currency
-            }, wallet.SubTopic);
+                {
+                    WalletId = wallet.Id,
+                    DestinationId = wallet.DestinationId,
+                    TransactionHash = transfer.TransactionHash,
+                    Amount = transfer.Amount,
+                    Currency = wallet.Currency,
+                }, wallet.DestinationDomain);
 
             var entity = _mapper.Map<CryptoTransferEntity>(transfer);
             entity.Id = Guid.NewGuid();

@@ -3,8 +3,9 @@ using Qwitter.Ledger.ExchangeRates.Repositories;
 using Qwitter.Ledger.FundAllocations.Models;
 using Qwitter.Ledger.FundAllocations.Models.Enums;
 using Qwitter.Ledger.FundAllocations.Repositories;
+using Qwitter.Ledger.SystemLedger.Services;
 
-namespace Qwitter.Ledger.Transactions.Services;
+namespace Qwitter.Ledger.FundAllocations.Services;
 
 public interface IAllocationCurrencyExchangeService
 {
@@ -31,7 +32,7 @@ public class AllocationCurrencyExchangeService : IAllocationCurrencyExchangeServ
     {
         var allocation = await _fundAllocationRepository.GetById(allocationId) ?? throw new NotFoundApiException("Allocation not found");
 
-        if (allocation.Status != FundAllocationStatus.Hold)
+        if (allocation.Status != FundAllocationStatus.Pending)
         {
             throw new BadRequestApiException($"Cannot settle allocation in status: {allocation.Status}");
         }
@@ -52,8 +53,8 @@ public class AllocationCurrencyExchangeService : IAllocationCurrencyExchangeServ
         allocation.DestinationCurrency = currency;
         allocation.ExchangeRate = rate;
 
-        await _systemTransactionService.CreditSystemCurrency(allocation.SourceCurrency, allocation.SourceAmount);
-        await _systemTransactionService.DebitSystemCurrency(currency, destinationAmount);
+        await _systemTransactionService.CreditSystemCurrency(allocationId, allocation.SourceCurrency, allocation.SourceAmount);
+        await _systemTransactionService.DebitSystemCurrency(allocationId, currency, destinationAmount);
 
         await _fundAllocationRepository.Update(allocation);
 

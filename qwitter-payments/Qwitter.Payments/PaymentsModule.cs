@@ -7,6 +7,7 @@ using Qwitter.Payments.Transactions.Configuration;
 using Qwitter.Payments.Transactions.Consumers;
 using Qwitter.Payments.Transactions.Repositories;
 using Qwitter.Payments.Transactions.Services;
+using Qwitter.Payments.User.Consumers;
 using Qwitter.Payments.User.Repositories;
 using Qwitter.Payments.Wallets.Repositories;
 using Qwitter.Payments.Wallets.Services;
@@ -36,9 +37,11 @@ public static class PaymentsModule
         builder.Services.AddDbContext<AppDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!));
 
+        builder.RegisterConsumer<UserCreatedConsumer>("payment-group");
+        builder.RegisterConsumer<UserStateChangedConsumer>("payment-group");
         builder.RegisterConsumer<TransactionCreatedConsumer>("payment-group");
         builder.RegisterConsumer<TransactionCompletedConsumer>("payment-group");
-        
+
         builder.UseKafka();
         
         return builder;

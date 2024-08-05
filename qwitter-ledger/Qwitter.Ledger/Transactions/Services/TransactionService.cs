@@ -1,11 +1,13 @@
 using Qwitter.Core.Application.Exceptions;
 using Qwitter.Core.Application.Kafka;
+using Qwitter.Core.Application.Persistence;
 using Qwitter.Ledger.BankAccount.Repositories;
 using Qwitter.Ledger.Contract.Transactions.Events;
 using Qwitter.Ledger.Contract.Transactions.Models;
 using Qwitter.Ledger.FundAllocations.Models;
 using Qwitter.Ledger.FundAllocations.Models.Enums;
 using Qwitter.Ledger.FundAllocations.Repositories;
+using Qwitter.Ledger.FundAllocations.Services;
 using Qwitter.Ledger.Transactions.Models;
 using Qwitter.Ledger.Transactions.Repositories;
 
@@ -72,9 +74,9 @@ public class TransactionService : ITransactionService
             Id = Guid.NewGuid(),
             SourceAmount = request.Amount,
             SourceCurrency = account.Currency,
-            Status = FundAllocationStatus.Hold,
-            Source = FundAllocationSource.BankAccount,
-            SourceReferenceId = account.Id
+            Status = FundAllocationStatus.Pending,
+            SourceDomain = FundDomain.BankAccount,
+            SourceId = account.Id
         };
 
         await _fundAllocationRepository.Insert(allocation);
@@ -110,7 +112,7 @@ public class TransactionService : ITransactionService
     {
         var allocation = await _fundAllocationRepository.GetById(request.FundAllocationId) ?? throw new NotFoundApiException("Allocation not found");
 
-        if (allocation.Status != FundAllocationStatus.Hold)
+        if (allocation.Status != FundAllocationStatus.Pending)
         {
             throw new BadRequestApiException($"Cannot settle allocation in status: {allocation.Status}");
         }
@@ -134,8 +136,9 @@ public class TransactionService : ITransactionService
         }
 
         allocation.Fee = 0;
-        allocation.Destination = FundAllocationDestination.BankAccount;
-        allocation.DestinationReferenceId = account.Id;
+        // TODO: Validate destination
+        allocation.DestinationDomain = FundDomain.BankAccount;
+        allocation.DestinationId = account.Id;
         allocation.Status = FundAllocationStatus.Settled;
         await _fundAllocationRepository.Update(allocation);
 
