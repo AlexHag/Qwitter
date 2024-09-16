@@ -35,12 +35,16 @@ public class RestApiExceptionMiddleware
     // TODO: Add more info to response
     private static bool HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        var code = exception switch
+        HttpStatusCode code;
+
+        if (exception is RestApiException restApiException)
         {
-            BadRequestApiException _ => HttpStatusCode.BadRequest,
-            NotFoundApiException _ => HttpStatusCode.NotFound,
-            _ => HttpStatusCode.InternalServerError,
-        };
+            code = restApiException.StatusCode;
+        }
+        else
+        {
+            code = HttpStatusCode.InternalServerError;
+        }
 
         var result = JsonSerializer.Serialize(new { error = exception.Message });
         context.Response.ContentType = "application/json";

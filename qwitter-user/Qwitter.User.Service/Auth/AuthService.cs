@@ -2,8 +2,10 @@ using System.Net;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Qwitter.Core.Application.Exceptions;
+using Qwitter.Core.Application.Kafka;
 using Qwitter.User.Contract.Auth;
 using Qwitter.User.Contract.Auth.Models;
+using Qwitter.User.Contract.Events;
 using Qwitter.User.Service.User.Models;
 
 namespace Qwitter.User.Service.Auth;
@@ -14,13 +16,16 @@ public class AuthService : ControllerBase, IAuthService
 {
     private readonly IUserRepository _userRepository;
     private readonly ITokenService _tokenService;
+    private readonly IEventProducer _eventProducer;
 
     public AuthService(
         IUserRepository userRepository,
-        ITokenService tokenService)
+        ITokenService tokenService,
+        IEventProducer eventProducer)
     {
         _userRepository = userRepository;
         _tokenService = tokenService;
+        _eventProducer = eventProducer;
     }
 
     [HttpPost("login")]
@@ -73,6 +78,12 @@ public class AuthService : ControllerBase, IAuthService
         };
 
         await _userRepository.Insert(user);
+
+        await _eventProducer.Produce(new UserCreatedEvent
+        {
+            UserId = user.UserId,
+            Email = user.Email
+        });
 
         var token = _tokenService.GenerateToken(user.UserId);
 

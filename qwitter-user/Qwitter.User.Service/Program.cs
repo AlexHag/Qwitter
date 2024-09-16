@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Qwitter.Core.Application;
+using Qwitter.Core.Application.Kafka;
+using Qwitter.User.Service.User.Consumers;
 
 namespace Qwitter.User.Service;
 
@@ -21,6 +23,11 @@ public static class Program
         builder.Services.AddDbContext<ServiceDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!));
 
+        builder.RegisterConsumer<UserCreatedConsumer>(Name);
+        builder.UseKafka();
+
         return builder;
     }
+
+    public const string Name = "qwitter-user";
 }
