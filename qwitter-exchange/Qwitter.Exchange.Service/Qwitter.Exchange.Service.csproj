@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mapster" Version="7.4.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Qwitter.Exchange.Contract\Qwitter.Exchange.Contract.csproj" />
+    <ProjectReference Include="..\..\qwitter-funds\Qwitter.Funds.Contract\Qwitter.Funds.Contract.csproj" />
+  </ItemGroup>
+
+  <!-- TODO: Remove these certificates and use mTLS for non client microservices -->
+  <ItemGroup>
+    <None Include="..\..\certificates\user_auth\user_auth_key.pem">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>user_auth_key.pem</Link>
+    </None>
+    <None Include="..\..\certificates\user_auth\user_auth_cert.pem">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>user_auth_cert.pem</Link>
+    </None>
+  </ItemGroup>
+
+</Project>
