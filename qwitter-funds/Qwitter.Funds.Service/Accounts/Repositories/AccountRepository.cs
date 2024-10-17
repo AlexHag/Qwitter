@@ -8,8 +8,8 @@ public interface IAccountRepository
 {
     Task Insert(AccountEntity entity);
     Task Update(AccountEntity entity);
+    Task<AccountEntity?> TryGetById(Guid id);
     Task<AccountEntity> GetById(Guid id);
-    Task<AccountEntity?> TryGetByOwnerReferenceIdAndCurrency(Guid ownerReferenceId, string currency);
 }
 
 public class AccountRepository : IAccountRepository
@@ -33,6 +33,9 @@ public class AccountRepository : IAccountRepository
         await _dbContext.SaveChangesAsync();
     }
 
+    public async Task<AccountEntity?> TryGetById(Guid accountId)
+        => await _dbContext.Accounts.FirstOrDefaultAsync(x => x.AccountId == accountId);
+
     public async Task<AccountEntity> GetById(Guid id)
     {
         var entity = await _dbContext.Accounts.FirstOrDefaultAsync(x => x.AccountId == id);
@@ -43,10 +46,5 @@ public class AccountRepository : IAccountRepository
         }
 
         return entity;
-    }
-
-    public async Task<AccountEntity?> TryGetByOwnerReferenceIdAndCurrency(Guid ownerReferenceId, string currency)
-    {
-        return await _dbContext.Accounts.FirstOrDefaultAsync(x => x.OwnerReferenceId == ownerReferenceId && x.Currency == currency);
     }
 }

@@ -7,30 +7,28 @@ using Qwitter.Funds.Contract.Allocations.Models;
 using Qwitter.Funds.Service.Accounts.Repositories;
 using Qwitter.Funds.Service.Allocations.Models;
 using Qwitter.Funds.Service.Allocations.Repositories;
-using Qwitter.Funds.Service.CurrencyExchange;
-using Qwitter.Funds.Service.CurrencyExchange.Models;
 
 namespace Qwitter.Funds.Service.Allocations;
 
 [ApiController]
-[Route("funds")]
+[Route("allocations")]
 public class AllocationService : ControllerBase, IAllocationService
 {
     private readonly IMapper _mapper;
     private readonly IAllocationRepository _allocationRepository;
     private readonly IAccountRepository _accountRepository;
-    private readonly ICurrencyExchangeActions _currencyExchangeActions;
+    private readonly ILogger<AllocationService> _logger;
 
     public AllocationService(
         IMapper mapper,
         IAllocationRepository allocationRepository,
         IAccountRepository accountRepository,
-        ICurrencyExchangeActions currencyExchangeActions)
+        ILogger<AllocationService> logger)
     {
         _mapper = mapper;
         _allocationRepository = allocationRepository;
         _accountRepository = accountRepository;
-        _currencyExchangeActions = currencyExchangeActions;
+        _logger = logger;
     }
 
     [HttpPost("allocate")]
@@ -38,85 +36,66 @@ public class AllocationService : ControllerBase, IAllocationService
     {
         var account = await _accountRepository.GetById(request.AccountId);
 
+        var duplicateAllocation = await _allocationRepository.TryGetByTransactionId(request.TransactionId);
+
+        if (duplicateAllocation != null)
+        {
+            _logger.LogWarning("Duplicate allocation request {TransactionId} for account {AccountId}", request.TransactionId, request.AccountId);
+            return _mapper.Map<AllocationResponse>(duplicateAllocation);
+        }
+
         var allocation = new AllocationEntity
         {
             AllocationId = Guid.NewGuid(),
+            AccountId = request.AccountId,
+            TransactionId = request.TransactionId,
             Currency = account.Currency,
             Amount = request.Amount,
-            SourceAccountId = request.AccountId,
             Status = AllocationStatus.Allocated
         };
 
-        account.Balance -= request.Amount;
+        account.AvailableBalance -= request.Amount;
 
         await _allocationRepository.Insert(allocation);
         await _accountRepository.Update(account);
 
-        // TODO: Publish event
-
         return _mapper.Map<AllocationResponse>(allocation);
     }
 
-    [HttpPost("convert")]
-    public async Task<AllocationResponse> Convert(ConvertAllocationRequest request)
+    [HttpGet("{allocationId}")]
+    public async Task<AllocationResponse> GetAllocation(Guid allocationId)
     {
-        var allocation = await _allocationRepository.GetById(request.AllocationId);
-
-        if (allocation.Status != AllocationStatus.Allocated)
-        {
-            throw new BadRequestApiException($"Allocation {allocation.AllocationId} in status {allocation.Status} cannot be converted");
-        }
-
-        var exchange = await _currencyExchangeActions.Exchange(new ExchangeCurrencyCommand
-        {
-            SourceCurrency = allocation.Currency,
-            DestinationCurrency = request.Currency,
-            Amount = allocation.Amount
-        });
-
-        var convertedAllocation = new AllocationEntity
-        {
-            AllocationId = Guid.NewGuid(),
-            Currency = exchange.DestinationCurrency,
-            Amount = exchange.DestinationAmount,
-            Status = AllocationStatus.Allocated,
-            SourceAccountId = allocation.SourceAccountId,
-            CurrencyExchangeId = exchange.CurrencyExchangeId
-        };
-
-        allocation.Status = AllocationStatus.Converted;
-        allocation.ConvertedIntoAllocationId = convertedAllocation.AllocationId;
-        allocation.CurrencyExchangeId = exchange.CurrencyExchangeId;
-
-        await _allocationRepository.Insert(convertedAllocation);
-        await _allocationRepository.Update(allocation);
-
-        // TODO: Publish event maybe...
-
-        return _mapper.Map<AllocationResponse>(convertedAllocation);
+        var allocation = await _allocationRepository.GetById(allocationId);
+        return _mapper.Map<AllocationResponse>(allocation);
     }
 
     [HttpPost("settle")]
     public async Task<AllocationResponse> SettleAllocation(SettleAllocationRequest request)
     {
-        var account = await _accountRepository.GetById(request.AccountId);
         var allocation = await _allocationRepository.GetById(request.AllocationId);
+        var sourceAccount = await _accountRepository.GetById(allocation.AccountId);
+        var destinationAccount = await _accountRepository.GetById(request.DestinationAccountId);
 
         if (allocation.Status != AllocationStatus.Allocated)
         {
+            _logger.LogError("Allocation {AllocationId} in status {Status} cannot be settled", allocation.AllocationId, allocation.Status);
             throw new BadRequestApiException($"Allocation {allocation.AllocationId} in status {allocation.Status} cannot be settled");
         }
 
-        if (allocation.Currency != account.Currency)
+        if (allocation.Currency != destinationAccount.Currency)
         {
-            throw new BadRequestApiException($"Allocation {allocation.AllocationId} currency {allocation.Currency} does not match account currency {account.Currency}. Allocation must be converted first");
+            _logger.LogError("Allocation {AllocationId} currency {Currency} does not match account currency {AccountCurrency}", allocation.AllocationId, allocation.Currency, destinationAccount.Currency);
+            throw new BadRequestApiException($"Allocation {allocation.AllocationId} currency {allocation.Currency} does not match account currency {destinationAccount.Currency}. Allocation must be converted first");
         }
 
-        account.Balance += allocation.Amount;
-        allocation.Status = AllocationStatus.Settled;
-        allocation.DestinationAccountId = request.AccountId;
+        sourceAccount.TotalBalance -= allocation.Amount;
+        destinationAccount.AvailableBalance += allocation.Amount;
+        destinationAccount.TotalBalance += allocation.Amount;
 
-        await _accountRepository.Update(account);
+        allocation.Status = AllocationStatus.Settled;
+        allocation.DestinationAccountId = destinationAccount.AccountId;
+
+        await _accountRepository.Update(destinationAccount);
         await _allocationRepository.Update(allocation);
 
         // TODO: Publish event

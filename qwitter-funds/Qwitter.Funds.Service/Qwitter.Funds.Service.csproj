@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Mapster" Version="7.4.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.1">
@@ -21,6 +20,7 @@
     <ProjectReference Include="..\Qwitter.Funds.Contract\Qwitter.Funds.Contract.csproj" />
   </ItemGroup>
 
+  <!-- TODO: Remove these certificates and use mTLS for non client microservices -->
   <ItemGroup>
     <None Include="..\..\certificates\user_auth\user_auth_key.pem">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

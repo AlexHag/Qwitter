@@ -1,4 +1,5 @@
 
+using Microsoft.EntityFrameworkCore;
 using Qwitter.Funds.Service.Accounts.Models;
 
 namespace Qwitter.Funds.Service.Accounts.Repositories;
@@ -6,6 +7,7 @@ namespace Qwitter.Funds.Service.Accounts.Repositories;
 public interface IAccountCreditRepository
 {
     Task Insert(AccountCreditEntity accountCreditEntity);
+    Task<AccountCreditEntity?> TryGetByExternalTransactionId(Guid externalTransactionId);
 }
 
 public class AccountCreditRepository : IAccountCreditRepository
@@ -21,5 +23,11 @@ public class AccountCreditRepository : IAccountCreditRepository
     {
         await _dbContext.AccountCredits.AddAsync(accountCreditEntity);
         await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<AccountCreditEntity?> TryGetByExternalTransactionId(Guid externalTransactionId)
+    {
+        return await _dbContext.AccountCredits
+            .FirstOrDefaultAsync(x => x.ExternalTransactionId == externalTransactionId);
     }
 }

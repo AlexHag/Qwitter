@@ -1,4 +1,3 @@
-
 using Microsoft.EntityFrameworkCore;
 using Qwitter.Core.Application.Exceptions;
 using Qwitter.Funds.Service.Allocations.Models;
@@ -10,6 +9,7 @@ public interface IAllocationRepository
     Task Insert(AllocationEntity entity);
     Task Update(AllocationEntity entity);
     Task<AllocationEntity> GetById(Guid allocationId);
+    Task<AllocationEntity?> TryGetByTransactionId(Guid transactionId);
 }
 
 public class AllocationRepository : IAllocationRepository
@@ -43,5 +43,10 @@ public class AllocationRepository : IAllocationRepository
         }
 
         return entity;
+    }
+
+    public async Task<AllocationEntity?> TryGetByTransactionId(Guid transactionId)
+    {
+        return await _dbContext.Allocations.FirstOrDefaultAsync(a => a.TransactionId == transactionId);
     }
 }

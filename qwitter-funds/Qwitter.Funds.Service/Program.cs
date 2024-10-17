@@ -3,9 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Qwitter.Core.Application;
 using Qwitter.Funds.Service.Accounts.Repositories;
 using Qwitter.Funds.Service.Allocations.Repositories;
-using Qwitter.Funds.Service.CurrencyExchange;
-using Qwitter.Funds.Service.CurrencyExchange.Repositories;
-using Qwitter.Funds.Service.ExchangeRate.Repositories;
 
 namespace Qwitter.Funds.Service;
 
@@ -25,12 +22,7 @@ public static class Program
 
         builder.Services.AddScoped<IAccountRepository, AccountRepository>();
         builder.Services.AddScoped<IAllocationRepository, AllocationRepository>();
-        builder.Services.AddScoped<IExchangeRateRepository, ExchangeRateRepository>();
-        builder.Services.AddScoped<ICurrencyExchangeRepository, CurrencyExchangeRepository>();
-        builder.Services.AddScoped<ICurrencyAccountRepository, CurrencyAccountRepository>();
         builder.Services.AddScoped<IAccountCreditRepository, AccountCreditRepository>();
-
-        builder.Services.AddScoped<ICurrencyExchangeActions, CurrencyExchangeActions>();
 
         builder.Services.AddDbContext<ServiceDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!));
