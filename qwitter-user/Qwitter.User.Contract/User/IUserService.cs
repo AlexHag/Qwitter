@@ -9,4 +9,7 @@ public interface IUserService
 {
     [HttpGet("{userId}")]
     Task<UserResponse> GetUser(Guid userId);
+
+    [HttpPut("{userId}/verify")]
+    Task<UserResponse> VerifyUser(Guid userId);
 }

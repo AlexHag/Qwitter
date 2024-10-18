@@ -1,3 +1,4 @@
+using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
 using Qwitter.Core.Application;
 using Qwitter.Core.Application.Kafka;
@@ -17,6 +18,8 @@ public static class Program
 
     public static WebApplicationBuilder ConfigureServices(this WebApplicationBuilder builder)
     {
+        builder.Services.AddScoped<IMapper, Mapper>();
+
         builder.Services.AddSingleton<ITokenService, TokenService>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
 

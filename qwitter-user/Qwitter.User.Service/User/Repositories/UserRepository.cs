@@ -6,8 +6,9 @@ namespace Qwitter.User.Service;
 public interface IUserRepository
 {
     Task Insert(UserEntity user);
-    Task<UserEntity?> GetById(Guid userId);
-    Task<UserEntity?> GetByEmail(string email);
+    Task Update(UserEntity user);
+    Task<UserEntity?> TryGetById(Guid userId);
+    Task<UserEntity?> TryGetByEmail(string email);
 }
 
 public class UserRepository : IUserRepository
@@ -25,13 +26,19 @@ public class UserRepository : IUserRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<UserEntity?> GetById(Guid userId)
+    public async Task<UserEntity?> TryGetById(Guid userId)
     {
         return await _context.Users.FindAsync(userId);
     }
 
-    public async Task<UserEntity?> GetByEmail(string email)
+    public async Task<UserEntity?> TryGetByEmail(string email)
     {
         return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+    }
+
+    public Task Update(UserEntity user)
+    {
+        _context.Users.Update(user);
+        return _context.SaveChangesAsync();
     }
 }

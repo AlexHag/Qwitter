@@ -1,11 +1,10 @@
-using System.Net;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Qwitter.Core.Application.Exceptions;
 using Qwitter.Core.Application.Kafka;
 using Qwitter.User.Contract.Auth;
 using Qwitter.User.Contract.Auth.Models;
 using Qwitter.User.Contract.Events;
+using Qwitter.User.Contract.User.Models;
 using Qwitter.User.Service.User.Models;
 
 namespace Qwitter.User.Service.Auth;
@@ -31,7 +30,7 @@ public class AuthService : ControllerBase, IAuthService
     [HttpPost("login")]
     public async Task<AuthResponse> Login(LoginRequest request)
     {
-        var user = await _userRepository.GetByEmail(request.Email);
+        var user = await _userRepository.TryGetByEmail(request.Email);
 
         if (user == null)
         {
@@ -59,7 +58,7 @@ public class AuthService : ControllerBase, IAuthService
     {
         // TODO: Validate password policy
 
-        var existingUser = await _userRepository.GetByEmail(request.Email);
+        var existingUser = await _userRepository.TryGetByEmail(request.Email);
 
         if (existingUser != null)
         {
@@ -74,6 +73,7 @@ public class AuthService : ControllerBase, IAuthService
             UserId = Guid.NewGuid(),
             Email = request.Email,
             Password = passwordHash,
+            UserState = UserState.Unverified,
             CreatedAt = DateTime.UtcNow,
         };
 
