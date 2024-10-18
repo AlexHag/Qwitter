@@ -18,6 +18,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Qwitter.BankAccounts.Contract\Qwitter.BankAccounts.Contract.csproj" />
+    <ProjectReference Include="..\..\qwitter-user\Qwitter.User.Contract\Qwitter.User.Contract.csproj" />
+    <ProjectReference Include="..\..\qwitter-funds\Qwitter.Funds.Contract\Qwitter.Funds.Contract.csproj" />
   </ItemGroup>
 
   <!-- TODO: Remove -->
