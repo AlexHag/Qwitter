@@ -1,5 +1,5 @@
 
-namespace Qwitter.Crypto.Contract.Wallets.Models;
+namespace Qwitter.Crypto.Contract.Wallet.Models;
 
 public class SyncWalletResponse
 {

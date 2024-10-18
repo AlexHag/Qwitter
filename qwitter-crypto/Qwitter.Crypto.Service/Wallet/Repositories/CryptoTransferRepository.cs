@@ -1,20 +1,20 @@
 using MassTransit.Internals;
 using Microsoft.EntityFrameworkCore;
-using Qwitter.Crypto.Wallets.Models;
+using Qwitter.Crypto.Service.Wallet.Models;
 
-namespace Qwitter.Crypto.Wallets.Repositories;
+namespace Qwitter.Crypto.Service.Wallet.Repositories;
 
 public interface ICryptoTransferRepository
 {
     Task Insert(CryptoTransferEntity transfer);
-    Task<IEnumerable<CryptoTransferEntity>> GetByToAddress(string address);
+    Task<IEnumerable<CryptoTransferEntity>> GetByDestinationAddress(string address);
 }
 
 public class CryptoTransferRepository : ICryptoTransferRepository
 {
-    private readonly AppDbContext _dbContext;
+    private readonly ServiceDbContext _dbContext;
 
-    public CryptoTransferRepository(AppDbContext dbContext)
+    public CryptoTransferRepository(ServiceDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -25,10 +25,10 @@ public class CryptoTransferRepository : ICryptoTransferRepository
         await _dbContext.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<CryptoTransferEntity>> GetByToAddress(string address)
+    public async Task<IEnumerable<CryptoTransferEntity>> GetByDestinationAddress(string address)
     {
         return await _dbContext.CryptoTransfers
-            .Where(t => t.To == address)
+            .Where(t => t.DestinationAddress == address)
             .ToListAsync();
     }
 }

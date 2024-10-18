@@ -1,8 +1,7 @@
-
 using Microsoft.EntityFrameworkCore;
-using Qwitter.Crypto.Wallets.Services;
+using Qwitter.Crypto.Service.Wallet.Models;
 
-namespace Qwitter.Crypto.Wallets.Repositories;
+namespace Qwitter.Crypto.Service.Wallet.Repositories;
 
 public interface IWalletRepository
 {
@@ -14,9 +13,9 @@ public interface IWalletRepository
 
 public class WalletRepository : IWalletRepository
 {
-    private readonly AppDbContext _dbContext;
+    private readonly ServiceDbContext _dbContext;
 
-    public WalletRepository(AppDbContext dbContext)
+    public WalletRepository(ServiceDbContext dbContext)
     {
         _dbContext = dbContext;
     }

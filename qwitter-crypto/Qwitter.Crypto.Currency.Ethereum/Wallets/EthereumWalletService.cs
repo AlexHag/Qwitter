@@ -85,8 +85,8 @@ public class EthereumWalletService : ICryptoWalletService
         {
             BlockNumber = Convert.ToInt32(p.BlockNum, 16),
             TransactionHash = p.Hash!,
-            From = p.From!,
-            To = p.To!,
+            SourceAddress = p.From!,
+            DestinationAddress = p.To!,
             Amount = p.Value,
             Currency = Currencies.Ethereum
         });

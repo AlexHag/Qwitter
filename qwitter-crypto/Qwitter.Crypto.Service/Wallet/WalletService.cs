@@ -1,23 +1,19 @@
-
 using MapsterMapper;
 using Qwitter.Core.Application.Exceptions;
 using Qwitter.Core.Application.Kafka;
-using Qwitter.Crypto.Contract.Wallets.Events;
-using Qwitter.Crypto.Contract.Wallets.Models;
+using Qwitter.Crypto.Contract.Wallet.Events;
+using Qwitter.Crypto.Contract.Wallet.Models;
 using Qwitter.Crypto.Currency.Contract.Wallets;
 using Qwitter.Crypto.Currency.Contract.Wallets.Models;
-using Qwitter.Crypto.Wallets.Models;
-using Qwitter.Crypto.Wallets.Repositories;
+using Qwitter.Crypto.Service.Wallet.Models;
+using Qwitter.Crypto.Service.Wallet.Repositories;
+using Qwitter.Crypto.Contract.Wallet;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Qwitter.Crypto.Wallets.Services;
 
-public interface IWalletService
-{
-    Task<SyncWalletResponse> SyncWallet(string address);
-    Task<WalletResponse> CreateWallet(CreateWalletRequest request);
-    Task<WalletResponse> GetWalletById(Guid walletId);
-}
-
+[ApiController]
+[Route("wallet")]
 public class WalletService : IWalletService
 {
     private readonly IMapper _mapper;
@@ -43,6 +39,7 @@ public class WalletService : IWalletService
         _eventProducer = eventProducer;
     }
 
+    [HttpPost]
     public async Task<WalletResponse> CreateWallet(CreateWalletRequest request)
     {
         // Fix: This throws InvalidOperationException if the currency is not supported
@@ -64,19 +61,21 @@ public class WalletService : IWalletService
         return _mapper.Map<WalletResponse>(entity);
     }
 
+    [HttpGet("id/{walletId}")]
     public async Task<WalletResponse> GetWalletById(Guid walletId)
     {
         var wallet = await _walletRepository.GetById(walletId) ?? throw new NotFoundApiException("Wallet not found");
         return _mapper.Map<WalletResponse>(wallet);
     }
 
+    [HttpPut("sync/{address}")]
     public async Task<SyncWalletResponse> SyncWallet(string address)
     {
         var wallet = await _walletRepository.GetByAddress(address) ?? throw new NotFoundApiException("Wallet not found");
 
         var walletService = _serviceProvider.GetRequiredKeyedService<ICryptoWalletService>(wallet.Currency) ?? throw new NotImplementedException($"{wallet.Currency} is not supported yet");
 
-        var existingTransfers = await _cryptoTransferRepository.GetByToAddress(wallet.Address);
+        var existingTransfers = await _cryptoTransferRepository.GetByDestinationAddress(wallet.Address);
 
         var newTransfers = new List<CryptoTransfer>();
 

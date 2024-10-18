@@ -1,6 +1,6 @@
 using Qwitter.Core.Application.Kafka;
 
-namespace Qwitter.Crypto.Contract.Wallets.Events;
+namespace Qwitter.Crypto.Contract.Wallet.Events;
 
 [Message("crypto-deposit")]
 public class CryptoDepositEvent

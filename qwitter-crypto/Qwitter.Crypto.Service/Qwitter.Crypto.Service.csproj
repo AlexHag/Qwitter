@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Qwitter.Crypto.Contract\Qwitter.Crypto.Contract.csproj" />
-    <ProjectReference Include="..\..\qwitter-users\Qwitter.Users.Contract\Qwitter.Users.Contract.csproj" />
     <ProjectReference Include="..\Qwitter.Crypto.Currency.Contract\Qwitter.Crypto.Currency.Contract.csproj" />
     <ProjectReference Include="..\Qwitter.Crypto.Currency.Ethereum\Qwitter.Crypto.Currency.Ethereum.csproj" />
     <ProjectReference Include="..\Qwitter.Crypto.Currency.Algorand\Qwitter.Crypto.Currency.Algorand.csproj" />
@@ -30,6 +29,5 @@
       <Link>user_auth_cert.pem</Link>
     </None>
   </ItemGroup>
-
 
 </Project>

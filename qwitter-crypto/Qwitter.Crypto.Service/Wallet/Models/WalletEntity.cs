@@ -1,4 +1,4 @@
-namespace Qwitter.Crypto.Wallets.Services;
+namespace Qwitter.Crypto.Service.Wallet.Models;
 
 public class WalletEntity
 {
