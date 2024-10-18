@@ -5,7 +5,7 @@ using Qwitter.Funds.Contract.Accounts.Models;
 
 namespace Qwitter.Funds.Contract.Accounts;
 
-[ApiHost(Host.Name, "accounts")]
+[ApiHost(Host.Name, "account")]
 public interface IAccountService
 {
     [HttpPost("create")]
