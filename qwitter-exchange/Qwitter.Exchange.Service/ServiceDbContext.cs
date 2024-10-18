@@ -18,11 +18,35 @@ public class ServiceDbContext : DbContext
     {
         modelBuilder.Entity<FxRateEntity>()
             .HasKey(p => p.FxRateId);
+        
+        modelBuilder.Entity<FxRateEntity>()
+            .Property(p => p.Rate)
+            .HasPrecision(18, 18);
+        
+        // -------------------------------------------  
 
         modelBuilder.Entity<CurrencyAccountEntity>()
             .HasKey(p => p.CurrencyAccountId);
         
+        modelBuilder.Entity<CurrencyAccountEntity>()
+            .Property(p => p.Balance)
+            .HasPrecision(18, 18);
+        
+        // -------------------------------------------  
+
         modelBuilder.Entity<FundExchangeEntity>()
             .HasKey(p => p.TransactionId);
+
+        modelBuilder.Entity<FundExchangeEntity>()
+            .Property(p => p.Rate)
+            .HasPrecision(18, 18);
+        
+        modelBuilder.Entity<FundExchangeEntity>()
+            .Property(p => p.SourceAmount)
+            .HasPrecision(18, 18);
+            
+        modelBuilder.Entity<FundExchangeEntity>()
+            .Property(p => p.DestinationAmount)
+            .HasPrecision(18, 18);
     }
 }
