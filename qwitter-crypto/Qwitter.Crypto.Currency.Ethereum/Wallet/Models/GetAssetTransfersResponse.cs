@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
-using Newtonsoft.Json;
 
-namespace Qwitter.Crypto.Currency.Ethereum;
+namespace Qwitter.Crypto.Currency.Ethereum.Wallet.Models;
 
 public class AssetTransfer
 {

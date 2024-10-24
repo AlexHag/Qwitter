@@ -4,13 +4,16 @@ using Qwitter.Core.Application.Kafka;
 using Qwitter.Crypto.Contract.Wallet.Events;
 using Qwitter.Crypto.Contract.Wallet.Models;
 using Qwitter.Crypto.Currency.Contract.Wallets;
-using Qwitter.Crypto.Currency.Contract.Wallets.Models;
 using Qwitter.Crypto.Service.Wallet.Models;
 using Qwitter.Crypto.Service.Wallet.Repositories;
 using Qwitter.Crypto.Contract.Wallet;
 using Microsoft.AspNetCore.Mvc;
+using Qwitter.Crypto.Service.CryptoTransfer.Repositories;
+using Qwitter.Crypto.Service.CryptoTransfer.Models;
+using Qwitter.Crypto.Contract.CryptoTransfer.Models;
+using Qwitter.Crypto.Currency.Contract.Models;
 
-namespace Qwitter.Crypto.Wallets.Services;
+namespace Qwitter.Crypto.Service.Wallet;
 
 [ApiController]
 [Route("wallet")]
@@ -64,7 +67,7 @@ public class WalletService : IWalletService
     [HttpGet("id/{walletId}")]
     public async Task<WalletResponse> GetWalletById(Guid walletId)
     {
-        var wallet = await _walletRepository.GetById(walletId) ?? throw new NotFoundApiException("Wallet not found");
+        var wallet = await _walletRepository.GetById(walletId);
         return _mapper.Map<WalletResponse>(wallet);
     }
 
@@ -77,7 +80,7 @@ public class WalletService : IWalletService
 
         var existingTransfers = await _cryptoTransferRepository.GetByDestinationAddress(wallet.Address);
 
-        var newTransfers = new List<CryptoTransfer>();
+        var newTransfers = new List<CryptoTransferModel>();
 
         if (!existingTransfers.Any())
         {
@@ -86,7 +89,7 @@ public class WalletService : IWalletService
         else
         {
             var latestAccountedBlock = existingTransfers.Max(p => p.BlockNumber) + 1;
-            newTransfers = (await walletService.GetWalletTransferSinceBlockNumber(wallet.Address, latestAccountedBlock)).ToList();
+            newTransfers = (await walletService.GetWalletTransferSinceBlockNumber(wallet.Address, latestAccountedBlock ?? 0)).ToList();
         }
 
         decimal depositAmount = 0;
@@ -108,8 +111,17 @@ public class WalletService : IWalletService
             }, wallet.SubTopic);
 
             var entity = _mapper.Map<CryptoTransferEntity>(transfer);
-            entity.Id = Guid.NewGuid();
+            entity.TransactionId = Guid.NewGuid();
 
+            if (entity.BlockHash != null || entity.BlockNumber != null)
+            {
+                entity.Status = CryptoTransferStatus.Completed;
+            }
+            else
+            {
+                entity.Status = CryptoTransferStatus.Initiated;
+            }
+        
             await _cryptoTransferRepository.Insert(entity);
             depositAmount += transfer.Amount;
         }

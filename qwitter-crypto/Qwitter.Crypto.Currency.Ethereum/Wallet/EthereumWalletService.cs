@@ -1,23 +1,32 @@
 using System.Net.Http.Json;
 using System.Text.Json;
+using Microsoft.Extensions.Logging;
 using Nethereum.Signer;
+using Nethereum.Util;
+using Nethereum.Web3;
+using Nethereum.Web3.Accounts;
 using Qwitter.Crypto.Currency.Contract;
+using Qwitter.Crypto.Currency.Contract.Models;
 using Qwitter.Crypto.Currency.Contract.Wallets;
 using Qwitter.Crypto.Currency.Contract.Wallets.Models;
+using Qwitter.Crypto.Currency.Ethereum.Wallet.Models;
 
-namespace Qwitter.Crypto.Currency.Ethereum;
+namespace Qwitter.Crypto.Currency.Ethereum.Wallet;
 
 public class EthereumWalletService : ICryptoWalletService
 {
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly AlchemyConfiguration _alchemyConfiguration;
+    private readonly ILogger<EthereumWalletService> _logger;
 
     public EthereumWalletService(
         IHttpClientFactory httpClientFactory,
-        AlchemyConfiguration alchemyConfiguration)
+        AlchemyConfiguration alchemyConfiguration,
+        ILogger<EthereumWalletService> logger)
     {
         _httpClientFactory = httpClientFactory;
         _alchemyConfiguration = alchemyConfiguration;
+        _logger = logger;
     }
 
     public Task<WalletModel> CreateWallet()
@@ -34,17 +43,17 @@ public class EthereumWalletService : ICryptoWalletService
         return Task.FromResult(wallet);
     }
 
-    public async Task<IEnumerable<CryptoTransfer>> GetWalletTransfers(string address)
+    public async Task<IEnumerable<CryptoTransferModel>> GetWalletTransfers(string address)
     {
         return await GetWalletTransferSinceBlockNumber(address, 0);
     }
 
-    public Task<IEnumerable<CryptoTransfer>> GetWalletTransferSinceBlockHash(string address, string blockHash)
+    public Task<IEnumerable<CryptoTransferModel>> GetWalletTransferSinceBlockHash(string address, string blockHash)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<CryptoTransfer>> GetWalletTransferSinceBlockNumber(string address, int blockNumber)
+    public async Task<IEnumerable<CryptoTransferModel>> GetWalletTransferSinceBlockNumber(string address, int blockNumber)
     {
         var blockNumberHex = string.Format("0x{0:X}", blockNumber);
         var request = new 
@@ -61,8 +70,8 @@ public class EthereumWalletService : ICryptoWalletService
                     toAddress = address,
                     category = new[] 
                     { 
-                        "external" 
-                    } 
+                        "external"
+                    }
                 } 
             } 
         };
@@ -81,7 +90,7 @@ public class EthereumWalletService : ICryptoWalletService
             return [];
         }
 
-        return transfers.Select(p => new CryptoTransfer
+        return transfers.Select(p => new CryptoTransferModel
         {
             BlockNumber = Convert.ToInt32(p.BlockNum, 16),
             TransactionHash = p.Hash!,
