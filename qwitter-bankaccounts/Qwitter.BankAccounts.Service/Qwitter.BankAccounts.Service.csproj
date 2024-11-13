@@ -22,16 +22,10 @@
     <ProjectReference Include="..\..\qwitter-funds\Qwitter.Funds.Contract\Qwitter.Funds.Contract.csproj" />
   </ItemGroup>
 
-  <!-- TODO: Remove -->
   <ItemGroup>
-    <None Include="..\..\certificates\user_auth\user_auth_key.pem">
+    <Content Include="..\..\certificates\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>user_auth_key.pem</Link>
-    </None>
-    <None Include="..\..\certificates\user_auth\user_auth_cert.pem">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>user_auth_cert.pem</Link>
-    </None>
+    </Content>
   </ItemGroup>
 
 </Project>

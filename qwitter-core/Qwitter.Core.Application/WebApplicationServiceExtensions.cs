@@ -21,7 +21,10 @@ public static class WebApplicationServiceExtensions
         });
 
         builder.AddJwtAuthentication();
+        builder.AddMtlsAuthentication();
+
         builder.Services.AddControllers().AddControllersAsServices();
+
         builder.AddSwagger();
 
         return builder;

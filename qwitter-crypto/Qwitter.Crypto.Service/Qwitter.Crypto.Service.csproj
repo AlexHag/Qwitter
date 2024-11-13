@@ -24,10 +24,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\..\certificates\user_auth\user_auth_cert.pem">
+    <Content Include="..\..\certificates\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Link>user_auth_cert.pem</Link>
-    </None>
+    </Content>
   </ItemGroup>
 
 </Project>

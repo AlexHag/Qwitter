@@ -27,7 +27,7 @@ public static class Program
         builder.Services.AddScoped<ICurrencyAccountRepository, CurrencyAccountRepository>();
         builder.Services.AddScoped<IFundExchangeRepository, FundExchangeRepository>();
 
-        builder.AddRestApiClientV2<IAllocationService>();
+        builder.AddRestApiClient<IAllocationService>();
 
         builder.Services.AddDbContext<ServiceDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!));

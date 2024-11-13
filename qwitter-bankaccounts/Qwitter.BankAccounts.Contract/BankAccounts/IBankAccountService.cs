@@ -4,7 +4,7 @@ using Qwitter.Core.Application.RestApiClient;
 
 namespace Qwitter.BankAccounts.Contract.BankAccounts;
 
-[ApiHost(Host.Name, "bank-accounts")]
+[ApiHost(Host.Name, "bank-account")]
 public interface IBankAccountService
 {
     [HttpGet("{userId}")]

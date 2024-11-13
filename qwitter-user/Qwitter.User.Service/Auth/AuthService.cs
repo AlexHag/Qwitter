@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Qwitter.Core.Application.Exceptions;
 using Qwitter.Core.Application.Kafka;
@@ -11,6 +12,7 @@ namespace Qwitter.User.Service.Auth;
 
 [ApiController]
 [Route("auth")]
+[Authorize(AuthenticationSchemes = "mTLS")]
 public class AuthService : ControllerBase, IAuthService
 {
     private readonly IUserRepository _userRepository;

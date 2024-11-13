@@ -77,7 +77,7 @@ public static class ApiRequestMaker
         if (response.IsSuccessStatusCode) return;
         var contentString = await response.Content.ReadAsStringAsync();
 
-        logger.LogError("Failed to make request to {requestUri}. Response: {response}", requestUri, contentString);
+        logger.LogError("Failed to make request to {requestUri}. Response: {response}. Status Code: {StatusCode}", requestUri, contentString, response.StatusCode);
 
         throw response.StatusCode switch
         {

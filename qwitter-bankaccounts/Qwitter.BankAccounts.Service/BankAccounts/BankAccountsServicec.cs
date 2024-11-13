@@ -15,7 +15,7 @@ using Qwitter.User.Contract.User.Models;
 namespace Qwitter.BankAccounts.Service.BankAccounts;
 
 [ApiController]
-[Route("bank-accounts")]
+[Route("bank-account")]
 public class BankAccountService : ControllerBase, IBankAccountService
 {
     private readonly IUserRepository _userRepository;

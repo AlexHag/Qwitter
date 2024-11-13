@@ -1,32 +1,22 @@
-using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Qwitter.Core.Application.Extensions;
 
 namespace Qwitter.Core.Application.Authentication;
 
 public static class AuthenticationServiceExtension
 {
-    private static string AssemblyPath(string filename) => Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, filename);
-
     public static WebApplicationBuilder AddJwtAuthentication(this WebApplicationBuilder builder)
     {
-        if (!File.Exists(AssemblyPath("user_auth_cert.pem")))
-        {
-            throw new FileNotFoundException("Certificate file not found", AssemblyPath("user_auth_cert.pem"));
-        }
+        var certificate = builder.GetJwtCertificate();
 
-        X509Certificate2 certificate;
-
-        if (File.Exists(AssemblyPath("user_auth_key.pem")))
+        if (certificate == null)
         {
-            certificate = X509Certificate2.CreateFromPemFile(AssemblyPath("user_auth_cert.pem"), AssemblyPath("user_auth_key.pem"));
-        }
-        else
-        {
-            certificate = new X509Certificate2(AssemblyPath("user_auth_cert.pem"));
+            return builder;
         }
 
         var authConfigOptions = new AuthConfigOptions
@@ -61,5 +51,26 @@ public static class AuthenticationServiceExtension
         builder.Services.AddAuthorization(); 
 
         return builder;
+    }
+
+    private static X509Certificate2? GetJwtCertificate(this WebApplicationBuilder builder)
+    {
+        var clientCertificateConfiguration = builder.Configuration.GetSection("certificates")?.Get<Dictionary<string, string>>();
+
+        if (clientCertificateConfiguration == null ||
+            !clientCertificateConfiguration.TryGetValue("jwt_cert_path", out var jwtCertPath) ||
+            !File.Exists(PathExtensions.AssemblyPath(jwtCertPath)))
+        {
+            return null;
+        }
+
+        if (clientCertificateConfiguration.TryGetValue("jwt_key_path", out var jwt_key_path) && File.Exists(PathExtensions.AssemblyPath(jwt_key_path)))
+        {
+            return X509Certificate2.CreateFromPemFile(PathExtensions.AssemblyPath(jwtCertPath), PathExtensions.AssemblyPath(jwt_key_path));
+        }
+        else
+        {
+            return new X509Certificate2(PathExtensions.AssemblyPath(jwtCertPath));
+        };
     }
 }

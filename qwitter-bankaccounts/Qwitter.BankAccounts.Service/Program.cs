@@ -29,7 +29,7 @@ public static class Program
 
         builder.Services.AddScoped<IAccountNumberGenerator, AccountNumberGenerator>();
 
-        builder.AddRestApiClientV2<IAccountService>();
+        builder.AddRestApiClient<IAccountService>();
 
         builder.Services.AddDbContext<ServiceDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")!));

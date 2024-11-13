@@ -17,8 +17,8 @@ public static class Program
 
     public static WebApplicationBuilder ConfigureServices(this WebApplicationBuilder builder)
     {
-        builder.AddRestApiClientV2<IAuthService>();
-        builder.AddRestApiClientV2<IUserService>();
+        builder.AddRestApiClient<IAuthService>();
+        builder.AddRestApiClient<IUserService>();
 
         return builder;
     }
