@@ -9,7 +9,7 @@ public interface IAllocationRepository
     Task Insert(AllocationEntity entity);
     Task Update(AllocationEntity entity);
     Task<AllocationEntity> GetById(Guid allocationId);
-    Task<AllocationEntity?> TryGetByTransactionId(Guid transactionId);
+    Task<AllocationEntity?> TryGetByExternalSourceTransactionId(Guid externalSourceTransactionId);
 }
 
 public class AllocationRepository : IAllocationRepository
@@ -45,8 +45,6 @@ public class AllocationRepository : IAllocationRepository
         return entity;
     }
 
-    public async Task<AllocationEntity?> TryGetByTransactionId(Guid transactionId)
-    {
-        return await _dbContext.Allocations.FirstOrDefaultAsync(a => a.TransactionId == transactionId);
-    }
+    public async Task<AllocationEntity?> TryGetByExternalSourceTransactionId(Guid externalSourceTransactionId)
+        => await _dbContext.Allocations.FirstOrDefaultAsync(a => a.ExternalSourceTransactionId == externalSourceTransactionId);
 }

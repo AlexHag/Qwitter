@@ -13,7 +13,4 @@ public interface IAccountService
 
     [HttpGet("{accountId}")]
     Task<AccountResponse> GetAccount(Guid accountId);
-
-    [HttpPost("credit")]
-    Task<CreditAccountResponse> Credit(CreditAccountRequest request);
 }

@@ -8,6 +8,7 @@ public interface ICurrencyAccountRepository
 {
     Task<CurrencyAccountEntity> GetByCurrency(string currency);
     Task Update(CurrencyAccountEntity entity);
+    Task Insert(CurrencyAccountEntity entity);
 }
 
 public class CurrencyAccountRepository : ICurrencyAccountRepository
@@ -29,6 +30,12 @@ public class CurrencyAccountRepository : ICurrencyAccountRepository
         }
 
         return account;
+    }
+
+    public async Task Insert(CurrencyAccountEntity entity)
+    {
+        await _dbContext.CurrencyAccounts.AddAsync(entity);
+        await _dbContext.SaveChangesAsync();
     }
 
     public async Task Update(CurrencyAccountEntity entity)

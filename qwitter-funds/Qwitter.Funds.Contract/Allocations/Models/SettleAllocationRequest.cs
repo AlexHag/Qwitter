@@ -4,4 +4,5 @@ public class SettleAllocationRequest
 {
     public Guid AllocationId { get; set; }
     public Guid DestinationAccountId { get; set; }
+    public Guid ExternalTransactionId { get; set; }
 }

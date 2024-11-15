@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Qwitter.Funds.Service.Accounts.Models;
 using Qwitter.Funds.Service.Allocations.Models;
+using Qwitter.Funds.Service.Clients.Models;
 
 namespace Qwitter.Funds.Service;
 
@@ -8,7 +9,7 @@ public class ServiceDbContext : DbContext
 {
     public DbSet<AccountEntity> Accounts { get; set; }
     public DbSet<AllocationEntity> Allocations { get; set; }
-    public DbSet<AccountCreditEntity> AccountCredits { get; set; }
+    public DbSet<ClientEntity> Clients { get; set; }
 
     public ServiceDbContext(DbContextOptions<ServiceDbContext> options) : base(options) 
     { }
@@ -19,29 +20,25 @@ public class ServiceDbContext : DbContext
             .HasKey(p => p.AccountId);
         
         modelBuilder.Entity<AccountEntity>()
-            .Property(p => p.AvailableBalance)
-            .HasPrecision(18, 18);
-
-        modelBuilder.Entity<AccountEntity>()
-            .Property(p => p.TotalBalance)
-            .HasPrecision(18, 18);
+            .Property(p => p.Balance)
+            .HasPrecision(36, 18);
 
         // ------------------------------------------------
 
         modelBuilder.Entity<AllocationEntity>()
             .HasKey(p => p.AllocationId);
-        
+
         modelBuilder.Entity<AllocationEntity>()
-            .HasIndex(p => p.TransactionId);
-        
+            .HasIndex(p => p.ExternalSourceTransactionId);
+
         modelBuilder.Entity<AllocationEntity>()
             .Property(p => p.Amount)
-            .HasPrecision(18, 18);
+            .HasPrecision(36, 18);
         
         modelBuilder.Entity<AllocationEntity>()
             .HasOne<AccountEntity>()
             .WithMany()
-            .HasForeignKey(p => p.AccountId)
+            .HasForeignKey(p => p.SourceAccountId)
             .OnDelete(DeleteBehavior.NoAction);
 
         modelBuilder.Entity<AllocationEntity>()
@@ -52,20 +49,7 @@ public class ServiceDbContext : DbContext
 
         // ------------------------------------------------
 
-        modelBuilder.Entity<AccountCreditEntity>()
-            .HasKey(p => p.AccountCreditId);
-
-        modelBuilder.Entity<AccountCreditEntity>()
-            .HasIndex(p => p.ExternalTransactionId);
-
-        modelBuilder.Entity<AccountCreditEntity>()
-            .HasOne<AccountEntity>()
-            .WithMany()
-            .HasForeignKey(p => p.AccountId)
-            .OnDelete(DeleteBehavior.NoAction);
-
-        modelBuilder.Entity<AccountCreditEntity>()
-            .Property(p => p.Amount)
-            .HasPrecision(18, 18);
+        modelBuilder.Entity<ClientEntity>()
+            .HasKey(p => p.ClientId);
     }
 }

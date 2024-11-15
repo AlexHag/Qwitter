@@ -1,29 +1,33 @@
 using MapsterMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Qwitter.Core.Application.Exceptions;
 using Qwitter.Funds.Contract.Accounts.Models;
+using Qwitter.Funds.Contract.Accounts.Enums;
 using Qwitter.Funds.Service.Accounts.Models;
 using Qwitter.Funds.Service.Accounts.Repositories;
+using Qwitter.Funds.Service.Clients.Repositories;
+using Qwitter.Core.Application.Exceptions;
 
 namespace Qwitter.Funds.Contract.Accounts;
 
 [ApiController]
 [Route("account")]
+[Authorize(AuthenticationSchemes = "mTLS")]
 public class AccountService : ControllerBase, IAccountService
 {
     private readonly IAccountRepository _accountRepository;
-    private readonly IAccountCreditRepository _accountCreditRepository;
+    private readonly IClientRepository _clientRepository;
     private readonly ILogger<AccountService> _logger;
     private readonly IMapper _mapper;
 
     public AccountService(
         IAccountRepository accountRepository,
-        IAccountCreditRepository accountCreditRepository,
+        IClientRepository clientRepository,
         ILogger<AccountService> logger,
         IMapper mapper)
     {
         _accountRepository = accountRepository;
-        _accountCreditRepository = accountCreditRepository;
+        _clientRepository = clientRepository;
         _logger = logger;
         _mapper = mapper;
     }
@@ -31,64 +35,41 @@ public class AccountService : ControllerBase, IAccountService
     [HttpPost("create")]
     public async Task<AccountResponse> CreateAccount(CreateAccountRequest request)
     {
-        var existingAccount = await _accountRepository.TryGetById(request.AccountId);
+        var existingAccount = await _accountRepository.TryGetByExternalAccountId(request.ExternalAccountId);
 
         if (existingAccount != null)
         {
-            _logger.LogWarning("Duplicate account creation {AccountId}", request.AccountId);
             return _mapper.Map<AccountResponse>(existingAccount);
         }
 
-        var account = _mapper.Map<AccountEntity>(request);
+        var thumbprint = HttpContext.Connection.ClientCertificate!.Thumbprint;
+
+        var client = await _clientRepository.GetByThumbprint(thumbprint);
+
+        if (!client.CanAllocateFundsIn && request.AccountType == AccountType.FundsIn)
+        {
+            throw new ForbiddenApiException("Client Not allowed to create credit accounts");
+        }
+
+        if (!client.CanSettleFundsOut && request.AccountType == AccountType.FundsOut)
+        {
+            throw new ForbiddenApiException("Client Not allowed to create debit accounts");
+        }
+
+        var account = new AccountEntity
+        {
+            AccountId = Guid.NewGuid(),
+            ClientId = client.ClientId,
+            ExternalAccountId = request.ExternalAccountId,
+            AccountType = request.AccountType,
+            Currency = request.Currency,
+        };
 
         await _accountRepository.Insert(account);
 
+        // TODO: Produce event to send callback
+
         return _mapper.Map<AccountResponse>(account);
-    }
-
-    [HttpPost("credit")]
-    public async Task<CreditAccountResponse> Credit(CreditAccountRequest request)
-    {
-        var account = await _accountRepository.GetById(request.AccountId);
-
-        var duplicateCredit = await _accountCreditRepository.TryGetByExternalTransactionId(request.TransactionId);
-
-        if (duplicateCredit != null)
-        {
-            _logger.LogWarning("Duplicate credit transaction {TransactionId}", request.TransactionId);
-
-            return new CreditAccountResponse
-            {
-                AccountCreditId = duplicateCredit.AccountCreditId,
-            };
-        }
-
-        if (request.Currency != account.Currency)
-        {
-            _logger.LogError("Currency mismatch {AccountId} {TransactionId} {Currency} {AccountCurrency} for credit", request.AccountId, request.TransactionId, request.Currency, account.Currency);
-
-            throw new BadRequestApiException("Currency mismatch");
-        }
-
-        var accountCredit = new AccountCreditEntity
-        {
-            AccountCreditId = Guid.NewGuid(),
-            AccountId = request.AccountId,
-            ExternalTransactionId = request.TransactionId,
-            Currency = request.Currency,
-            Amount = request.Amount,
-        };
-
-        account.AvailableBalance += accountCredit.Amount;
-        account.TotalBalance += accountCredit.Amount;
-
-        await _accountRepository.Update(account);
-        await _accountCreditRepository.Insert(accountCredit);
-
-        return new CreditAccountResponse
-        {
-            AccountCreditId = accountCredit.AccountCreditId,
-        };
     }
 
     [HttpGet]
