@@ -5,5 +5,4 @@ public enum AllocationStatus
 {
     Allocated = 10,
     Settled = 30,
-    Reversed = 40
 }

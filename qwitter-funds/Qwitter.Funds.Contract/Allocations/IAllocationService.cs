@@ -14,5 +14,5 @@ public interface IAllocationService
     Task<AllocationResponse> Allocate(AllocateFundsRequest request);
 
     [HttpPost("settle")]
-    Task<AllocationResponse> SettleAllocation(SettleAllocationRequest request);
+    Task<AllocationResponse> Settle(SettleAllocationRequest request);
 }

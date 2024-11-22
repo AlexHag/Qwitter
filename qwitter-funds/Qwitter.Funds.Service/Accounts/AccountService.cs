@@ -7,8 +7,9 @@ using Qwitter.Funds.Service.Accounts.Models;
 using Qwitter.Funds.Service.Accounts.Repositories;
 using Qwitter.Funds.Service.Clients.Repositories;
 using Qwitter.Core.Application.Exceptions;
+using Qwitter.Funds.Contract.Accounts;
 
-namespace Qwitter.Funds.Contract.Accounts;
+namespace Qwitter.Funds.Service.Accounts;
 
 [ApiController]
 [Route("account")]
@@ -66,9 +67,6 @@ public class AccountService : ControllerBase, IAccountService
         };
 
         await _accountRepository.Insert(account);
-
-        // TODO: Produce event to send callback
-
         return _mapper.Map<AccountResponse>(account);
     }
 

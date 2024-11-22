@@ -46,11 +46,6 @@ public class FundExchangeService : ControllerBase, IFundExchangeService
             throw new BadRequestApiException($"Allocation currency {allocation.Currency} does not match FxRate currency {rate.SourceCurrency}");
         }
 
-        if (!allocation.CorrelationId.HasValue)
-        {
-            throw new BadRequestApiException("Allocations must have a CorrelationId in order to be converted");
-        }
-
         var destinationAmount = allocation.Amount * rate.Rate;
 
         var sourceCurrencyAccount = await _currencyAccountService.GetSourceCurrencyAccount(allocation.Currency);
@@ -68,7 +63,6 @@ public class FundExchangeService : ControllerBase, IFundExchangeService
             SourceCurrencyAccountId = sourceCurrencyAccount.FundsAccountId,
             DestinationCurrencyAccountId = destinationCurrencyAccount.FundsAccountId,
             SourceAllocationId = allocation.AllocationId,
-            CorrelationId = allocation.CorrelationId.Value,
             Status = FundExchangeStatus.Initiated,
         };
 
@@ -92,7 +86,6 @@ public class FundExchangeService : ControllerBase, IFundExchangeService
             {
                 AccountId = transaction.DestinationCurrencyAccountId,
                 ExternalTransactionId = transaction.TransactionId,
-                CorrelationId = transaction.CorrelationId,
                 Currency = transaction.DestinationCurrency,
                 Amount = transaction.DestinationAmount
             });
@@ -117,7 +110,7 @@ public class FundExchangeService : ControllerBase, IFundExchangeService
     {
         try
         {
-            await _allocationService.SettleAllocation(new SettleAllocationRequest
+            await _allocationService.Settle(new SettleAllocationRequest
             {
                 AllocationId = transaction.SourceAllocationId,
                 DestinationAccountId = transaction.DestinationCurrencyAccountId,

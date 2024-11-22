@@ -22,11 +22,6 @@ public class AllocationEntity
     public Guid? DestinationAccountId { get; set; }
 
     /// <summary>
-    ///     Id to correlate multiple allocations to a single external transaction.
-    /// </summary>
-    public Guid? CorrelationId { get; set; }
-
-    /// <summary>
     ///     External Transaction Id of the transaction that allocated the funds from their account
     /// </summary>
     public Guid ExternalSourceTransactionId { get; set; }
@@ -53,5 +48,4 @@ public class AllocationEntity
 
     public DateTime AllocatedAt { get; set; }
     public DateTime? SettledAt { get; set; }
-    public DateTime? ReversedAt { get; set; }
 }

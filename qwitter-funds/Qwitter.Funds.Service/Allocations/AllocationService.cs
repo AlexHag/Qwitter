@@ -1,16 +1,18 @@
 using MapsterMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Qwitter.Core.Application.Exceptions;
+using Qwitter.Core.Application.Kafka;
 using Qwitter.Funds.Contract.Accounts.Enums;
 using Qwitter.Funds.Contract.Allocations;
 using Qwitter.Funds.Contract.Allocations.Enums;
 using Qwitter.Funds.Contract.Allocations.Models;
+using Qwitter.Funds.Contract.Events;
 using Qwitter.Funds.Service.Accounts.Repositories;
 using Qwitter.Funds.Service.Allocations.Models;
 using Qwitter.Funds.Service.Allocations.Repositories;
 using Qwitter.Funds.Service.Clients.Repositories;
+using Qwitter.Funds.Service.Transactions.Handler;
 
 namespace Qwitter.Funds.Service.Allocations;
 
@@ -23,6 +25,8 @@ public class AllocationService : ControllerBase, IAllocationService
     private readonly IAllocationRepository _allocationRepository;
     private readonly IClientRepository _clientRepository;
     private readonly IAccountRepository _accountRepository;
+    private readonly ITransactionHandler _transactionHandler;
+    private readonly IEventProducer _eventProducer;
     private readonly ILogger<AllocationService> _logger;
 
     public AllocationService(
@@ -30,12 +34,16 @@ public class AllocationService : ControllerBase, IAllocationService
         IAllocationRepository allocationRepository,
         IClientRepository clientRepository,
         IAccountRepository accountRepository,
+        ITransactionHandler transactionHandler,
+        IEventProducer eventProducer,
         ILogger<AllocationService> logger)
     {
         _mapper = mapper;
         _allocationRepository = allocationRepository;
         _clientRepository = clientRepository;
         _accountRepository = accountRepository;
+        _transactionHandler = transactionHandler;
+        _eventProducer = eventProducer;
         _logger = logger;
     }
 
@@ -73,7 +81,6 @@ public class AllocationService : ControllerBase, IAllocationService
         {
             AllocationId = Guid.NewGuid(),
             SourceAccountId = request.AccountId,
-            CorrelationId = request.CorrelationId,
             ExternalSourceTransactionId = request.ExternalTransactionId,
             Currency = account.Currency,
             Amount = request.Amount,
@@ -81,14 +88,10 @@ public class AllocationService : ControllerBase, IAllocationService
             AllocatedAt = DateTime.UtcNow
         };
 
-        account.Balance -= request.Amount;
-
-        Console.WriteLine(JsonConvert.SerializeObject(allocation, Formatting.Indented));
-
         await _allocationRepository.Insert(allocation);
-        await _accountRepository.Update(account);
+        await _transactionHandler.DebitFunds(new() { AccountId = request.AccountId, AllocationId = allocation.AllocationId, Currency = account.Currency, Amount = request.Amount });
 
-        // TODO: Publish event
+        await _eventProducer.Produce(new FundsAllocatedEvent { AllocationId = allocation.AllocationId}, client.ClientName);
 
         return _mapper.Map<AllocationResponse>(allocation);
     }
@@ -101,7 +104,7 @@ public class AllocationService : ControllerBase, IAllocationService
     }
 
     [HttpPost("settle")]
-    public async Task<AllocationResponse> SettleAllocation(SettleAllocationRequest request)
+    public async Task<AllocationResponse> Settle(SettleAllocationRequest request)
     {
         var thumbprint = HttpContext.Connection.ClientCertificate!.Thumbprint;
 
@@ -131,17 +134,16 @@ public class AllocationService : ControllerBase, IAllocationService
             throw new ForbiddenApiException("Not allowed to settle funds into a FundsIn account");
         }
 
-        account.Balance += allocation.Amount;
-
         allocation.DestinationAccountId = account.AccountId;
         allocation.ExternalDestinationTransactionId = request.ExternalTransactionId;
         allocation.Status = AllocationStatus.Settled;
         allocation.SettledAt = DateTime.UtcNow;
 
-        await _accountRepository.Update(account);
         await _allocationRepository.Update(allocation);
 
-        // TODO: Publish event
+        await _transactionHandler.CreditFunds(new() { AccountId = request.DestinationAccountId, AllocationId = allocation.AllocationId, Currency = account.Currency, Amount = allocation.Amount });
+
+        await _eventProducer.Produce(new AllocationSettledEvent { AllocationId = allocation.AllocationId }, client.ClientName);
 
         return _mapper.Map<AllocationResponse>(allocation);
     }
