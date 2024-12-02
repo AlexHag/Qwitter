@@ -32,9 +32,9 @@ public class TransactionHandler : ITransactionHandler
 
     private async Task Execute(TransactionCommand command, TransactionType type)
     {
-        var duplicateTransactioN = await _transactionRepository.TryGetByAllocationId(command.AllocationId, type);
+        var duplicateTransaction = await _transactionRepository.TryGetByAllocationId(command.AllocationId, type);
 
-        if (duplicateTransactioN != null)
+        if (duplicateTransaction != null)
         {
             return;
         }

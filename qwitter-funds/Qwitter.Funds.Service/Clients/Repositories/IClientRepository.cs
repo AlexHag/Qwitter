@@ -8,6 +8,7 @@ public interface IClientRepository
 {
     Task Insert(ClientEntity client);
     Task Update(ClientEntity client);
+    Task<ClientEntity> GetById(Guid clientId);
     Task<ClientEntity?> TryGetByThumbprint(string thumbprint);
     Task<ClientEntity> GetByThumbprint(string thumbprint);
 }
@@ -38,6 +39,18 @@ public class ClientRepository : IClientRepository
         client.CreatedAt = DateTime.UtcNow;
         await _dbContext.Clients.AddAsync(client);
         await _dbContext.SaveChangesAsync();
+    }
+
+    public async Task<ClientEntity> GetById(Guid clientId) 
+    {
+        var entity = await _dbContext.Clients.FindAsync(clientId);
+
+        if (entity == null)
+        {
+            throw new NotFoundApiException($"Client {clientId} not found");
+        }
+
+        return entity;
     }
 
     public Task<ClientEntity?> TryGetByThumbprint(string thumbprint)

@@ -5,9 +5,9 @@ using Qwitter.Funds.Contract.Accounts.Models;
 using Qwitter.Funds.Contract.Accounts.Enums;
 using Qwitter.Funds.Service.Accounts.Models;
 using Qwitter.Funds.Service.Accounts.Repositories;
-using Qwitter.Funds.Service.Clients.Repositories;
 using Qwitter.Core.Application.Exceptions;
 using Qwitter.Funds.Contract.Accounts;
+using Qwitter.Funds.Service.Clients.Handler;
 
 namespace Qwitter.Funds.Service.Accounts;
 
@@ -17,19 +17,16 @@ namespace Qwitter.Funds.Service.Accounts;
 public class AccountService : ControllerBase, IAccountService
 {
     private readonly IAccountRepository _accountRepository;
-    private readonly IClientRepository _clientRepository;
-    private readonly ILogger<AccountService> _logger;
+    private readonly IClientHandler _clientHandler;
     private readonly IMapper _mapper;
 
     public AccountService(
         IAccountRepository accountRepository,
-        IClientRepository clientRepository,
-        ILogger<AccountService> logger,
+        IClientHandler clientHandler,
         IMapper mapper)
     {
         _accountRepository = accountRepository;
-        _clientRepository = clientRepository;
-        _logger = logger;
+        _clientHandler = clientHandler;
         _mapper = mapper;
     }
 
@@ -43,9 +40,7 @@ public class AccountService : ControllerBase, IAccountService
             return _mapper.Map<AccountResponse>(existingAccount);
         }
 
-        var thumbprint = HttpContext.Connection.ClientCertificate!.Thumbprint;
-
-        var client = await _clientRepository.GetByThumbprint(thumbprint);
+        var client = await _clientHandler.Get(HttpContext.Connection.ClientCertificate!);
 
         if (!client.CanAllocateFundsIn && request.AccountType == AccountType.FundsIn)
         {

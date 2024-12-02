@@ -11,7 +11,7 @@ using Qwitter.Funds.Contract.Events;
 using Qwitter.Funds.Service.Accounts.Repositories;
 using Qwitter.Funds.Service.Allocations.Models;
 using Qwitter.Funds.Service.Allocations.Repositories;
-using Qwitter.Funds.Service.Clients.Repositories;
+using Qwitter.Funds.Service.Clients.Handler;
 using Qwitter.Funds.Service.Transactions.Handler;
 
 namespace Qwitter.Funds.Service.Allocations;
@@ -23,7 +23,7 @@ public class AllocationService : ControllerBase, IAllocationService
 {
     private readonly IMapper _mapper;
     private readonly IAllocationRepository _allocationRepository;
-    private readonly IClientRepository _clientRepository;
+    private readonly IClientHandler _clientHandler;
     private readonly IAccountRepository _accountRepository;
     private readonly ITransactionHandler _transactionHandler;
     private readonly IEventProducer _eventProducer;
@@ -32,7 +32,7 @@ public class AllocationService : ControllerBase, IAllocationService
     public AllocationService(
         IMapper mapper,
         IAllocationRepository allocationRepository,
-        IClientRepository clientRepository,
+        IClientHandler clientHandler,
         IAccountRepository accountRepository,
         ITransactionHandler transactionHandler,
         IEventProducer eventProducer,
@@ -40,7 +40,7 @@ public class AllocationService : ControllerBase, IAllocationService
     {
         _mapper = mapper;
         _allocationRepository = allocationRepository;
-        _clientRepository = clientRepository;
+        _clientHandler = clientHandler;
         _accountRepository = accountRepository;
         _transactionHandler = transactionHandler;
         _eventProducer = eventProducer;
@@ -50,15 +50,10 @@ public class AllocationService : ControllerBase, IAllocationService
     [HttpPost("allocate")]
     public async Task<AllocationResponse> Allocate(AllocateFundsRequest request)
     {
-        var thumbprint = HttpContext.Connection.ClientCertificate!.Thumbprint;
-
-        var client = await _clientRepository.GetByThumbprint(thumbprint);
+        var client = await _clientHandler.Get(HttpContext.Connection.ClientCertificate!);
         var account = await _accountRepository.GetById(request.AccountId);
 
-        if (account.ClientId != client.ClientId)
-        {
-            throw new ForbiddenApiException($"Account {account.AccountId} does not belong to client {client.ClientName}");
-        }
+        client.Authorize(account.ClientId);
 
         if (account.AccountType == AccountType.FundsOut)
         {
@@ -106,8 +101,6 @@ public class AllocationService : ControllerBase, IAllocationService
     [HttpPost("settle")]
     public async Task<AllocationResponse> Settle(SettleAllocationRequest request)
     {
-        var thumbprint = HttpContext.Connection.ClientCertificate!.Thumbprint;
-
         var allocation = await _allocationRepository.GetById(request.AllocationId);
 
         if (allocation.Status != AllocationStatus.Allocated)
@@ -116,13 +109,10 @@ public class AllocationService : ControllerBase, IAllocationService
             throw new BadRequestApiException($"Allocation {allocation.AllocationId} in status {allocation.Status} cannot be settled");
         }
 
-        var client = await _clientRepository.GetByThumbprint(thumbprint);
+        var client = await _clientHandler.Get(HttpContext.Connection.ClientCertificate!);
         var account = await _accountRepository.GetById(request.DestinationAccountId);
 
-        if (account.ClientId != client.ClientId)
-        {
-            throw new ForbiddenApiException($"Account {account.AccountId} does not belong to client {client.ClientName}");
-        }
+        client.Authorize(account.ClientId);
 
         if (account.Currency != allocation.Currency)
         {
