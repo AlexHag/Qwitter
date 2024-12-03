@@ -9,6 +9,7 @@ public interface ICurrencyAccountRepository
     Task<CurrencyAccountEntity> GetByCurrency(string currency);
     Task Update(CurrencyAccountEntity entity);
     Task Insert(CurrencyAccountEntity entity);
+    Task<CurrencyAccountEntity> GetById(Guid currencyAccountId);
 }
 
 public class CurrencyAccountRepository : ICurrencyAccountRepository
@@ -27,6 +28,18 @@ public class CurrencyAccountRepository : ICurrencyAccountRepository
         if (account == null)
         {
             throw new Exception($"Account with currency {currency} not found");
+        }
+
+        return account;
+    }
+
+    public async Task<CurrencyAccountEntity> GetById(Guid currencyAccountId)
+    {
+        var account = await _dbContext.CurrencyAccounts.FirstOrDefaultAsync(x => x.CurrencyAccountId == currencyAccountId);
+
+        if (account == null)
+        {
+            throw new Exception($"Account with id {currencyAccountId} not found");
         }
 
         return account;

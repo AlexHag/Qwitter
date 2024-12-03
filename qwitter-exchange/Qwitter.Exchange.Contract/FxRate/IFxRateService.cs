@@ -12,4 +12,7 @@ public interface IFxRateService
 
     [HttpPut("update")]
     Task<FxRateResponse> UpdateFxRate(UpdateFxRateRequest request);
+
+    [HttpPost("validate")]
+    Task<FxRateValidationResponse> ValidateFxRate(ValidateFxRateRequest request);
 }

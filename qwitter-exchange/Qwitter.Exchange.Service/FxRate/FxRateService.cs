@@ -45,4 +45,25 @@ public class FxRateService : ControllerBase, IFxRateService
         await _fxRateRepository.Insert(fxRate);
         return _mapper.Map<FxRateResponse>(fxRate);
     }
+
+    [HttpPost("validate")]
+    public async Task<FxRateValidationResponse> ValidateFxRate(ValidateFxRateRequest request)
+    {
+        var fxRate = await _fxRateRepository.GetById(request.FxRateId);
+
+        if (fxRate == null)
+        {
+            return new FxRateValidationResponse
+            {
+                IsValid = false,
+            };
+        }
+
+        var expectedDestinationAmount = request.SourceAmount * request.DestinationAmount;
+
+        return new FxRateValidationResponse
+        {
+            IsValid = Math.Abs(request.DestinationAmount - expectedDestinationAmount) < 0.01m,
+        };
+    }
 }

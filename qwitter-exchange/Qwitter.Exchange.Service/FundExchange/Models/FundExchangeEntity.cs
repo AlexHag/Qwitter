@@ -16,19 +16,18 @@ public class FundExchangeEntity
     public decimal SourceAmount { get; set; }
     public decimal DestinationAmount { get; set; }
 
-    public Guid CorrelationId { get; set; }
     public FundExchangeStatus Status { get; set; }
 
     public Guid SourceAllocationId { get; set; }
     public Guid? DestinationAllocationId { get; set; }
 
     /// <summary>
-    ///     The Funds AccountId that the allocation from the client is settled into.
+    ///     The account where the funds from the client are settled into.
     /// </summary>
     public Guid SourceCurrencyAccountId { get; set; }
 
     /// <summary>
-    ///     The Funds AccountId where funds are allocated from that can be settled by the client.
+    ///     The account where the funds to the client are allocated from.
     /// </summary>
     public Guid DestinationCurrencyAccountId { get; set; }
 
