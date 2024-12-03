@@ -17,7 +17,7 @@ namespace Qwitter.Crypto.Service.Wallet;
 
 [ApiController]
 [Route("wallet")]
-public class WalletService : IWalletService
+public class WalletService : ControllerBase, IWalletService
 {
     private readonly IMapper _mapper;
     private readonly ILogger<WalletService> _logger;
