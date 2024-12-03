@@ -5,12 +5,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Qwitter.Core.Application.Authentication;
 using Qwitter.Core.Application.Exceptions;
+using Qwitter.Core.Application.RestApiClient;
 
 namespace Qwitter.Core.Application;
 
 public static class WebApplicationServiceExtensions
 {
-    public static WebApplicationBuilder ConfigureBuilder(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder ConfigureBuilder(this WebApplicationBuilder builder, string name = "Qwitter")
     {
         builder.Services.AddLogging(p => p.AddConsole());
         
@@ -20,12 +21,14 @@ public static class WebApplicationServiceExtensions
             return factory.CreateLogger("Qwitter");
         });
 
+        builder.Services.AddSingleton<IRestApiClientManager, RestApiClientManager>();
+
         builder.AddJwtAuthentication();
         builder.AddMtlsAuthentication();
 
         builder.Services.AddControllers().AddControllersAsServices();
 
-        builder.AddSwagger();
+        builder.AddSwagger(name);
 
         return builder;
     }
@@ -53,12 +56,12 @@ public static class WebApplicationServiceExtensions
         return app;
     }
 
-    public static WebApplicationBuilder AddSwagger(this WebApplicationBuilder builder)
+    public static WebApplicationBuilder AddSwagger(this WebApplicationBuilder builder, string name)
     {
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(option =>
         {
-            option.SwaggerDoc("v1", new OpenApiInfo { Title = "Qwitter API", Version = "v1" });
+            option.SwaggerDoc("v1", new OpenApiInfo { Title = name, Version = "v1" });
             option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 In = ParameterLocation.Header,

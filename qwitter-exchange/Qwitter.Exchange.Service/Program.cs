@@ -18,7 +18,7 @@ public static class Program
 {
     public static void Main(string[] args)
         => WebApplication.CreateBuilder(args)
-            .ConfigureBuilder()
+            .ConfigureBuilder("Qwitter.Exchange.Service")
             .ConfigureServices()
             .Build()
             .ConfigureApp()

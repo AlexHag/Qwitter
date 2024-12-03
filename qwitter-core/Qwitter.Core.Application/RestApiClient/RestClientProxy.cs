@@ -16,12 +16,7 @@ public class RestClientProxy<TController> : DispatchProxy
             throw new ArgumentException($"{nameof(targetMethod)} is cannot be null");
         }
 
-        var host = typeof(TController).GetCustomAttribute<ApiHostAttribute>();
-        
-        if (host is null)
-        {
-            throw new Exception($"{typeof(ApiHostAttribute).Name} is required for the controller interface {typeof(TController).Name}");
-        }
+        var routePrefix = typeof(TController).GetCustomAttribute<ApiHostAttribute>()?.Prefix ?? string.Empty;
 
         var httpMethodAttribute = targetMethod?.GetCustomAttribute<HttpMethodAttribute>();
 
@@ -60,7 +55,7 @@ public class RestClientProxy<TController> : DispatchProxy
             }
         }
 
-        var response = makeApiRequestMethod.Invoke(null, [_logger, _httpClient, httpMethodAttribute.HttpMethods.First(), host.Prefix, httpMethodAttribute.Template, paramArgs]);
+        var response = makeApiRequestMethod.Invoke(null, [_logger, _httpClient, httpMethodAttribute.HttpMethods.First(), routePrefix, httpMethodAttribute.Template, paramArgs]);
 
         return response;
     }

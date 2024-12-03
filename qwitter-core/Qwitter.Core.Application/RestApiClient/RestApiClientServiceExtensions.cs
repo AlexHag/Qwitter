@@ -28,7 +28,7 @@ public static class RestApiClientServiceExtensions
             throw new Exception($"Can not find service host for {host.Port}");
         }
 
-        var httpClientHandler = new HttpClientHandler().ConfigureMtls(builder);
+        var httpClientHandler = new HttpClientHandler().ConfigureMtls(builder.Configuration);
 
         var httpClient = new HttpClient(httpClientHandler)
         {
@@ -49,9 +49,9 @@ public static class RestApiClientServiceExtensions
         return builder;
     }
 
-    private static HttpClientHandler ConfigureMtls(this HttpClientHandler httpClientHandler, WebApplicationBuilder builder)
+    internal static HttpClientHandler ConfigureMtls(this HttpClientHandler httpClientHandler, IConfiguration configuration)
     {
-        var certificate = builder.GetClientMtlsCertificate();
+        var certificate = configuration.GetClientMtlsCertificate();
 
         if (certificate == null)
         {
@@ -66,9 +66,9 @@ public static class RestApiClientServiceExtensions
         return httpClientHandler;
     }
 
-    private static X509Certificate2? GetClientMtlsCertificate(this WebApplicationBuilder builder)
+    private static X509Certificate2? GetClientMtlsCertificate(this IConfiguration configuration)
     {
-        var clientCertificateConfiguration = builder.Configuration.GetSection("certificates")?.Get<Dictionary<string, string>>();
+        var clientCertificateConfiguration = configuration.GetSection("certificates")?.Get<Dictionary<string, string>>();
 
         if (clientCertificateConfiguration == null ||
             !clientCertificateConfiguration.TryGetValue("client_cert_path", out var clientCertPath) ||

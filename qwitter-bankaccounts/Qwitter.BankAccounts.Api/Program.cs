@@ -8,7 +8,7 @@ public static class Program
 {
     public static void Main(string[] args)
         => WebApplication.CreateBuilder(args)
-            .ConfigureBuilder()
+            .ConfigureBuilder("Qwitter.BankAccounts.Api")
             .ConfigureServices()
             .Build()
             .ConfigureApp()
